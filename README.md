@@ -5,4 +5,4 @@ Projeto do primeiro período do Bacherelado em Sistemas de Informação
 
 - objetivo: Ser uma ferramenta prática e eficiente no que se refere ao acompanhamento de métricas relacionadas a sáude.
 
-- projeto atualmente em desenvolvimento. 
+- status: Em desenvolvimento.
