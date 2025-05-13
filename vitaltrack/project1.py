@@ -2,34 +2,38 @@ usuarios = {} #criando um dicionário vazio para armazenar os dados. é como um 
 usuario_logado = None #variavel que guarda quem está logado no momento.
 from datetime import datetime #importando biblioteca para utilizar datas.
 
-
 def cadastro_de_usuario(): #criando a função de cadastro.
     global usuarios,usuario_logado #garantindo o acesso as variáveis globais, para poder adicionar os dados e etc.
     print('\n-----Cadastro-----')
-    email = input('Digite o seu email: ').strip().lower() #.strip() para ignorar espaços e .lower() para manter as letras minusculas.
 
-    #verificando se o email está nos padrões corretos
-    if email in usuarios:
-     print('Este email já foi cadastrado!')
-     return False #Com isso, ele sai da função.
+    while True:
+        email = input('Digite o seu email: ').strip().lower() #.strip() para ignorar espaços e .lower() para manter as letras minusculas.
+        #verificando se o email está nos padrões corretos
+        if email in usuarios:
+            print('Este email já foi cadastrado!')
+            continue #para pedir o email novamente caso ocorra o erro.
+        
+        elif '@' not in email or '.com' not in email:
+            print('Digite seu email em um formato válido.')
+            print('O email precisa ter ".com" e "@".')
+            continue #para pedir o email novamente.
+        break
     
-    elif '@' not in email or '.com' not in email:
-     print('Digite seu email em um formato válido.')
-     print('O email precisa ter ".com" e "@".')
-     return False
-    
-    senha = input('Digite sua senha(mínimo 6 caracteres): ')
+    while True:
+        senha = input('Digite sua senha(mínimo 6 caracteres): ')
 
-    #verificando se a senha está nos padrões corretos.
-    if len(senha) < 6:
-        print('Senha muito curta. Mínimo 6 caracteres.')
-        return False
-         
-    confirmaçao_de_senha = input('Confirme sua senha: ')
+        #verificando se a senha está nos padrões corretos.
+        if len(senha) < 6:
+            print('Senha muito curta. Mínimo 6 caracteres.')
+            continue #para continuar pedindo a senha caso ocorra o erro
+            
+        confirmaçao_de_senha = input('Confirme sua senha: ')
 
-    if senha != confirmaçao_de_senha:
-        print('As senhas não coinscidem.')
-        return False
+        if senha != confirmaçao_de_senha:
+            print('As senhas não coinscidem.')
+            continue #para continuar pedindo a senha caso ocorra o erro
+        else:
+            break
     
     nome = input('Digite seu nome: ').strip()
 
