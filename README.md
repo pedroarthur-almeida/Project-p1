@@ -1,5 +1,5 @@
 # projetop1
-Projeto do primeiro período do Bacherelado em Sistemas de Informação
+Projeto do primeiro período do Bacherelado em Sistemas de Informação.
 
 - nome do projeto: VitalTrack
 
