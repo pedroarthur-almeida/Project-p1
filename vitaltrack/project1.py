@@ -1,16 +1,17 @@
-usuarios = {} #criando um dicionário vazio para armazenar os dados.
-usuario_logado = None
+usuarios = {} #criando um dicionário vazio para armazenar os dados. é como um banco de dados em formato de dicionário.
+usuario_logado = None #variavel que guarda quem está logado no momento.
+from datetime import datetime #importando biblioteca para utilizar datas.
 
 
 def cadastro_de_usuario(): #criando a função de cadastro.
-    global usuarios,usuario_logado #garantindo o acesso
+    global usuarios,usuario_logado #garantindo o acesso as variáveis globais, para poder adicionar os dados e etc.
     print('\n-----Cadastro-----')
     email = input('Digite o seu email: ').strip().lower() #.strip() para ignorar espaços e .lower() para manter as letras minusculas.
 
     #verificando se o email está nos padrões corretos
     if email in usuarios:
      print('Este email já foi cadastrado!')
-     return False
+     return False #Com isso, ele sai da função.
     
     elif '@' not in email or '.com' not in email:
      print('Digite seu email em um formato válido.')
@@ -37,7 +38,9 @@ def cadastro_de_usuario(): #criando a função de cadastro.
         'senha': senha,
         'nome': nome,
         'objetivo': None,
-        'dados': None
+        'dados': None,
+        'calorias_hoje': 0,          
+        'historico_dias': {} 
     }
 
     usuario_logado = email
@@ -124,7 +127,6 @@ def calcular_imc():
             aguardar_volta()
             break
 
-
 #função para calcular a taxa metabólica basal.
 def calcular_taxametabolicabasal():
     global usuarios, usuario_logado
@@ -154,20 +156,27 @@ def calcular_taxametabolicabasal():
         try:
             print('\n-----TAXA METABÓLICA BASAL (TMB)-----')
 
-            calculartmb_visualizartmb = input('\nDeseja visualizar sua taxa metabólica basal (1), ou calcular outra qualquer (2)?')
+            print('\nInformação: Taxa Metabólica Basal (TMB) é a quantidade mínima de calorias que seu corpo precisa para manter funções vitais (como respiração, circulação e temperatura) em repouso completo.')
+
+            calculartmb_visualizartmb = input('\nDeseja visualizar sua taxa metabólica basal (1), ou calcular outra qualquer (2)?').strip()
 
             if calculartmb_visualizartmb == '1':
             
             #o cálculo da tmb é difirente dependo do sexo da pessoa.
                 if sexo == 'm':
                     TMB = (10 * peso) + (6.25 * altura_cm) - (5 * idade) + 5
+                    
                 else:
                     TMB = (10 * peso) + (6.25 * altura_cm) - (5 * idade) - 161
+                
 
+                #salva a tmb em usuários.
+                usuarios[usuario_logado]['TMB'] = TMB
+                
                 print(f'\nSua TMB é :({TMB:.2f})')
                 aguardar_volta()
-                break
-
+                return TMB
+            
             elif calculartmb_visualizartmb == '2':
                 pesoex = float(input('Digite o peso (em kg): '))
                 alturaex = float(input('Digite a altura (em cm): '))
@@ -189,6 +198,112 @@ def calcular_taxametabolicabasal():
         except ValueError:
             print('Valor inválido! Use números.')
 
+
+def registrar_calorias():
+    global usuarios, usuario_logado
+
+    if usuario_logado is None:
+        print('Faça login primeiro!')
+        aguardar_volta() #função que retorna ao menu. 
+        return
+    
+    user = usuarios[usuario_logado]
+
+    if 'TMB' not in user:
+        print('Você precisa calcular sua taxa metabólica basal primeiro!')
+        calcular_taxametabolicabasal()
+    
+    if 'historico_dias' not in user:
+        user['historico_dias'] = {}
+
+    data_atual = datetime.now().strftime('%d/%m/%Y') #pegando a data atual.
+
+    TMB = user['TMB']
+    objetivo = user['objetivo']
+    
+    calorias_hoje = 0
+
+    if 'calorias_hoje' not in user:
+        user['calorias_hoje'] = 0
+
+    print('\n-----REGISTRO DE CALORIAS-----')
+    print(f'Data: {data_atual}')
+
+    while True:
+
+        try:
+            
+            print('\n1. Adicionar calorias ao dia')
+            print('2. Finalizar dia (salvar no histórico)')
+            print('3. Ver histórico de dias anteriores')
+            print('4. Voltar ao menu')
+
+            opcao = input('Digite uma opção (1-4): ').strip()
+
+            if opcao == '1':
+                print(f'\nTotal de calorias hoje: {user["calorias_hoje"]}/{TMB:.0f}')
+                cal = input('Quantas calorias você consumiu em sua última refeição? ')
+                cal = int(cal)
+                user['calorias_hoje'] += cal  # Acumula as calorias
+                print(f'\nVocê consumiu {cal} calorias.')
+                print(f'Total hoje: {user["calorias_hoje"]}/{TMB:.0f}')
+
+            elif opcao == '2':
+                    if data_atual not in user['historico_dias']:
+                        user['historico_dias'][data_atual] = user['calorias_hoje']
+                        print(f'\nDia finalizado com sucesso! Total salvo: {user["calorias_hoje"]} calorias')
+                        user['calorias_hoje'] = 0  # Reseta para o próximo dia
+                        
+                        # Análise do dia que está sendo finalizado
+                        diferenca = user['historico_dias'][data_atual] - TMB  # Usamos o valor salvo no histórico
+                        
+                        if diferenca > 0:
+                            print(f'\nVocê está {diferenca:.0f} calorias acima da sua TMB.')
+                        elif diferenca < 0:
+                            print(f'\nVocê está {abs(diferenca):.0f} calorias abaixo da sua TMB.')
+                        else:
+                            print('\nVocê consumiu exatamente sua TMB!')
+                        
+                        # Dicas personalizadas por objetivo
+                        print('\n--- ANÁLISE DO SEU OBJETIVO ---')
+                        
+                        if objetivo == '1':  # Ganho de massa
+                            if diferenca > 0:
+                                print('Ótimo! Superávit calórico ajuda no ganho de massa. MANTÉM! 😎')
+                            else:
+                                print('Atenção! Para ganhar massa, você precisa consumir mais que sua TMB.')
+                                
+                        elif objetivo == '2':  # Perda de peso
+                            if diferenca < 0:
+                                print('Perfeito! Déficit calórico é essencial para perda de peso. Continua assim! 👊') 
+                            else:
+                                print('Cuidado! Para perder peso, você precisa consumir menos que sua TMB.')
+                                
+                        else:  # Manutenção
+                            if abs(diferenca) < (TMB * 0.1):  # 10% de margem
+                                print('Excelente! Você está mantendo um bom equilíbrio. ✍')
+                            else:
+                                print('Para manutenção, tente ficar próximo da sua TMB.')
+                    else:
+                        print('\nVocê já finalizou o dia hoje!')
+                    aguardar_volta()
+            elif opcao == '3':
+                print('\n📅 HISTÓRICO DE CONSUMO:')
+                if not user['historico_dias']:
+                    print('Nenhum registro encontrado.')
+                else:
+                    for data, total in user['historico_dias'].items():
+                        print(f'{data}: {total} calorias')
+
+                aguardar_volta()
+            elif opcao == '4':
+                break
+            else:
+                print('Opção inválida!')
+                aguardar_volta()
+
+        except:
+            print('Digite um valor válido ou "sair".')
 
 
 def aguardar_volta():
@@ -280,7 +395,7 @@ def fazer_login(): #criando a função de login.
         print('Senha incorreta.')
         return False
     else:
-        usuario_logado = email
+        usuario_logado = email #chave do dicionário principal.
         print(f'Bem-vindo(a), {usuarios[email]["nome"]}!')
         return True
 
@@ -350,8 +465,10 @@ def menu_principal():
     global usuario_logado #declarando novamente como global
  
     while True:
-        print('\n=====VITALTRACK=====')
-        print('\n-----MENU INICIAL-----\n') 
+        
+        print('--------VITALTRACK-----------')
+        
+        print('\n(MENU INICIAL)\n') 
         print('1.Cadastro')
         print('2.Fazer login')
         print('3.Sair')
@@ -374,17 +491,19 @@ def menu_logado():
     global usuario_logado, usuarios 
 
     while True:
-
-        print('\n===== VITALTRACK =====')
-        print('\n----- MENU PRINCIPAL -----')
+        
+        print('--------VITALTRACK-----------')
+        
+        print('\n(MENU PRINCIPAL)')
         print(f'Logado como: {usuarios[usuario_logado]["nome"]}')
         print('\n1. Ver perfil completo')
         print('2. Calcular IMC')
         print('3. Calcular TMB')
-        print('4. Atualizar perfil')
-        print('5. Atualizar objetivo/dados')
-        print('6. Deslogar')
-        print('7. Deletar conta')
+        print('4. Registro de calorias')
+        print('5. Atualizar perfil')
+        print('6. Atualizar objetivo/dados')
+        print('7. Deslogar')
+        print('8. Deletar conta')
         
         opcao = input('\nEscolha uma opção: ').strip()
         
@@ -405,16 +524,18 @@ def menu_logado():
         elif opcao == '3':
             calcular_taxametabolicabasal()
         elif opcao == '4':
-            atualizar_usuario()
+            registrar_calorias()
         elif opcao == '5':
+            atualizar_usuario()
+        elif opcao == '6':
             print('\nAtualizando dados...')
             escolher_objetivo()
             aguardar_volta()
-        elif opcao == '6':
+        elif opcao == '7':
             usuario_logado = None
             print('Deslogado com sucesso!')
             break
-        elif opcao == '7':
+        elif opcao == '8':
             if deletar_usuario():
                 break
         
