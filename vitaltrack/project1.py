@@ -2,7 +2,14 @@ usuarios = {} #criando um dicionário vazio para armazenar os dados. é como um 
 usuario_logado = None #variavel que guarda quem está logado no momento.
 from datetime import datetime #importando biblioteca para utilizar datas.
 
+def aguardar_volta():
+    """Pausa a execução do programa até que o usuário tecle "enter".""" 
+    input('\nPressione Enter para voltar ao menu...')
+
 def cadastro_de_usuario(): #criando a função de cadastro.
+    """Cadastra o usuário e salva seus dados em um dicionário,
+       em que a chave é o email.
+    """
     global usuarios,usuario_logado #garantindo o acesso as variáveis globais, para poder adicionar os dados e etc.
     print('\n(Cadastro)')
 
@@ -35,7 +42,7 @@ def cadastro_de_usuario(): #criando a função de cadastro.
             print('\n|Senha muito curta, a sua senha precisa ter, no mínimo, 6 caracteres.|')
             continue #para continuar pedindo a senha caso ocorra o erro
             
-        confirmaçao_de_senha = input('\nConfirme sua senha: ')
+        confirmaçao_de_senha = input('\nConfirme sua senha: ').strip()
 
         if senha != confirmaçao_de_senha:
             print('\n|As senhas não coinscidem.|')
@@ -66,8 +73,217 @@ def cadastro_de_usuario(): #criando a função de cadastro.
 
     return True
 
+#Essa é a parte de escolha de objetivo, ocorre após o cadastro.
+def escolher_objetivo():
+    """
+    Escolha de objetivo (parte do cadastro),
+    Usuário escolhe seu objetivo e fornece seus dados,
+    armazena os dados do usuário em um outro dicionário "dados".
+    """
+    global usuario_logado, usuarios
+
+    while True:
+
+        print('\n(Qual é o seu objetivo? 🤔)')
+        print('\nAntes de começarmos, é importante entender qual é o seu foco atual em relação à sua saúde. o VitalTrack foi pensado para se adaptar as suas necesssidades e objetivos. ✍')
+        print('\nÉ como uma parceria, entendeu? 👊🤝')
+        print('\nVocê pode escolher entre três caminhos:')
+        print('\n1. Ganho de massa (Foco em ganho de peso e aumento da massa muscular.🏋️ 💪)')
+        print('2. Perda de peso (ideal para quem deseja reduzir o percentual de gordura corporal de forma saudável.)🏃')
+        print('3. Manutenção da saúde (Para quem quer manter o equilíbrio, hábitos saudáveis e o bem-estar geral.)❤')
+        print(' ')
+
+        objetivo = input('Agora é com você! 🕺 Escolha um objetivo (1-3): ')
+
+        if objetivo not in ['1', '2', '3']:
+            print('\n|Opção inválida! Escolha 1, 2 ou 3.|')
+            continue 
+
+        # Mensagem personalizada de acordo com o objetivo que o usuário escolher.
+        objetivos = {
+            '1': 'GANHO DE MASSA',
+            '2': 'PERDA DE PESO', 
+            '3': 'MANUTENÇÃO DA SAÚDE' }
+        print('\n-----------------------------')
+        print(f'Você escolheu: {objetivos[objetivo]}')
+        print('-----------------------------')
+        if objetivo == '1':
+            print('\nBoa! Você deseja aumentar sua massa corporal, tô contigo nessa! 😎 💪')
+            print('Uma dica: é importante que você consuma uma quantidade de calorias maior que a sua TMB.')
+            print('\nNão sabe o que é TMB? não se preocupe! mais na frente eu te explico. 😉')
+        elif objetivo == '2':
+            print('\nVocê escolheu perder peso, que legal! Tamo junto nessa jornada. 👊')
+            print('Com foco e disciplina, qualquer objetivo pode se concretizar, vai dar tudo certo!')
+            print('\nDica: é importante que você consuma uma quantidade de calorias inferior a sua TMB.')
+            print('Não sabe o que é TMB? não se preocupe! mais na frente eu te explico. 😉')
+        else:
+            print('\nÉ isso ai! Você optou por manter-se saudável, conte comigo pra te auxiliar! ✋')
+            print('É extremamente importante acompanhar a própria saúde, isso vale para pessoas de qualquer faixa etária. 🧒👨👴')
+            print('\nDica: mantenha seu consumo de calorias em um valor próximo a sua TMB.')
+            print('Não sabe o que é TMB? não se preocupe! mais na frente eu te explico. 😉')
+
+        print('\nBeleza! Agora vamos coletar algumas informações sobre você.')
+
+        while True:
+            try:
+
+                dados = { #aqui eu crio um dicionário, que se chama "dados" para coletar os dados do usuário, e insiro esse dicionário no dicionário "usuarios"
+                    'objetivo': objetivo,
+                    'idade': int(input('\nIdade: ').strip()),
+                    'peso': float(input('Peso (kg): ').strip()),
+                    'altura': float(input('Altura (m): ').strip()),
+                    'sexo': input('Sexo (m/f): ').lower().strip()
+                }
+                if dados['idade'] > 100 or dados['peso'] > 350.0 or dados['altura'] > 2.2:
+                    print('\n|Digite valores válidos.|' )
+                    continue
+                if dados['idade'] <= 0 or dados['peso'] <= 0 or dados['altura'] <= 0:
+                    raise ValueError
+                if dados['sexo'] not in ['m', 'f']:
+                    raise ValueError
+                
+                # Salvando todos os dados no usuário
+                usuarios[usuario_logado]['dados'] = dados
+                usuarios[usuario_logado]['objetivo'] = objetivo
+                return True
+                
+            except ValueError:
+                print('\n|Valores inválidos! Digite novamente.|')
+
+def fazer_login(): #criando a função de login.
+    """
+    Função responsável pelo login do usuário,
+    O usuário digita seu email e sua senha,
+    caso estejam corretos, libera o acesso ao "menu logado".
+    """
+  
+    global usuario_logado, usuarios #declarando ambos como globais, para que possam ser utilizados e modificados.
+    print('\n-----Login-----')
+    email = input('Digite o seu email cadastrado: ').lower().strip()
+    senha = input('Digite sua senha: ')
+
+  #vamos verificar se o cadastro existe.
+    if email not in usuarios:
+        print('|Email não cadastrado.|')
+        return False
+    elif usuarios[email]["senha"] != senha:
+        print('|Senha incorreta.|')
+        return False
+    else:
+        usuario_logado = email #chave do dicionário principal.
+        print(f'Bem-vindo(a), {usuarios[email]["nome"]}!')
+        return True
+
+def atualizar_usuario(): #criando a função atualizar (parte do crud)
+    """
+    Atualiza os dados do usuário,
+    o usuário escolhe o que deseja atualizar,
+    é permitido atualizar email, nome ou senha,
+    os novos dados são salvos após mudanças.
+    """
+    global usuario_logado, usuarios
+    if usuario_logado is None: #caso o usuario não esteja logado.
+        print('|Faça login primeiro!|')
+        return
+    
+    while True:
+
+        print('\n-----ATUALIZAR PERFIL-----')
+        print(f'1.Alterar nome. (nome atual:{usuarios[usuario_logado]['nome']})')
+        print('2.Alterar senha.')
+        print(f'3.Alterar EMAIL. (email atual:{usuario_logado})')
+        print('4.Voltar ao MENU anterior.')
+
+        opçao3 = input('O que deseja atualizar? (1-4): ')
+
+        if opçao3 == '1':
+            novo_nome = input(f'Digite o novo nome (atual: {usuarios[usuario_logado]['nome']}):').strip()
+            if novo_nome:
+                usuarios[usuario_logado]["nome"] = novo_nome
+                print('Nome atualizado com sucesso!')
+        elif opçao3 == '2':
+            nova_senha = input('Digite uma nova senha (mínimo 6 caracteres): ')
+            if len(nova_senha) >=6:
+                usuarios[usuario_logado]["senha"] = nova_senha
+                print('Senha atualizada com sucesso!')
+            else:
+                print('|Senha muito curta.|') 
+        elif opçao3 == '3':
+            novo_email = input('Digite seu novo emai (atual: {usuario_logado}): ').strip().lower()  
+            if not novo_email:
+                continue
+            if novo_email == usuario_logado:
+                print('|O novo email é igual ao atual.|')   
+            elif '@' not in novo_email or '.com' not in novo_email:
+                print("|Formato inválido (use '@' e '.com').|")
+            elif novo_email in usuarios:
+                print('|Email já cadastrado.|') 
+            else:
+                # Transferir todos os dados para o novo email digitado pelo usuário
+                usuarios[novo_email] = usuarios[usuario_logado]
+                del usuarios[usuario_logado]
+                usuario_logado = novo_email
+                print("Email atualizado com sucesso!") 
+        elif opçao3 == '4':
+            break
+        else:
+            print('|Opção inválida. Digite uma opção disponível (1-4)|')
+
+def deletar_usuario():
+    """
+    Deleta o usuário cadastrado,
+    apaga todos os dados inseridos e salvos.
+    """
+    global usuario_logado,usuarios
+    if usuario_logado is None:
+        print('|Faça login primeiro.|')
+        return
+    confirmaçao = input('Tem certeza que deseja deletar sua conta? 😕 (s/n): ').lower()
+    if confirmaçao == 's':
+        del usuarios[usuario_logado]
+        usuario_logado = None
+        print('Conta deletada com sucesso. Até logo...')
+        return True
+    return False
+
+def menu_principal():
+    """
+    Menu inicial,
+    é exibido logo após iniciar o programa,
+    abre ao usuário as opções de cadastro e login.
+    """
+    global usuario_logado #declarando novamente como global
+ 
+    while True:
+        
+        print('<<<VITALTRACK>>>')
+        
+        print('\n(MENU INICIAL)\n') 
+        print('1.Cadastro')
+        print('2.Fazer login')
+        print('3.Sair')
+
+        opçao1 = input('Digite sua opção: ')
+
+        if opçao1 == '1':
+            if cadastro_de_usuario():
+                menu_logado()    
+        elif opçao1 == '2':
+            if fazer_login():
+                menu_logado()
+        elif opçao1 == '3':
+            print('Saindo... até logo! 👋')
+            break
+        else:
+            print('|Opção inválida! Digite uma opção presente no MENU.|')
 
 def calcular_imc():
+    """
+    Calcula o IMC (índice de massa corporal) do usuário,
+    O usuário pode calcular o seu próprio IMC (com seus dados salvos),
+    ou pode optar por calcular outro IMC qualquer,
+    a função retorna o status após calcular o valor do imc, em ambos os casos.
+    """
     global usuarios,usuario_logado
 
     if usuario_logado is None:
@@ -142,6 +358,10 @@ def calcular_imc():
 
 #função para calcular a taxa metabólica basal.
 def calcular_taxametabolicabasal():
+    """
+    Calcula a tmb (Taxa metabólica basal) do usuário,
+    o usuário pode escolher entre calcular sua TBM (com seus dados salvos),
+    ou pode optar por calcular outra qualquer"""
     global usuarios, usuario_logado
 
     #verifica se o usuário está logado.
@@ -171,7 +391,7 @@ def calcular_taxametabolicabasal():
 
             print('\nInformação: Taxa Metabólica Basal (TMB) é a quantidade mínima de calorias que seu corpo precisa para manter funções vitais (como respiração, circulação e temperatura) em repouso completo.')
 
-            calculartmb_visualizartmb = input('\nDeseja visualizar sua taxa metabólica basal (1), ou calcular outra qualquer (2)?').strip()
+            calculartmb_visualizartmb = input('\nDeseja visualizar sua taxa metabólica basal (1), ou calcular outra qualquer (2)? ').strip()
 
             if calculartmb_visualizartmb == '1':
             
@@ -193,14 +413,14 @@ def calcular_taxametabolicabasal():
                 return TMB
             
             elif calculartmb_visualizartmb == '2':
-                pesoex = float(input('Digite o peso (em kg): '))
-                alturaex = float(input('Digite a altura (em cm): '))
+                pesoex = float(input('\nDigite o peso (em kg): '))
+                alturaex = int(input('Digite a altura (em cm): '))
                 idadeex = int(input('Digite a idade: '))
-                sexoex = input('Digite o sexo (m(asculino)/f(eminino))').lower() #para ficar minusculo 
+                sexoex = input('Digite o sexo (m)asculino/(f)eminino: ').lower().strip() #para ficar minusculo e ignorar espaços
 
                 if sexoex == 'm':
                     TMB = (10 * pesoex) + (6.25 * alturaex) - (5 * idadeex) + 5
-                else:
+                elif sexoex == 'f':
                     TMB = (10 * pesoex) + (6.25 * alturaex) - (5 * idadeex) - 161
 
                 print(f'\nSua TMB é :({TMB:.2f})')
@@ -211,10 +431,15 @@ def calcular_taxametabolicabasal():
                 print('|Opção inválida! Digite 1 ou 2.|')
                 
         except ValueError:
-            print('|Valor inválido! Use números.|')
-
+            print('\n|Valor inválido! Use valores válidos para o dado pedido.|')
 
 def registrar_calorias():
+    """
+    Registra as calorias consumidas pelo usuário durante o dia,
+    usuário digita suas calorias, o função salva ao lado de sua TBM,
+    usuário tem a opção de "finalizar dia",
+    após isso, recebe um feedback e pode verificar o histórico de consumo de acordo com o dia.
+    """
     global usuarios, usuario_logado
 
     if usuario_logado is None:
@@ -259,17 +484,17 @@ def registrar_calorias():
                 print(f'\nTotal de calorias hoje: {user["calorias_hoje"]}/{TMB:.0f}')
                 cal = input('Quantas calorias você consumiu em sua última refeição? ')
                 cal = int(cal)
-                user['calorias_hoje'] += cal  # Acumula as calorias
+                user['calorias_hoje'] += cal  #aqui, as calorias são acumuladas.
                 print(f'\nVocê consumiu {cal} calorias.')
                 print(f'Total hoje: {user["calorias_hoje"]}/{TMB:.0f}')
+                aguardar_volta()
 
             elif opcao == '2':
                     if data_atual not in user['historico_dias']:
                         user['historico_dias'][data_atual] = user['calorias_hoje']
                         print(f'\nDia finalizado com sucesso! Total salvo: {user["calorias_hoje"]} calorias')
-                        user['calorias_hoje'] = 0  # Reseta para o próximo dia
+                        user['calorias_hoje'] = 0  #zerando a contagem para o próximo dia
                         
-                        # Análise do dia que está sendo finalizado
                         diferenca = user['historico_dias'][data_atual] - TMB  # Usamos o valor salvo no histórico
                         
                         if diferenca > 0:
@@ -279,23 +504,23 @@ def registrar_calorias():
                         else:
                             print('\nVocê consumiu exatamente sua TMB!')
                         
-                        # Dicas personalizadas por objetivo
+                        #dicas personalizadas de acordo com o objetivo do usuário.
                         print('\n--- ANÁLISE DO SEU OBJETIVO ---')
                         
-                        if objetivo == '1':  # Ganho de massa
+                        if objetivo == '1':  #ganho de massa
                             if diferenca > 0:
                                 print('Ótimo! Superávit calórico ajuda no ganho de massa. MANTÉM! 😎')
                             else:
                                 print('Atenção! Para ganhar massa, você precisa consumir mais que sua TMB.')
                                 
-                        elif objetivo == '2':  # Perda de peso
+                        elif objetivo == '2':  #perda de peso
                             if diferenca < 0:
                                 print('Perfeito! Déficit calórico é essencial para perda de peso. Continua assim! 👊') 
                             else:
                                 print('Cuidado! Para perder peso, você precisa consumir menos que sua TMB.')
                                 
-                        else:  # Manutenção
-                            if abs(diferenca) < (TMB * 0.1):  # 10% de margem
+                        else:  
+                            if abs(diferenca) < (TMB * 0.1):  
                                 print('Excelente! Você está mantendo um bom equilíbrio. ✍')
                             else:
                                 print('Para manutenção, tente ficar próximo da sua TMB.')
@@ -320,191 +545,11 @@ def registrar_calorias():
         except:
             print('Digite um valor válido ou "sair".')
 
-
-def aguardar_volta():
-    input('\nPressione Enter para voltar ao menu...')
-
-#Essa é a parte de escolha de objetivo, ocorre após o cadastro.
-def escolher_objetivo():
-    global usuario_logado, usuarios
-
-    while True:
-
-        print('\n(Qual é o seu objetivo? 🤔)')
-        print('\nAntes de começarmos, é importante entender qual é o seu foco atual em relação à sua saúde. o VitalTrack foi pensado para se adaptar as suas necesssidades e objetivos. ✍')
-        print('\nÉ como uma parceria, entendeu? 👊🤝')
-        print('\nVocê pode escolher entre três caminhos:')
-        print('\n1. Ganho de massa (Foco em ganho de peso e aumento da massa muscular.🏋️ 💪)')
-        print('2. Perda de peso (ideal para quem deseja reduzir o percentual de gordura corporal de forma saudável.)🏃')
-        print('3. Manutenção da saúde (Para quem quer manter o equilíbrio, hábitos saudáveis e o bem-estar geral.)❤')
-        print(' ')
-
-        objetivo = input('Agora é com você! 🕺 Escolha um objetivo (1-3): ')
-
-        if objetivo not in ['1', '2', '3']:
-            print('\n|Opção inválida! Escolha 1, 2 ou 3.|')
-            continue 
-
-        # Mensagem personalizada de acordo com o objetivo que o usuário escolher.
-        objetivos = {
-            '1': 'GANHO DE MASSA',
-            '2': 'PERDA DE PESO', 
-            '3': 'MANUTENÇÃO DA SAÚDE' }
-        print('\n-----------------------------')
-        print(f'Você escolheu: {objetivos[objetivo]}')
-        print('-----------------------------')
-        if objetivo == '1':
-            print('\nBoa! Você deseja aumentar sua massa corporal, tô contigo nessa! 😎 💪')
-            print('Uma dica: é importante que você consuma uma quantidade de calorias maior que a sua TMB.')
-            print('\nNão sabe o que é TMB? não se preocupe! mais na frente eu te explico. 😉')
-        elif objetivo == '2':
-            print('\nVocê escolheu perder peso, que legal! Tamo junto nessa jornada. 👊')
-            print('Com foco e disciplina, qualquer objetivo pode se concretizar, vai dar tudo certo!')
-            print('\nDica: é importante que você consuma uma quantidade de calorias inferior a sua TMB.')
-            print('Não sabe o que é TMB? não se preocupe! mais na frente eu te explico. 😉')
-        else:
-            print('\nÉ isso ai! Você optou por manter-se saudável, conte comigo pra te auxiliar! ✋')
-            print('É extremamente importante acompanhar a própria saúde, isso vale para pessoas de qualquer faixa etária. 🧒👨👴')
-            print('\nDica: mantenha seu consumo de calorias em um valor próximo a sua TMB.')
-            print('Não sabe o que é TMB? não se preocupe! mais na frente eu te explico. 😉')
-
-        print('\nBeleza! Agora vamos coletar algumas informações sobre você.')
-
-        while True:
-            try:
-
-                dados = { #aqui eu crio um dicionário, que se chama "dados" para coletar os dados do usuário, e insiro esse dicionário no dicionário "usuarios"
-                    'objetivo': objetivo,
-                    'idade': int(input('\nIdade: ')),
-                    'peso': float(input('Peso (kg): ')),
-                    'altura': float(input('Altura (m): ')),
-                    'sexo': input('Sexo (m/f): ').lower()
-                }
-                if dados['idade'] > 100 or dados['peso'] > 350.0 or dados['altura'] > 2.2:
-                    print('\n|Digite valores válidos.|' )
-                    continue
-                if dados['idade'] <= 0 or dados['peso'] <= 0 or dados['altura'] <= 0:
-                    raise ValueError
-                if dados['sexo'] not in ['m', 'f']:
-                    raise ValueError
-                
-                # Salvando todos os dados no usuário
-                usuarios[usuario_logado]['dados'] = dados
-                usuarios[usuario_logado]['objetivo'] = objetivo
-                return True
-                
-            except ValueError:
-                print('\n|Valores inválidos! Digite novamente.|')
-                
-
-def fazer_login(): #criando a função de login.
-  
-    global usuario_logado, usuarios #declarando ambos como globais, para que possam ser utilizados e modificados.
-    print('\n-----Login-----')
-    email = input('Digite o seu email cadastrado: ').lower().strip()
-    senha = input('Digite sua senha: ')
-
-  #vamos verificar se o cadastro existe.
-    if email not in usuarios:
-        print('|Email não cadastrado.|')
-        return False
-    elif usuarios[email]["senha"] != senha:
-        print('|Senha incorreta.|')
-        return False
-    else:
-        usuario_logado = email #chave do dicionário principal.
-        print(f'Bem-vindo(a), {usuarios[email]["nome"]}!')
-        return True
-
-def atualizar_usuario(): #criando a função atualizar (parte do crud)
-    global usuario_logado, usuarios
-    if usuario_logado is None: #caso o usuario não esteja logado.
-        print('|Faça login primeiro!|')
-        return
-    
-    while True:
-
-        print('\n-----ATUALIZAR PERFIL-----')
-        print(f'1.Alterar nome. (nome atual:{usuarios[usuario_logado]['nome']})')
-        print('2.Alterar senha.')
-        print(f'3.Alterar EMAIL. (email atual:{usuario_logado})')
-        print('4.Voltar ao MENU anterior.')
-
-        opçao3 = input('O que deseja atualizar? (1-4): ')
-
-        if opçao3 == '1':
-            novo_nome = input(f'Digite o novo nome (atual: {usuarios[usuario_logado]['nome']}):').strip()
-            if novo_nome:
-                usuarios[usuario_logado]["nome"] = novo_nome
-                print('Nome atualizado com sucesso!')
-        elif opçao3 == '2':
-            nova_senha = input('Digite uma nova senha (mínimo 6 caracteres): ')
-            if len(nova_senha) >=6:
-                usuarios[usuario_logado]["senha"] = nova_senha
-                print('Senha atualizada com sucesso!')
-            else:
-                print('|Senha muito curta.|') 
-        elif opçao3 == '3':
-            novo_email = input('Digite seu novo emai (atual: {usuario_logado}): ').strip().lower()  
-            if not novo_email:
-                continue
-            if novo_email == usuario_logado:
-                print('|O novo email é igual ao atual.|')   
-            elif '@' not in novo_email or '.com' not in novo_email:
-                print("|Formato inválido (use '@' e '.com').|")
-            elif novo_email in usuarios:
-                print('|Email já cadastrado.|') 
-            else:
-                # Transferir todos os dados para o novo email digitado pelo usuário
-                usuarios[novo_email] = usuarios[usuario_logado]
-                del usuarios[usuario_logado]
-                usuario_logado = novo_email
-                print("Email atualizado com sucesso!") 
-        elif opçao3 == '4':
-            break
-        else:
-            print('|Opção inválida. Digite uma opção disponível (1-4)|') 
-
-def deletar_usuario():
-    global usuario_logado,usuarios
-    if usuario_logado is None:
-        print('|Faça login primeiro.|')
-        return
-    confirmaçao = input('Tem certeza que deseja deletar sua conta? 😕 (s/n): ').lower()
-    if confirmaçao == 's':
-        del usuarios[usuario_logado]
-        usuario_logado = None
-        print('Conta deletada com sucesso. Até logo...')
-        return True
-    return False
-                        
-def menu_principal():
-    global usuario_logado #declarando novamente como global
- 
-    while True:
-        
-        print('<<<VITALTRACK>>>')
-        
-        print('\n(MENU INICIAL)\n') 
-        print('1.Cadastro')
-        print('2.Fazer login')
-        print('3.Sair')
-
-        opçao1 = input('Digite sua opção: ')
-
-        if opçao1 == '1':
-            if cadastro_de_usuario():
-                menu_logado()    
-        elif opçao1 == '2':
-            if fazer_login():
-                menu_logado()
-        elif opçao1 == '3':
-            print('Saindo... até logo! 👋')
-            break
-        else:
-            print('|Opção inválida! Digite uma opção presente no MENU.|')
-
 def menu_logado():
+    """
+    Menu onde o usuário tem acesso as funcionalidades do programa,
+    só é possível ter acesso a esse menu após o login.
+    """
     global usuario_logado, usuarios 
 
     while True:
@@ -559,57 +604,5 @@ def menu_logado():
         else:
             print('Opção inválida! Digite um número de 1 a 8.')
 
-#inicia o programa. 
 if __name__ == "__main__":
     menu_principal() 
-
-           
-     
-       
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-  
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
-
-    
-
