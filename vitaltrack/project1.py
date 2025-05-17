@@ -132,7 +132,7 @@ def escolher_objetivo():
                     'idade': int(input('\nIdade: ').strip()),
                     'peso': float(input('Peso (kg): ').strip()),
                     'altura': float(input('Altura (m): ').strip()),
-                    'sexo': input('Sexo (m/f): ').lower().strip()
+                    'sexo': input('Sexo (m)asculino/(f)eminino: ').lower().strip()
                 }
                 if dados['idade'] > 100 or dados['peso'] > 350.0 or dados['altura'] > 2.2:
                     print('\n|Digite valores válidos.|' )
@@ -340,21 +340,40 @@ def calcular_imc():
     #função auxiliar para incorporar em outras funções e voltar ao menu.
 
         elif calcularimc_visualizarimc == '2':
-            pesoimc = float(input('\nDigite o seu peso em kg: '))
-            alturaimc = float(input('Digite a sua altura em m: '))
-            imc = (pesoimc/alturaimc**2)
-            print(f'\nO IMC é {imc:.2f}')
-            if imc < 18.5:
-                status = 'Abaixo do peso'
-            elif 18.5 <= imc < 25:
-                status = 'Peso normal'
-            elif 25 <= imc < 30:
-                status = 'Sobrepeso'
-            else:
-                status = 'Obesidade'
-            print(f'Status: {status}')
-            aguardar_volta()
-            break
+
+            while True:
+                    
+                try:
+                    pesoimc = float(input('\nDigite o seu peso em kg: '))
+                    if pesoimc > 350 or pesoimc <= 0:
+                        print('Digite um peso válido.')
+                        continue
+                    
+                    alturaimc = float(input('Digite a sua altura em m: '))
+                    if alturaimc > 2.2 or alturaimc <= 0:
+                        print('Digite uma altura válida')
+                        continue
+                    
+                    imc = (pesoimc/alturaimc**2)
+                    print(f'\nO IMC é {imc:.2f}')
+
+                    if imc < 18.5:
+                        status = 'Abaixo do peso'
+                    elif 18.5 <= imc < 25:
+                        status = 'Peso normal'
+                    elif 25 <= imc < 30:
+                        status = 'Sobrepeso'
+                    else:
+                        status = 'Obesidade'
+                    print(f'Status: {status}')
+                    aguardar_volta()
+                    break
+                
+                except ValueError:
+                    print('Digite apenas números')
+                    continue
+
+
 
 #função para calcular a taxa metabólica basal.
 def calcular_taxametabolicabasal():
@@ -377,16 +396,9 @@ def calcular_taxametabolicabasal():
         escolher_objetivo()
         return
 
-    dados = user['dados']
-    altura = dados['altura']
-    peso = dados['peso']
-    idade = dados['idade']
-    sexo = dados['sexo']
-    altura_cm = altura * 100  # Transforma altura de metros para cm, pois é necessário que a altura esteja em cm para realizar o cálculo da TMB.
-
-
+    
     while True:
-        try:
+            
             print('\n-----TAXA METABÓLICA BASAL (TMB)-----')
 
             print('\nInformação: Taxa Metabólica Basal (TMB) é a quantidade mínima de calorias que seu corpo precisa para manter funções vitais (como respiração, circulação e temperatura) em repouso completo.')
@@ -394,8 +406,16 @@ def calcular_taxametabolicabasal():
             calculartmb_visualizartmb = input('\nDeseja visualizar sua taxa metabólica basal (1), ou calcular outra qualquer (2)? ').strip()
 
             if calculartmb_visualizartmb == '1':
+
+                #calculando a TMB com os dados do usuário.
+                dados = user['dados']
+                altura = dados['altura']
+                peso = dados['peso']
+                idade = dados['idade']
+                sexo = dados['sexo']
+                altura_cm = altura * 100  # Transforma altura de metros para cm, pois é necessário que a altura esteja em cm para realizar o cálculo da TMB.
             
-            #o cálculo da tmb é difirente dependo do sexo da pessoa.
+                #o cálculo da tmb é difirente dependo do sexo da pessoa.
                 if sexo == 'm':
                     TMB = (10 * peso) + (6.25 * altura_cm) - (5 * idade) + 5
                     
@@ -410,29 +430,56 @@ def calcular_taxametabolicabasal():
                 print(f'-----Sua TMB é :({TMB:.2f})----')
                 print('-----------------------------')
                 aguardar_volta()
-                return TMB
-            
-            elif calculartmb_visualizartmb == '2':
-                pesoex = float(input('\nDigite o peso (em kg): '))
-                alturaex = int(input('Digite a altura (em cm): '))
-                idadeex = int(input('Digite a idade: '))
-                sexoex = input('Digite o sexo (m)asculino/(f)eminino: ').lower().strip() #para ficar minusculo e ignorar espaços
-
-                if sexoex == 'm':
-                    TMB = (10 * pesoex) + (6.25 * alturaex) - (5 * idadeex) + 5
-                elif sexoex == 'f':
-                    TMB = (10 * pesoex) + (6.25 * alturaex) - (5 * idadeex) - 161
-
-                print(f'\nSua TMB é :({TMB:.2f})')
-                aguardar_volta()
                 break
 
-            else:
-                print('|Opção inválida! Digite 1 ou 2.|')
-                
-        except ValueError:
-            print('\n|Valor inválido! Use valores válidos para o dado pedido.|')
+            elif calculartmb_visualizartmb == '2':
 
+                while True:
+
+                    try:
+                        pesoex = float(input('\nDigite o peso (em kg): '))
+                        if pesoex > 350:
+                            print('Digite um peso válido.')
+                            continue
+                        
+
+                        alturaex = float(input('\nDigite a altura (em cm): '))
+                        if alturaex > 220:
+                            print('\nDigite uma altura válida, em centímetros.')
+                            continue
+                        
+            
+                        idadeex = int(input('\nDigite a idade: '))
+                        if idadeex > 100:
+                            print('\nDigite uma idade válida.')
+                            continue
+                    
+
+                        sexoex = input('\nDigite o sexo (m)asculino/(f)eminino: ').lower().strip() #para ficar minusculo e ignorar espaços
+                        if sexoex != 'm' and sexoex != 'f':
+                            print('\nDigite um sexo válido.')
+                            continue
+                        
+
+                        if sexoex == 'm':
+                            TMB = (10 * pesoex) + (6.25 * alturaex) - (5 * idadeex) + 5
+                        elif sexoex == 'f':
+                            TMB = (10 * pesoex) + (6.25 * alturaex) - (5 * idadeex) - 161
+
+                        print(f'\nSua TMB é :({TMB:.2f})')
+                        aguardar_volta()
+                        return
+                        
+                        
+                    except ValueError:
+                        print('\n|Valor inválido! Digite números válidos.|')
+                    break
+
+            else:
+                print('\n|Opção inválida! Digite 1 ou 2.|')
+                continue
+
+    
 def registrar_calorias():
     """
     Registra as calorias consumidas pelo usuário durante o dia,
