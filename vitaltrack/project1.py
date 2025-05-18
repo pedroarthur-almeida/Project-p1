@@ -4,7 +4,7 @@ from datetime import datetime #importando biblioteca para utilizar datas.
 
 def aguardar_volta():
     """Pausa a execução do programa até que o usuário tecle "enter".""" 
-    input('\nPressione Enter para voltar ao menu...')
+    input('\nPressione "Enter" para voltar...')
 
 def cadastro_de_usuario(): #criando a função de cadastro.
     """Cadastra o usuário e salva seus dados em um dicionário,
@@ -97,6 +97,7 @@ def escolher_objetivo():
 
         if objetivo not in ['1', '2', '3']:
             print('\n|Opção inválida! Escolha 1, 2 ou 3.|')
+            aguardar_volta()
             continue 
 
         # Mensagem personalizada de acordo com o objetivo que o usuário escolher.
@@ -148,7 +149,7 @@ def escolher_objetivo():
                 return True
                 
             except ValueError:
-                print('\n|Valores inválidos! Digite novamente.|')
+                print('\n|Valores inválidos para os dados requeridos! Digite novamente.|')
 
 def fazer_login(): #criando a função de login.
     """
@@ -302,7 +303,7 @@ def calcular_imc():
 
     while True:
         print('\nCALCULADORA DE IMC (ÍNDICE DE MASSA CORPORAL)')
-        calcularimc_visualizarimc = input('\nDeseja visualizar o seu IMC (1) ou calcular outro qualquer? (2) ')
+        calcularimc_visualizarimc = input('\nDeseja calcular o seu IMC (1), calcular outro qualquer (2), ou voltar (3)? ')
 
         if calcularimc_visualizarimc == '1':
             print('\n-----------------------------')
@@ -343,17 +344,29 @@ def calcular_imc():
 
             while True:
                     
-                try:
-                    pesoimc = float(input('\nDigite o seu peso em kg: '))
-                    if pesoimc > 350 or pesoimc <= 0:
-                        print('Digite um peso válido.')
+                    try:
+                        pesoimc = float(input('\nDigite o seu peso em kg: '))
+                        if pesoimc > 350 or pesoimc <= 0:
+                            print('\nDigite um peso válido.')
+                            continue
+                    except ValueError:
+                        print('\nDigite apenas números')
+                        continue
+                    break
+            
+            while True:
+                    
+                    try:
+
+                        alturaimc = float(input('Digite a sua altura em m: '))
+                        if alturaimc > 2.2 or alturaimc <= 0:
+                            print('\nDigite uma altura válida')
+                            continue
+                    except ValueError:
+                        print('\nDigite apenas números')
                         continue
                     
-                    alturaimc = float(input('Digite a sua altura em m: '))
-                    if alturaimc > 2.2 or alturaimc <= 0:
-                        print('Digite uma altura válida')
-                        continue
-                    
+                        
                     imc = (pesoimc/alturaimc**2)
                     print(f'\nO IMC é {imc:.2f}')
 
@@ -369,9 +382,11 @@ def calcular_imc():
                     aguardar_volta()
                     break
                 
-                except ValueError:
-                    print('Digite apenas números')
-                    continue
+                    
+
+        elif calcularimc_visualizarimc == '3':
+            aguardar_volta()
+            break
 
 
 
@@ -403,7 +418,7 @@ def calcular_taxametabolicabasal():
 
             print('\nInformação: Taxa Metabólica Basal (TMB) é a quantidade mínima de calorias que seu corpo precisa para manter funções vitais (como respiração, circulação e temperatura) em repouso completo.')
 
-            calculartmb_visualizartmb = input('\nDeseja visualizar sua taxa metabólica basal (1), ou calcular outra qualquer (2)? ').strip()
+            calculartmb_visualizartmb = input('\nDeseja calcular sua taxa metabólica basal (1), calcular outra qualquer (2), ou voltar (3)? ').strip()
 
             if calculartmb_visualizartmb == '1':
 
@@ -474,9 +489,12 @@ def calcular_taxametabolicabasal():
                     except ValueError:
                         print('\n|Valor inválido! Digite números válidos.|')
                     break
+            elif calculartmb_visualizartmb == '3':
+                aguardar_volta()
+                break
 
             else:
-                print('\n|Opção inválida! Digite 1 ou 2.|')
+                print('\n|Opção inválida! Digite 1, 2 ou 3.|')
                 continue
 
     
@@ -497,7 +515,7 @@ def registrar_calorias():
     user = usuarios[usuario_logado]
 
     if 'TMB' not in user:
-        print('|Você precisa calcular sua taxa metabólica basal primeiro!|')
+        print('\n|Você precisa calcular sua taxa metabólica basal primeiro!|')
         calcular_taxametabolicabasal()
     
     if 'historico_dias' not in user:
@@ -529,51 +547,62 @@ def registrar_calorias():
 
             if opcao == '1':
                 print(f'\nTotal de calorias hoje: {user["calorias_hoje"]}/{TMB:.0f}')
-                cal = input('Quantas calorias você consumiu em sua última refeição? ')
+                cal = input('\nQuantas calorias você consumiu em sua última refeição? ')
                 cal = int(cal)
+                if cal <= 0:
+                    print('\nOps, este não é um valor válido. Caso queira registrar suas calorias, digite um valor válido.')
+                    aguardar_volta()
+                    continue
                 user['calorias_hoje'] += cal  #aqui, as calorias são acumuladas.
                 print(f'\nVocê consumiu {cal} calorias.')
                 print(f'Total hoje: {user["calorias_hoje"]}/{TMB:.0f}')
                 aguardar_volta()
 
             elif opcao == '2':
-                    if data_atual not in user['historico_dias']:
-                        user['historico_dias'][data_atual] = user['calorias_hoje']
-                        print(f'\nDia finalizado com sucesso! Total salvo: {user["calorias_hoje"]} calorias')
-                        user['calorias_hoje'] = 0  #zerando a contagem para o próximo dia
-                        
-                        diferenca = user['historico_dias'][data_atual] - TMB  # Usamos o valor salvo no histórico
-                        
-                        if diferenca > 0:
-                            print(f'\nVocê está {diferenca:.0f} calorias acima da sua TMB.')
-                        elif diferenca < 0:
-                            print(f'\nVocê está {abs(diferenca):.0f} calorias abaixo da sua TMB.')
-                        else:
-                            print('\nVocê consumiu exatamente sua TMB!')
-                        
-                        #dicas personalizadas de acordo com o objetivo do usuário.
-                        print('\n--- ANÁLISE DO SEU OBJETIVO ---')
-                        
-                        if objetivo == '1':  #ganho de massa
+                    es = input('\nDeseja finalizar o seu dia ? Não poderá mais adicionar calorias ao dia de hoje. (s/n):  ').strip().lower()
+                    if es == 's':
+                        if data_atual not in user['historico_dias']:
+                            user['historico_dias'][data_atual] = user['calorias_hoje']
+                            print(f'\nDia finalizado com sucesso! Total salvo: {user["calorias_hoje"]} calorias')
+                            user['calorias_hoje'] = 0  #zerando a contagem para o próximo dia
+                            
+                            diferenca = user['historico_dias'][data_atual] - TMB  # Usamos o valor salvo no histórico
+                            
                             if diferenca > 0:
-                                print('Ótimo! Superávit calórico ajuda no ganho de massa. MANTÉM! 😎')
+                                print(f'\nVocê está {diferenca:.0f} calorias acima da sua TMB.')
+                            elif diferenca < 0:
+                                print(f'\nVocê está {abs(diferenca):.0f} calorias abaixo da sua TMB.')
                             else:
-                                print('Atenção! Para ganhar massa, você precisa consumir mais que sua TMB.')
-                                
-                        elif objetivo == '2':  #perda de peso
-                            if diferenca < 0:
-                                print('Perfeito! Déficit calórico é essencial para perda de peso. Continua assim! 👊') 
-                            else:
-                                print('Cuidado! Para perder peso, você precisa consumir menos que sua TMB.')
-                                
-                        else:  
-                            if abs(diferenca) < (TMB * 0.1):  
-                                print('Excelente! Você está mantendo um bom equilíbrio. ✍')
-                            else:
-                                print('Para manutenção, tente ficar próximo da sua TMB.')
+                                print('\nVocê consumiu exatamente sua TMB!')
+                            
+                            #dicas personalizadas de acordo com o objetivo do usuário.
+                            print('\n--- ANÁLISE DO SEU OBJETIVO ---')
+                            
+                            if objetivo == '1':  #ganho de massa
+                                if diferenca > 0:
+                                    print('\nÓtimo! Superávit calórico ajuda no ganho de massa. MANTÉM! 😎')
+                                else:
+                                    print('\nAtenção! Para ganhar massa, você precisa consumir mais que sua TMB.')
+                                    
+                            elif objetivo == '2':  #perda de peso
+                                if diferenca < 0:
+                                    print('\nPerfeito! Déficit calórico é essencial para perda de peso. Continua assim! 👊') 
+                                else:
+                                    print('\nCuidado! Para perder peso, você precisa consumir menos que sua TMB.')
+                                    
+                            else:  
+                                if abs(diferenca) < (TMB * 0.1):  
+                                    print('\nExcelente! Você está mantendo um bom equilíbrio. ✍')
+                                else:
+                                    print('\nPara manutenção, tente ficar próximo da sua TMB.')
+                        else:
+                            print('\nVocê já finalizou o dia hoje!')
+                        aguardar_volta()
+                    elif es == 'n':
+                        aguardar_volta()
                     else:
-                        print('\nVocê já finalizou o dia hoje!')
-                    aguardar_volta()
+                        print('Digite (s) ou (n).')
+                        continue
             elif opcao == '3':
                 print('\n📅 HISTÓRICO DE CONSUMO:')
                 if not user['historico_dias']:
@@ -590,7 +619,7 @@ def registrar_calorias():
                 aguardar_volta()
 
         except:
-            print('Digite um valor válido ou "sair".')
+            print('\nDigite apenas números.')
 
 def menu_logado():
     """
