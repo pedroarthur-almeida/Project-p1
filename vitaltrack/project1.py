@@ -1,15 +1,27 @@
 usuarios = {} #criando um dicionário vazio para armazenar os dados. é como um banco de dados em formato de dicionário.
 usuario_logado = None #variavel que guarda quem está logado no momento.
 from datetime import datetime #importando biblioteca para utilizar datas.
+import os
+import platform
 
+def limpar_tela():
+
+        if platform.system() == 'Windows':
+            os.system('cls')
+
+        else:
+            os.system('clear')
+        
 def aguardar_volta():
     """Pausa a execução do programa até que o usuário tecle "enter".""" 
     input('\nPressione "Enter" para voltar...')
+    limpar_tela()
 
 def cadastro_de_usuario(): #criando a função de cadastro.
     """Cadastra o usuário e salva seus dados em um dicionário,
        em que a chave é o email.
     """
+    limpar_tela()
     global usuarios,usuario_logado #garantindo o acesso as variáveis globais, para poder adicionar os dados e etc.
     print('\n(Cadastro)')
 
@@ -70,11 +82,11 @@ def cadastro_de_usuario(): #criando a função de cadastro.
     # chamando a escolha do objetivo, antes de ir para o menu logado.
     print('\nAgora vamos definir o seu objetivo! 👇')
     escolher_objetivo()
-
+    
     print('\nUsuário Cadastrado com sucesso! ✔')
 
     print('Seja bem vindo ao VITALTRACK! 😉')
-
+    
     return True
 
 #Essa é a parte de escolha de objetivo, ocorre após o cadastro.
@@ -84,6 +96,7 @@ def escolher_objetivo():
     Usuário escolhe seu objetivo e fornece seus dados,
     armazena os dados do usuário em um outro dicionário "dados".
     """
+    limpar_tela()
     global usuario_logado, usuarios
 
     while True:
@@ -109,6 +122,7 @@ def escolher_objetivo():
             '1': 'GANHO DE MASSA',
             '2': 'PERDA DE PESO', 
             '3': 'MANUTENÇÃO DA SAÚDE' }
+        limpar_tela()
         print('\n-----------------------------')
         print(f'Você escolheu: {objetivos[objetivo]}')
         print('-----------------------------')
@@ -136,6 +150,7 @@ def escolher_objetivo():
                 print('\nPara que os cálculos de saúde e metabolismo sejam mais precisos, gostaríamos de saber sua identidade de gênero. Essa informação nos ajuda a oferecer resultados mais adequados para você.')
 
                 print('\nQual é a sua identidade de gênero?')
+            
                 print('\n1. Homem Cis')
                 print('2. Mulher Cis')
                 print('3. Homem Trans')
@@ -204,8 +219,9 @@ def escolher_objetivo():
                     idade = int(input('\nIdade: ').strip())
                     peso = float(input('Peso (kg): ').strip())
                     altura = float(input('Altura (m): ').strip())
-
+                    limpar_tela()
                     
+
                     if idade <= 0 or peso <= 0 or altura <= 0:
                         print('\n|Valores inválidos! Digite números positivos.|')
                         continue
@@ -217,7 +233,6 @@ def escolher_objetivo():
                     print('\n|Valores inválidos! Digite dados válidos para cada solicitação.|')
                     continue
 
-                
                 dados = {
                     'objetivo': objetivo,
                     'idade': idade,
@@ -233,7 +248,7 @@ def escolher_objetivo():
                 
                 usuarios[usuario_logado]['dados'] = dados
                 usuarios[usuario_logado]['objetivo'] = objetivo
-                return True
+                return True #vai retornar verdadeiro para a funçao que chamou essa, no caso, a de cadastro. assim a de cadastro entrará na condição de que foi concluido e retornará true para outra funçao que chamou ela, no caso, a menu principal.
 
 def fazer_login(): #criando a função de login.
     """
@@ -241,6 +256,7 @@ def fazer_login(): #criando a função de login.
     O usuário digita seu email e sua senha,
     caso estejam corretos, libera o acesso ao "menu logado".
     """
+    limpar_tela()
   
     global usuario_logado, usuarios #declarando ambos como globais, para que possam ser utilizados e modificados.
     print('\n-----Login-----')
@@ -266,6 +282,7 @@ def atualizar_usuario(): #criando a função atualizar (parte do crud)
     é permitido atualizar email, nome ou senha,
     os novos dados são salvos após mudanças.
     """
+    limpar_tela()
     global usuario_logado, usuarios
     if usuario_logado is None: #caso o usuario não esteja logado.
         print('|Faça login primeiro!|')
@@ -323,11 +340,108 @@ def atualizar_usuario(): #criando a função atualizar (parte do crud)
         else:
             print('|Opção inválida. Digite uma opção disponível (1-4)|')
 
+def atualizar_dados():
+    limpar_tela()
+    global usuario_logado, usuarios
+
+    if usuario_logado is None:
+        print('\n|Faça login primeiro!|')
+        aguardar_volta()
+        return
+    
+    user = usuarios[usuario_logado]
+    
+    if not user.get('dados'):
+        print('\n|Complete seus dados primeiro!|')
+        escolher_objetivo()
+        return
+    
+    while True:
+
+        try:
+
+            print('\nATUALIZAR DADOS PESSOAIS')
+            dados = user['dados']
+            objetivo_atual = user['objetivo']
+
+            objetivos = {
+            '1': 'GANHO DE MASSA',
+            '2': 'PERDA DE PESO', 
+            '3': 'MANUTENÇÃO DA SAÚDE' }
+
+            print(f'\nDados atuais:')
+            print(f'\n1. Idade: {dados["idade"]} anos')
+            print(f'2. Peso: {dados["peso"]} kg')
+            print(f'3. Altura: {dados["altura"]} m')
+            print(f'4. Objetivo: {objetivos[objetivo_atual]}')
+            print('5. Voltar')
+            
+            campo = input('\nQual dado deseja alterar? (1-5): ').strip()
+            
+            if campo == '1':
+                nova_idade = int(input('\nNova idade: '))
+                if 0 < nova_idade <= 100:
+                    dados['idade'] = nova_idade
+                    print('Idade atualizada com sucesso!')
+
+                else:
+                    print('Idade deve ser entre 1 e 100 anos')
+                aguardar_volta()
+                
+            elif campo == '2':
+                novo_peso = float(input('\nNovo peso (kg): '))
+                if 0 < novo_peso <= 350:
+                    dados['peso'] = novo_peso
+                    print('Peso atualizado com sucesso!')
+
+                else:
+                    print('Peso deve ser entre 0.1 e 350 kg')
+                aguardar_volta()
+                
+            elif campo == '3':
+                nova_altura = float(input('\nNova altura (m): '))
+                if 0 < nova_altura <= 2.5:
+                    dados['altura'] = nova_altura
+                    print('Altura atualizada com sucesso!')
+
+                else:
+                    print('Altura deve ser entre 0.1 e 2.5 metros')
+                aguardar_volta()
+                
+            elif campo == '4':
+                
+                print('\nObjetivos disponíveis:')
+                print('1. Ganho de massa')
+                print('2. Perda de peso')
+                print('3. Manutenção da saúde')
+                
+                novo_objetivo = input('\nNovo objetivo (1-3): ').strip()
+                if novo_objetivo in ['1', '2', '3']:
+                    user['objetivo'] = novo_objetivo
+                    print(f'\nObjetivo atualizado para: {objetivos[novo_objetivo]}')
+
+                else:
+                    print('\n|Opção inválida!|')
+                aguardar_volta()
+                
+            elif campo == '5':
+                aguardar_volta()
+                return
+
+            else:
+                print('Opção inválida! digite uma opção disponível.')
+                aguardar_volta()
+                
+        except ValueError:
+            print('\n|Valor inválido! Digite números válidos.|')
+            aguardar_volta()
+
 def deletar_usuario():
     """
     Deleta o usuário cadastrado,
     apaga todos os dados inseridos e salvos.
     """
+    limpar_tela()
     global usuario_logado,usuarios
 
     if usuario_logado is None:
@@ -348,10 +462,11 @@ def menu_principal():
     é exibido logo após iniciar o programa,
     abre ao usuário as opções de cadastro e login.
     """
+    
     global usuario_logado #declarando novamente como global
  
     while True:
-        
+        limpar_tela()
         print('<<<VITALTRACK>>>')
         
         print('\n(MENU INICIAL)\n') 
@@ -380,6 +495,7 @@ def calcular_imc():
     ou pode optar por calcular outro IMC qualquer,
     a função retorna o status após calcular o valor do imc, em ambos os casos.
     """
+    limpar_tela()
     global usuarios,usuario_logado
 
     if usuario_logado is None:
@@ -487,6 +603,7 @@ def calcular_taxametabolicabasal():
     Calcula a tmb (Taxa metabólica basal) do usuário,
     o usuário pode escolher entre calcular sua TBM (com seus dados salvos),
     ou pode optar por calcular outra qualquer"""
+    limpar_tela()
     global usuarios, usuario_logado
 
     #verifica se o usuário está logado.
@@ -683,6 +800,7 @@ def registrar_calorias():
     usuário tem a opção de "finalizar dia",
     após isso, recebe um feedback e pode verificar o histórico de consumo de acordo com o dia.
     """
+    limpar_tela()
     global usuarios, usuario_logado
 
     if usuario_logado is None:
@@ -818,10 +936,11 @@ def menu_logado():
     Menu onde o usuário tem acesso as funcionalidades do programa,
     só é possível ter acesso a esse menu após o login.
     """
+    
     global usuario_logado, usuarios 
 
     while True:
-        
+        limpar_tela()
         print('\n(VITALTRACK)')
         
         print('\n(MENU PRINCIPAL)')
@@ -838,6 +957,7 @@ def menu_logado():
         opcao = input('\nEscolha uma opção: ').strip()
         
         if opcao == '1':
+            limpar_tela()
             print('\n(SEU PERFIL)')
             print(f'\nNome: {usuarios[usuario_logado]["nome"]}')
             print(f'Email: {usuario_logado}')
@@ -864,8 +984,7 @@ def menu_logado():
 
         elif opcao == '6':
             print('\nAtualizando dados...')
-            escolher_objetivo()
-            aguardar_volta()
+            atualizar_dados()
 
         elif opcao == '7':
             usuario_logado = None
