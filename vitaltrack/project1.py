@@ -1,6 +1,6 @@
-usuarios = {} #criando um dicionário vazio para armazenar os dados. é como um banco de dados em formato de dicionário.
-usuario_logado = None #variavel que guarda quem está logado no momento.
-from datetime import datetime #importando biblioteca para utilizar datas.
+usuarios = {} 
+usuario_logado = None 
+from datetime import datetime 
 import json
 import os
 import platform
@@ -33,28 +33,28 @@ def aguardar_volta():
     input('\nPressione "Enter" para voltar...')
     
 
-def cadastro_de_usuario(): #criando a função de cadastro.
+def cadastro_de_usuario(): 
     """Cadastra o usuário e salva seus dados em um dicionário,
        em que a chave é o email.
     """
     limpar_tela()
-    global usuarios,usuario_logado #garantindo o acesso as variáveis globais, para poder adicionar os dados e etc.
+    global usuarios,usuario_logado 
     print('\n(Cadastro)')
 
     while True:
         email = input('\nDigite o seu email: ').strip().lower() #.strip() para ignorar espaços e .lower() para manter as letras minusculas.
-        #verificando se o email está nos padrões corretos
+        
         if email in usuarios:
             print('|Este email já foi cadastrado!|')
             print('|Insira um email ainda não cadastrado.|')
             aguardar_volta()
-            continue #para pedir o email novamente caso ocorra o erro.
+            continue 
         
         elif '@' not in email or '.com' not in email:
             print('\n|O email precisa estar em um formato válido.|')
             print('|O email precisa ter ".com" e "@".|')
             aguardar_volta()
-            continue #para pedir o email novamente.
+            continue 
 
         dominios_validos = ['gmail.com', 'outlook.com', 'hotmail.com', 'yahoo.com', 'icloud.com'] #criando essa lista pra salvar os dominios validos.
         
@@ -67,24 +67,23 @@ def cadastro_de_usuario(): #criando a função de cadastro.
     while True:
         senha = input('Digite sua senha(mínimo 6 caracteres): ')
 
-        #verificando se a senha está nos padrões corretos.
         if len(senha) < 6:
             print('\n|Senha muito curta, a sua senha precisa ter, no mínimo, 6 caracteres.|')
             aguardar_volta()
-            continue #para continuar pedindo a senha caso ocorra o erro
+            continue 
             
         confirmaçao_de_senha = input('\nConfirme sua senha: ').strip()
 
         if senha != confirmaçao_de_senha:
             print('\n|As senhas não coinscidem.|')
             aguardar_volta()
-            continue #para continuar pedindo a senha caso ocorra o erro
+            continue 
         else:
             break
     
     nome = input('\nDigite seu nome: (Será seu nome de usuário) ').strip()
     
-     # Criando o usuário
+     
     usuarios[email] = {
         'senha': senha,
         'nome': nome,
@@ -95,7 +94,6 @@ def cadastro_de_usuario(): #criando a função de cadastro.
     }
 
     usuario_logado = email
-    # chamando a escolha do objetivo, antes de ir para o menu logado.
     print('\nAgora vamos definir o seu objetivo! 👇')
     escolher_objetivo()
     
@@ -105,7 +103,6 @@ def cadastro_de_usuario(): #criando a função de cadastro.
     salvar_dadosjson()
     return True
 
-#Essa é a parte de escolha de objetivo, ocorre após o cadastro.
 def escolher_objetivo():
     """
     Escolha de objetivo (parte do cadastro),
@@ -133,7 +130,6 @@ def escolher_objetivo():
             aguardar_volta()
             continue 
 
-        # Mensagem personalizada de acordo com o objetivo que o usuário escolher.
         objetivos = {
             '1': 'GANHO DE MASSA',
             '2': 'PERDA DE PESO', 
@@ -215,9 +211,6 @@ def escolher_objetivo():
                                     aguardar_volta()
                                     continue
 
-                    sexo = 'm' if sexo_escolha == '3' else 'f'
-                    sexo_biologico = 'f' if sexo_escolha == '3' else 'm'
-
                 except ValueError:
                     print('\n|Valores inválidos! Digite números válidos.|')        
 
@@ -266,12 +259,12 @@ def fazer_login(): #criando a função de login.
     caso estejam corretos, libera o acesso ao "menu logado".
     """
     limpar_tela()
-    global usuario_logado, usuarios #declarando ambos como globais, para que possam ser utilizados e modificados.
+    global usuario_logado, usuarios 
     print('\n(Login)')
     email = input('\nDigite o seu email cadastrado: ').lower().strip()
     senha = input('Digite sua senha: ')
 
-  #vamos verificar se o cadastro existe.
+  
     if email not in usuarios:
         print('|Email não cadastrado.|')
         return False
@@ -281,12 +274,12 @@ def fazer_login(): #criando a função de login.
         return False
     
     else:
-        usuario_logado = email #chave do dicionário principal.
+        usuario_logado = email 
         print(f'Bem-vindo(a), {usuarios[email]["nome"]}!')
         limpar_tela()
         return True
 
-def atualizar_usuario(): #criando a função atualizar (parte do crud)
+def atualizar_usuario(): 
     """
     Atualiza os dados do usuário,
     o usuário escolhe o que deseja atualizar,
@@ -294,7 +287,7 @@ def atualizar_usuario(): #criando a função atualizar (parte do crud)
     os novos dados são salvos após mudanças.
     """
     global usuario_logado, usuarios
-    if usuario_logado is None: #caso o usuario não esteja logado.
+    if usuario_logado is None: 
         print('|Faça login primeiro!|')
         return
     
@@ -340,7 +333,7 @@ def atualizar_usuario(): #criando a função atualizar (parte do crud)
                 print('|Email já cadastrado.|') 
 
             else:
-                # Transferir todos os dados para o novo email digitado pelo usuário
+                
                 usuarios[novo_email] = usuarios[usuario_logado]
                 del usuarios[usuario_logado]
                 usuario_logado = novo_email
@@ -480,7 +473,7 @@ def menu_principal():
     abre ao usuário as opções de cadastro e login.
     """
     limpar_tela()
-    global usuario_logado #declarando novamente como global
+    global usuario_logado 
  
     while True:
         print('<<<VITALTRACK>>>')
@@ -541,7 +534,6 @@ def calcular_imc():
             print(f'------ SEU IMC: {imc:.2f} -------')
             print('-----------------------------')
 
-        # Classificação de acordo com o IMC do usuário
             if imc < 18.5:
                 status = 'Abaixo do peso'
             elif 18.5 <= imc < 25:
@@ -553,24 +545,23 @@ def calcular_imc():
     
             print(f'\nStatus: {status}')
 
-            # Dicas conforme objetivo do usuário
+            
             objetivo = user['objetivo']
-            if objetivo == '1':  # Ganho de massa
+            if objetivo == '1':  
                     print('Dica: Aumente a ingestão de proteínas e calorias saudáveis')
                     print('Além disso, Foque em treinos de força e superávit calórico')
                     print('Consuma alimentos com alta quantidade de proteínas e carboidratos.')
-            elif objetivo == '2':  # Perda de peso
+            elif objetivo == '2':  
                     print('Dica: Combine dieta balanceada com exercícios aeróbicos')
                     print('Utilize alimentos com baixa quantidade de carboidratos e alta quantidade de proteínas.')
-            else:  # Manutenção
+            else:  
                     print('Dica: Mantenha hábitos equilibrados e pratique atividades físicas')
                     print('Existem diversos tipos de atividades físicas que podem te auxiliar.')
                     print('Até mesmo uma caminhada de 40/50 minutos, acelera seu metabolismo, e melhora sua saúde.')
     
             aguardar_volta()
             break
-    #função auxiliar para incorporar em outras funções e voltar ao menu.
-
+    
         elif calcularimc_visualizarimc == '2':
 
             while True:
@@ -616,7 +607,6 @@ def calcular_imc():
         elif calcularimc_visualizarimc == '3':
             break
 
-#função para calcular a taxa metabólica basal.
 def calcular_taxametabolicabasal():
     """
     Calcula a tmb (Taxa metabólica basal) do usuário,
@@ -624,10 +614,9 @@ def calcular_taxametabolicabasal():
     ou pode optar por calcular outra qualquer"""
     global usuarios, usuario_logado
 
-    #verifica se o usuário está logado.
     if usuario_logado is None:
         print('|Faça login primeiro!|')
-        aguardar_volta() #função que retorna ao menu. 
+        aguardar_volta()  
         return
 
     user = usuarios[usuario_logado]
@@ -639,33 +628,47 @@ def calcular_taxametabolicabasal():
 
     while True:
             
-            print('\n-----TAXA METABÓLICA BASAL (TMB)-----')
+        print('\n-----TAXA METABÓLICA BASAL (TMB)-----')
 
-            print('\nInformação: Taxa Metabólica Basal (TMB) é a quantidade mínima de calorias que seu corpo precisa para manter funções vitais (como respiração, circulação e temperatura) em repouso completo.')
+        print('\nInformação: Taxa Metabólica Basal (TMB) é a quantidade mínima de calorias que seu corpo precisa para manter funções vitais (como respiração, circulação e temperatura) em repouso completo.')
 
-            calculartmb_visualizartmb = input('\nDeseja calcular sua taxa metabólica basal (1), calcular outra qualquer (2), ou voltar (3)? ').strip()
+        calculartmb_visualizartmb = input('\nDeseja calcular sua taxa metabólica basal (1), calcular outra qualquer (2), ou voltar (3)? ').strip()
 
-            if calculartmb_visualizartmb == '1':
+        if calculartmb_visualizartmb == '1':
 
-                #calculando a TMB com os dados do usuário.
+            dados = user['dados']
+            altura = dados['altura']
+            peso = dados['peso']
+            idade = dados['idade']
+            sexo = dados['sexo']
+            altura_cm = altura * 100  
 
-                dados = user['dados']
-                altura = dados['altura']
-                peso = dados['peso']
-                idade = dados['idade']
-                sexo = dados['sexo']
-                altura_cm = altura * 100  #transforma altura de metros para cm, pois é necessário que a altura esteja em cm para realizar o cálculo da TMB.
+            if 'sexo_escolha' in dados and dados['sexo_escolha'] in ['3', '4']:  
 
-                
-                #para pessoas trans.
-                if 'sexo_escolha' in dados and dados['sexo_escolha'] in ['3', '4']:  
+                if dados.get('em_transicao'):
 
-                    if dados.get('em_transicao') and dados.get('tempo_transicao', 0) >= 12:
-                        #usa sexo de identidade após 12+ meses de TH
-                        sexo = dados['sexo']
+                    if dados.get('tempo_transicao', 0) >= 12:
+                        #uso de hormônios > 12 meses -> usa sexo identidade
+                        sexo_uso = dados['sexo']  #sexo de identidade
 
-                    elif dados.get('em_transicao'):
-                        #calcula média se estiver em TH há menos de 12 meses
+                        if sexo_uso == 'm':
+                            TMB = (10 * peso) + (6.25 * altura_cm) - (5 * idade) + 5
+                        else:
+                            TMB = (10 * peso) + (6.25 * altura_cm) - (5 * idade) - 161
+
+                        usuarios[usuario_logado]['TMB'] = TMB
+                        salvar_dadosjson()
+
+                        print('\n-----------------------------')
+                        print(f'-----Sua TMB é :({TMB:.2f})----')
+                        print('-----------------------------')
+                        print('\nO cálculo foi feito com base no seu sexo de identidade, pois você informou que está em transição hormonal há mais de 12 meses.')
+                        print('Após esse tempo, a terapia hormonal tende a modificar significativamente o metabolismo, e por isso essa abordagem é mais precisa.')
+                        aguardar_volta()
+                        return True
+
+                    elif dados.get('tempo_transicao', 0) < 12:
+
                         tmb_m = (10 * peso) + (6.25 * altura_cm) - (5 * idade) + 5
                         tmb_f = (10 * peso) + (6.25 * altura_cm) - (5 * idade) - 161
                         TMB = (tmb_m + tmb_f) / 2
@@ -676,141 +679,166 @@ def calcular_taxametabolicabasal():
                         aguardar_volta()
                         continue
 
-                if sexo == 'm':
+                else:
+                    #não usa hormônios -> usa sexo biológico
+                    sexo_uso = dados.get('sexo_biologico', dados['sexo'])  #se por acaso sexo_biologico for None, usa sexo identidade
+
+                if sexo_uso == 'm':
                     TMB = (10 * peso) + (6.25 * altura_cm) - (5 * idade) + 5
                     
                 else:
                     TMB = (10 * peso) + (6.25 * altura_cm) - (5 * idade) - 161
-                
+
                 usuarios[usuario_logado]['TMB'] = TMB
                 salvar_dadosjson()
                 
                 print('\n-----------------------------')
                 print(f'-----Sua TMB é :({TMB:.2f})----')
                 print('-----------------------------')
+                print('\nO cálculo foi feito com base no seu sexo biológico, pois você indicou que não faz uso de terapia hormonal.')
+                print('Isso é importante porque, sem o uso de hormônios, seu metabolismo segue padrões fisiológicos relacionados ao sexo biológico.')
+                aguardar_volta()
+                return True
+        
+            else:
+
+                sexo_uso = dados.get('sexo', '').lower()
+
+                if sexo_uso == 'm':
+                    TMB = (10 * peso) + (6.25 * altura_cm) - (5 * idade) + 5
+                else:
+                    TMB = (10 * peso) + (6.25 * altura_cm) - (5 * idade) - 161
+
+                usuarios[usuario_logado]['TMB'] = TMB
+                salvar_dadosjson()
+
+                print('\n-----------------------------')
+                print(f'-----Sua TMB é :({TMB:.2f})----')
+                print('-----------------------------')
+                print('\nO cálculo foi feito com base no sexo informado no seu cadastro.')
                 aguardar_volta()
                 return True
 
-            elif calculartmb_visualizartmb == '2':
+        elif calculartmb_visualizartmb == '2':
 
-                while True:
+            while True:
 
-                    try:
-                        pesoex = float(input('\nDigite o peso (em kg): '))
-                        if pesoex > 350:
-                            print('Digite um peso válido.')
-                            continue
-                        
-
-                        alturaex = float(input('\nDigite a altura (em cm): '))
-                        if alturaex > 220:
-                            print('\nDigite uma altura válida, em centímetros.')
-                            continue
-                        
-            
-                        idadeex = int(input('\nDigite a idade: '))
-                        if idadeex > 100:
-                            print('\nDigite uma idade válida.')
-                            continue
+                try:
+                    pesoex = float(input('\nDigite o peso (em kg): '))
+                    if pesoex > 350:
+                        print('Digite um peso válido.')
+                        continue
                     
-                        print('\nQual é a sua identidade de gênero?')
-                        print('\n1. Homem Cis')
-                        print('2. Mulher Cis')
-                        print('3. Homem Trans')
-                        print('4. Mulher Trans')
-            
-                        sexo_opcao = input('\nEscolha a sua opção: (1-4): ').strip()
-            
-                        if sexo_opcao not in ['1', '2', '3', '4']:
-                            print('\n|Opção inválida! Escolha 1-4|')
-                            continue
-                        
-                        em_transicao = False
-                        tempo_transicao = 0
-                        
-                        if sexo_opcao in ['3', '4']:
-                            resposta = input('\nVocê já fez uso de terapia hormonal? (s/n): ').lower().strip()
-                            if resposta not in ['s','n']:
-                                print('\nDigite (s) ou (n).')
-                                aguardar_volta()
-                                continue 
-                            em_transicao = resposta == 's'
-                        
-                            if em_transicao:
 
-                                while True:
-
-                                    try:
-
-                                        tempo_transicao = int(input('\nHá quantos meses você faz uso? '))
-                                        if tempo_transicao < 0:
-                                            print('\n|Digite um valor válido.|')
-                                            continue
-                                        break
-
-                                    except ValueError:
-                                        print('\n|Digite um número válido.|')
-                        
-                        tmb_m = (10 * pesoex) + (6.25 * alturaex) - (5 * idadeex) + 5
-                        tmb_f = (10 * pesoex) + (6.25 * alturaex) - (5 * idadeex) - 161
+                    alturaex = float(input('\nDigite a altura (em cm): '))
+                    if alturaex > 220:
+                        print('\nDigite uma altura válida, em centímetros.')
+                        continue
                     
-                        if sexo_opcao == '1':  
+        
+                    idadeex = int(input('\nDigite a idade: '))
+                    if idadeex > 100:
+                        print('\nDigite uma idade válida.')
+                        continue
+                
+                    print('\nQual é a sua identidade de gênero?')
+                    print('\n1. Homem Cis')
+                    print('2. Mulher Cis')
+                    print('3. Homem Trans')
+                    print('4. Mulher Trans')
+        
+                    sexo_opcao = input('\nEscolha a sua opção: (1-4): ').strip()
+        
+                    if sexo_opcao not in ['1', '2', '3', '4']:
+                        print('\n|Opção inválida! Escolha 1-4|')
+                        continue
+                    
+                    em_transicao = False
+                    tempo_transicao = 0
+                    
+                    if sexo_opcao in ['3', '4']:
+                        resposta = input('\nVocê já fez uso de terapia hormonal? (s/n): ').lower().strip()
+                        if resposta not in ['s','n']:
+                            print('\nDigite (s) ou (n).')
+                            aguardar_volta()
+                            continue 
+                        em_transicao = resposta == 's'
+                    
+                        if em_transicao:
 
-                            TMB = tmb_m
-                            print(f'\nSua TMB é: {TMB:.2f}')
-                            
-                        elif sexo_opcao == '2':  
+                            while True:
 
-                            TMB = tmb_f
-                            print(f'\nSua TMB é: {TMB:.2f}')
-                            
-                        elif sexo_opcao == '3':  
+                                try:
 
-                            if em_transicao and tempo_transicao >= 12:
-                                TMB = tmb_m  
-                                print(f'\nSua TMB é: {TMB:.2f}')
-                                print('✅ Cálculo feito com base no seu sexo atual, conforme sua identidade de gênero.')
+                                    tempo_transicao = int(input('\nHá quantos meses você faz uso? '))
+                                    if tempo_transicao < 0:
+                                        print('\n|Digite um valor válido.|')
+                                        continue
+                                    break
 
-                            elif em_transicao:
-                                TMB = (tmb_m + tmb_f) / 2  
-                                print(f'\nSua TMB é: {TMB:.2f}')
-                                print('Como sua transição é recente, usamos uma média para tornar o cálculo mais preciso.')
+                                except ValueError:
+                                    print('\n|Digite um número válido.|')
+                    
+                    tmb_m = (10 * pesoex) + (6.25 * alturaex) - (5 * idadeex) + 5
+                    tmb_f = (10 * pesoex) + (6.25 * alturaex) - (5 * idadeex) - 161
+                
+                    if sexo_opcao == '1':  
 
-                            else:
-                                TMB = tmb_f  
-                                print(f'\nSua TMB é: {TMB:.2f}')
-                                print('Como não há uso de hormônios, o cálculo foi feito com base no sexo biológico.')
-                                
-                        elif sexo_opcao == '4':  
-
-                            if em_transicao and tempo_transicao >= 12:
-                                TMB = tmb_f  
-                                print(f'\nSua TMB é: {TMB:.2f}')
-                                print('✅ Cálculo feito com base no seu sexo atual, conforme sua identidade de gênero.')
-
-                            elif em_transicao:
-                                TMB = (tmb_m + tmb_f) / 2  
-                                print(f'\nSua TMB é: {TMB:.2f}')
-                                print('Como sua transição é recente, usamos uma média para tornar o cálculo mais preciso.')
-
-                            else:
-                                TMB = tmb_m  
-                                print(f'\nSua TMB é: {TMB:.2f}')
-                                print('Como não há uso de hormônios, o cálculo foi feito com base no sexo biológico.')
+                        TMB = tmb_m
+                        print(f'\nSua TMB é: {TMB:.2f}')
                         
-                        aguardar_volta()
-                        return True
+                    elif sexo_opcao == '2':  
+
+                        TMB = tmb_f
+                        print(f'\nSua TMB é: {TMB:.2f}')
                         
-                    except ValueError:
-                        print('\n|Valor inválido! Digite números válidos.|')
-                    break
+                    elif sexo_opcao == '3':  
 
-            elif calculartmb_visualizartmb == '3':
-                return False
+                        if em_transicao and tempo_transicao >= 12:
+                            TMB = tmb_m  
+                            print(f'\nSua TMB é: {TMB:.2f}')
+                            print('✅ Cálculo feito com base no seu sexo atual, conforme sua identidade de gênero.')
 
-            else:
-                print('\n|Opção inválida! Digite 1, 2 ou 3.|')
-                continue
+                        elif em_transicao:
+                            TMB = (tmb_m + tmb_f) / 2  
+                            print(f'\nSua TMB é: {TMB:.2f}')
+                            print('Como sua transição é recente, usamos uma média para tornar o cálculo mais preciso.')
+
+                        else:
+                            TMB = tmb_f  
+                            print(f'\nSua TMB é: {TMB:.2f}')
+                            print('Como não há uso de hormônios, o cálculo foi feito com base no sexo biológico.')
+                            
+                    elif sexo_opcao == '4':  
+
+                        if em_transicao and tempo_transicao >= 12:
+                            TMB = tmb_f  
+                            print(f'\nSua TMB é: {TMB:.2f}')
+                            print('✅ Cálculo feito com base no seu sexo atual, conforme sua identidade de gênero.')
+
+                        elif em_transicao:
+                            TMB = (tmb_m + tmb_f) / 2  
+                            print(f'\nSua TMB é: {TMB:.2f}')
+                            print('Como sua transição é recente, usamos uma média para tornar o cálculo mais preciso.')
+
+                        else:
+                            TMB = tmb_m  
+                            print(f'\nSua TMB é: {TMB:.2f}')
+                            print('Como não há uso de hormônios, o cálculo foi feito com base no sexo biológico.')
+                    
+                    aguardar_volta()
+                    return True
+                    
+                except ValueError:
+                    print('\n|Valor inválido! Digite números válidos.|')
+                break
+
+        elif calculartmb_visualizartmb == '3':
+            return False
+
+        else:
+            print('\n|Opção inválida! Digite 1, 2 ou 3.|')
+            continue
 
 def registrar_calorias():
     """
@@ -823,7 +851,7 @@ def registrar_calorias():
 
     if usuario_logado is None:
         print('|Faça login primeiro!|')
-        aguardar_volta() #função que retorna ao menu. 
+        aguardar_volta()  
         return
     
     user = usuarios[usuario_logado]
@@ -836,7 +864,7 @@ def registrar_calorias():
     if 'historico_dias' not in user:
         user['historico_dias'] = {}
 
-    data_atual = datetime.now().strftime('%d/%m/%Y') #pegando a data atual.
+    data_atual = datetime.now().strftime('%d/%m/%Y') 
 
     TMB = user['TMB']
     objetivo = user['objetivo']
@@ -986,7 +1014,19 @@ def menu_logado():
                 print(f'Idade: {dados["idade"]} anos')
                 print(f'Peso: {dados["peso"]} kg')
                 print(f'Altura: {dados["altura"]} m')
-                print(f'Sexo: {"Masculino" if dados["sexo"] == "m" else "Feminino"}')
+                
+                sexo_escolha = dados.get('sexo_escolha', None)
+
+                if sexo_escolha in ['1', '3']:  # homem cis ou homem trans
+                    sexo_exibicao = 'Masculino'
+
+                elif sexo_escolha in ['2', '4']:  # mulher cis ou mulher trans
+                    sexo_exibicao = 'Feminino'
+
+                else:
+                    sexo_exibicao = 'Não informado'
+
+                print(f'Sexo: {sexo_exibicao}')
             aguardar_volta()
 
         elif opcao == '2':
