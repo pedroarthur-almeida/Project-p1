@@ -1,0 +1,20 @@
+{
+    "pedrinho@outlook.com": {
+        "senha": "123456",
+        "nome": "Pedro Arthur",
+        "objetivo": "2",
+        "dados": {
+            "objetivo": "2",
+            "idade": 21,
+            "peso": 75.0,
+            "altura": 1.72,
+            "sexo": "m",
+            "sexo_biologico": "f",
+            "em_transicao": true,
+            "tempo_transicao": 6,
+            "sexo_escolha": "3"
+        },
+        "calorias_hoje": 0,
+        "historico_dias": {}
+    }
+}

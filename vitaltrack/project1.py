@@ -1,19 +1,30 @@
 usuarios = {} #criando um dicionário vazio para armazenar os dados. é como um banco de dados em formato de dicionário.
 usuario_logado = None #variavel que guarda quem está logado no momento.
 from datetime import datetime #importando biblioteca para utilizar datas.
+import json
 import os
 import platform
+
+def salvar_dadosjson():
+    with open('usuarios.json', 'w') as arquivo:
+        json.dump(usuarios, arquivo, indent=4)
+
+def carregar_dadosjson():
+    global usuarios
+    try:
+        with open('usuarios.json', 'r') as arquivo:
+            usuarios = json.load(arquivo)
+    except FileNotFoundError:
+        return {}
 
 def limpar_tela():
 
     try:
-
         if platform.system() == 'Windows':
             os.system('cls')
 
         else:
             os.system('clear')
-
     except:
         print('\n' * 100)
    
@@ -91,6 +102,7 @@ def cadastro_de_usuario(): #criando a função de cadastro.
     print('\nUsuário Cadastrado com sucesso! ✔')
 
     print('Seja bem vindo ao VITALTRACK! 😉')
+    salvar_dadosjson()
     return True
 
 #Essa é a parte de escolha de objetivo, ocorre após o cadastro.
@@ -211,6 +223,7 @@ def escolher_objetivo():
 
                 while True:
                     try:
+                        print('\nPreciso de mais alguns de seus dados.')
                         idade = int(input('\nIdade: ').strip())
                         peso = float(input('Peso (kg): ').strip())
                         altura = float(input('Altura (m): ').strip())
@@ -252,10 +265,10 @@ def fazer_login(): #criando a função de login.
     O usuário digita seu email e sua senha,
     caso estejam corretos, libera o acesso ao "menu logado".
     """
-  
+    limpar_tela()
     global usuario_logado, usuarios #declarando ambos como globais, para que possam ser utilizados e modificados.
-    print('\n-----Login-----')
-    email = input('Digite o seu email cadastrado: ').lower().strip()
+    print('\n(Login)')
+    email = input('\nDigite o seu email cadastrado: ').lower().strip()
     senha = input('Digite sua senha: ')
 
   #vamos verificar se o cadastro existe.
@@ -270,7 +283,7 @@ def fazer_login(): #criando a função de login.
     else:
         usuario_logado = email #chave do dicionário principal.
         print(f'Bem-vindo(a), {usuarios[email]["nome"]}!')
-        menu_logado()
+        limpar_tela()
         return True
 
 def atualizar_usuario(): #criando a função atualizar (parte do crud)
@@ -287,31 +300,33 @@ def atualizar_usuario(): #criando a função atualizar (parte do crud)
     
     while True:
 
-        print('\n-----ATUALIZAR PERFIL-----')
-        print(f'1.Alterar nome. (nome atual:{usuarios[usuario_logado]["nome"]})')
+        print('\n(ATUALIZAR PERFIL)')
+        print(f'\n1.Alterar nome. (nome atual:{usuarios[usuario_logado]["nome"]})')
         print('2.Alterar senha.')
         print(f'3.Alterar EMAIL. (email atual:{usuario_logado})')
         print('4.Voltar ao MENU anterior.')
 
-        opçao3 = input('O que deseja atualizar? (1-4): ')
+        opçao3 = input('\nO que deseja atualizar? (1-4): ')
 
         if opçao3 == '1':
             novo_nome = input(f'Digite o novo nome (atual: {usuarios[usuario_logado]["nome"]}):').strip()
             if novo_nome:
                 usuarios[usuario_logado]["nome"] = novo_nome
+                salvar_dadosjson()
                 print('Nome atualizado com sucesso!')
 
         elif opçao3 == '2':
             nova_senha = input('Digite uma nova senha (mínimo 6 caracteres): ')
             if len(nova_senha) >=6:
                 usuarios[usuario_logado]["senha"] = nova_senha
+                salvar_dadosjson()
                 print('Senha atualizada com sucesso!')
 
             else:
                 print('|Senha muito curta.|') 
 
         elif opçao3 == '3':
-            novo_email = input('Digite seu novo emai (atual: {usuario_logado}): ').strip().lower()  
+            novo_email = input(f'Digite seu novo email (atual: {usuario_logado}): ').strip().lower()  
             if not novo_email:
                 continue
 
@@ -329,6 +344,7 @@ def atualizar_usuario(): #criando a função atualizar (parte do crud)
                 usuarios[novo_email] = usuarios[usuario_logado]
                 del usuarios[usuario_logado]
                 usuario_logado = novo_email
+                salvar_dadosjson()
                 print("Email atualizado com sucesso!") 
 
         elif opçao3 == '4':
@@ -378,6 +394,7 @@ def atualizar_dados():
                 nova_idade = int(input('\nNova idade: '))
                 if 0 < nova_idade <= 100:
                     dados['idade'] = nova_idade
+                    salvar_dadosjson()
                     print('Idade atualizada com sucesso!')
 
                 else:
@@ -388,6 +405,7 @@ def atualizar_dados():
                 novo_peso = float(input('\nNovo peso (kg): '))
                 if 0 < novo_peso <= 350:
                     dados['peso'] = novo_peso
+                    salvar_dadosjson()
                     print('Peso atualizado com sucesso!')
 
                 else:
@@ -398,6 +416,7 @@ def atualizar_dados():
                 nova_altura = float(input('\nNova altura (m): '))
                 if 0 < nova_altura <= 2.5:
                     dados['altura'] = nova_altura
+                    salvar_dadosjson()
                     print('Altura atualizada com sucesso!')
 
                 else:
@@ -414,6 +433,7 @@ def atualizar_dados():
                 novo_objetivo = input('\nNovo objetivo (1-3): ').strip()
                 if novo_objetivo in ['1', '2', '3']:
                     user['objetivo'] = novo_objetivo
+                    salvar_dadosjson()
                     print(f'\nObjetivo atualizado para: {objetivos[novo_objetivo]}')
 
                 else:
@@ -445,10 +465,13 @@ def deletar_usuario():
 
     if confirmaçao == 's':
         del usuarios[usuario_logado]
+        salvar_dadosjson()
         usuario_logado = None
         print('Conta deletada com sucesso. Até logo...')
         return True
     return False
+
+carregar_dadosjson()
 
 def menu_principal():
     """
@@ -472,12 +495,12 @@ def menu_principal():
         if opçao1 == '1':
             if cadastro_de_usuario():
                 menu_logado()
-                break  
+                  
 
         elif opçao1 == '2':
             if fazer_login():
                 menu_logado()
-                break
+                
 
         elif opçao1 == '3':
             print('Saindo... até logo! 👋')
@@ -660,6 +683,7 @@ def calcular_taxametabolicabasal():
                     TMB = (10 * peso) + (6.25 * altura_cm) - (5 * idade) - 161
                 
                 usuarios[usuario_logado]['TMB'] = TMB
+                salvar_dadosjson()
                 
                 print('\n-----------------------------')
                 print(f'-----Sua TMB é :({TMB:.2f})----')
@@ -847,6 +871,7 @@ def registrar_calorias():
                     continue
 
                 user['calorias_hoje'] += cal  #aqui, as calorias são acumuladas.
+                salvar_dadosjson()
                 print(f'\nVocê consumiu {cal} calorias.')
                 print(f'Total hoje: {user["calorias_hoje"]}/{TMB:.0f}')
                 aguardar_volta()
@@ -857,6 +882,7 @@ def registrar_calorias():
                     if es == 's':
                         if data_atual not in user['historico_dias']:
                             user['historico_dias'][data_atual] = user['calorias_hoje']
+                            salvar_dadosjson()
                             print(f'\nDia finalizado com sucesso! Total salvo: {user["calorias_hoje"]} calorias')
                             user['calorias_hoje'] = 0  #zerando a contagem para o próximo dia
                             
@@ -987,8 +1013,8 @@ def menu_logado():
         
         elif opcao == '8':
             if deletar_usuario():
-                break
-        
+                aguardar_volta()
+                return
         else:
             print('Opção inválida! Digite um número de 1 a 8.')
 
