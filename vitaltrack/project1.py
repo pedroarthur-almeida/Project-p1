@@ -6,16 +6,21 @@ import platform
 
 def limpar_tela():
 
+    try:
+
         if platform.system() == 'Windows':
             os.system('cls')
 
         else:
             os.system('clear')
-        
+
+    except:
+        print('\n' * 100)
+   
 def aguardar_volta():
     """Pausa a execução do programa até que o usuário tecle "enter".""" 
     input('\nPressione "Enter" para voltar...')
-    limpar_tela()
+    
 
 def cadastro_de_usuario(): #criando a função de cadastro.
     """Cadastra o usuário e salva seus dados em um dicionário,
@@ -86,7 +91,6 @@ def cadastro_de_usuario(): #criando a função de cadastro.
     print('\nUsuário Cadastrado com sucesso! ✔')
 
     print('Seja bem vindo ao VITALTRACK! 😉')
-    
     return True
 
 #Essa é a parte de escolha de objetivo, ocorre após o cadastro.
@@ -122,7 +126,7 @@ def escolher_objetivo():
             '1': 'GANHO DE MASSA',
             '2': 'PERDA DE PESO', 
             '3': 'MANUTENÇÃO DA SAÚDE' }
-        limpar_tela()
+        
         print('\n-----------------------------')
         print(f'Você escolheu: {objetivos[objetivo]}')
         print('-----------------------------')
@@ -143,112 +147,104 @@ def escolher_objetivo():
 
         print('\nBeleza! Agora vamos coletar algumas informações sobre você.')
 
-        while True:
-
-            try:
-
-                print('\nPara que os cálculos de saúde e metabolismo sejam mais precisos, gostaríamos de saber sua identidade de gênero. Essa informação nos ajuda a oferecer resultados mais adequados para você.')
-
-                print('\nQual é a sua identidade de gênero?')
-            
-                print('\n1. Homem Cis')
-                print('2. Mulher Cis')
-                print('3. Homem Trans')
-                print('4. Mulher Trans')
-
-                sexo_escolha = input('\nEscolha a sua opção (1-4): ').strip()
-
-                if sexo_escolha not in ['1','2','3','4']:
-                    print('\nEscolha uma opção disponível (1-4).')
-                    aguardar_volta()
-                    continue
-
-                sexo = ''
-                sexo_biologico = ''
-                tempo_transicao = None
-                em_transicao = False
-
-                if sexo_escolha == '1':
-                    sexo = 'm'
-                    sexo_biologico = 'm'
-
-                elif sexo_escolha == '2':
-                    sexo = 'f'
-                    sexo_biologico = 'f'
-                
-                elif sexo_escolha in ['3', '4']:
-
-                    while True:
-
-                        print('\nPara adaptar melhor os cálculos às mudanças metabólicas:')
-                        resposta = input('Você já fez uso de terapia hormonal? (s/n): ').lower().strip()
-                        if resposta not in ['s','n']:
-                            print('\nDigite (s) ou (n).')
-                            aguardar_volta()
-                            continue 
-                        em_transicao = resposta == 's'
-                        break
-
-                    if em_transicao:
-                            
-                        while True:
-                        
-                            try:
-
-                                tempo_transicao = int(input('\nHá quanto tempo (em meses) você faz uso de hormônios?: '))
-                                if tempo_transicao <= 0:
-                                    print('\n|Digite um valor válido.|')
-                                    aguardar_volta()
-                                    continue
-                                break
-
-                            except ValueError:
-                                print('\n|Digite somente números.|')
-                                aguardar_volta()
-                                continue
-
-                sexo = 'm' if sexo_escolha == '3' else 'f'
-                sexo_biologico = 'f' if sexo_escolha == '3' else 'm'
-
-            except ValueError:
-                print('\n|Valores inválidos! Digite números válidos.|')        
-
+        try:
             while True:
                 try:
+                    print('\nPara que os cálculos de saúde e metabolismo sejam mais precisos, gostaríamos de saber sua identidade de gênero. Essa informação nos ajuda a oferecer resultados mais adequados para você.')
 
-                    idade = int(input('\nIdade: ').strip())
-                    peso = float(input('Peso (kg): ').strip())
-                    altura = float(input('Altura (m): ').strip())
-                    limpar_tela()
+                    print('\nQual é a sua identidade de gênero?')
+                    print('\n1. Homem Cis')
+                    print('2. Mulher Cis')
+                    print('3. Homem Trans')
+                    print('4. Mulher Trans')
+
+                    sexo_escolha = input('\nEscolha a sua opção (1-4): ').strip()
+
+                    if sexo_escolha not in ['1','2','3','4']:
+                        print('\nEscolha uma opção disponível (1-4).')
+                        aguardar_volta()
+                        continue
+
+                    sexo = ''
+                    sexo_biologico = ''
+                    tempo_transicao = None
+                    em_transicao = False
+
+                    if sexo_escolha == '1':
+                        sexo = 'm'
+                        sexo_biologico = 'm'
+
+                    elif sexo_escolha == '2':
+                        sexo = 'f'
+                        sexo_biologico = 'f'
                     
+                    elif sexo_escolha in ['3', '4']:
+                        while True:
+                            print('\nPara adaptar melhor os cálculos às mudanças metabólicas:')
+                            resposta = input('Você já fez uso de terapia hormonal? (s/n): ').lower().strip()
+                            if resposta not in ['s','n']:
+                                print('\nDigite (s) ou (n).')
+                                aguardar_volta()
+                                continue 
+                            em_transicao = resposta == 's'
+                            break
 
-                    if idade <= 0 or peso <= 0 or altura <= 0:
-                        print('\n|Valores inválidos! Digite números positivos.|')
-                        continue
-                    if idade > 100 or peso > 350 or altura > 2.5:
-                        print('\n|Valores fora do intervalo estimado.|')
-                        continue
+                        if em_transicao:
+                            while True:
+                                try:
+                                    tempo_transicao = int(input('\nHá quanto tempo (em meses) você faz uso de hormônios?: '))
+                                    if tempo_transicao <= 0:
+                                        print('\n|Digite um valor válido.|')
+                                        aguardar_volta()
+                                        continue
+                                    break
+                                except ValueError:
+                                    print('\n|Digite somente números.|')
+                                    aguardar_volta()
+                                    continue
+
+                    sexo = 'm' if sexo_escolha == '3' else 'f'
+                    sexo_biologico = 'f' if sexo_escolha == '3' else 'm'
 
                 except ValueError:
-                    print('\n|Valores inválidos! Digite dados válidos para cada solicitação.|')
-                    continue
+                    print('\n|Valores inválidos! Digite números válidos.|')        
 
-                dados = {
-                    'objetivo': objetivo,
-                    'idade': idade,
-                    'peso': peso,
-                    'altura': altura,
-                    'sexo': sexo,
-                    'sexo_biologico': sexo_biologico if sexo_escolha in ['3', '4'] else None,
-                    'em_transicao': em_transicao if sexo_escolha in ['3', '4'] else None,
-                    'tempo_transicao': tempo_transicao if (sexo_escolha in ['3', '4'] and em_transicao) else None,
-                    'sexo_escolha': sexo_escolha
-                }
+                while True:
+                    try:
+                        idade = int(input('\nIdade: ').strip())
+                        peso = float(input('Peso (kg): ').strip())
+                        altura = float(input('Altura (m): ').strip())
+                        
+                        if idade <= 0 or peso <= 0 or altura <= 0:
+                            print('\n|Valores inválidos! Digite números positivos.|')
+                            continue
+                        if idade > 100 or peso > 350 or altura > 2.5:
+                            print('\n|Valores fora do intervalo estimado.|')
+                            continue
 
-                
-                usuarios[usuario_logado]['dados'] = dados
-                usuarios[usuario_logado]['objetivo'] = objetivo
-                return True #vai retornar verdadeiro para a funçao que chamou essa, no caso, a de cadastro. assim a de cadastro entrará na condição de que foi concluido e retornará true para outra funçao que chamou ela, no caso, a menu principal.
+                        dados = {
+                            'objetivo': objetivo,
+                            'idade': idade,
+                            'peso': peso,
+                            'altura': altura,
+                            'sexo': sexo,
+                            'sexo_biologico': sexo_biologico if sexo_escolha in ['3', '4'] else None,
+                            'em_transicao': em_transicao if sexo_escolha in ['3', '4'] else None,
+                            'tempo_transicao': tempo_transicao if (sexo_escolha in ['3', '4'] and em_transicao) else None,
+                            'sexo_escolha': sexo_escolha
+                        }
+
+                        usuarios[usuario_logado]['dados'] = dados
+                        usuarios[usuario_logado]['objetivo'] = objetivo
+                        return True
+
+                    except ValueError:
+                        print('\n|Valores inválidos! Digite dados válidos para cada solicitação.|')
+                        continue
+
+        except ValueError:
+            print('\n|Valores inválidos! Digite números válidos.|')
+
 
 def fazer_login(): #criando a função de login.
     """
@@ -256,7 +252,6 @@ def fazer_login(): #criando a função de login.
     O usuário digita seu email e sua senha,
     caso estejam corretos, libera o acesso ao "menu logado".
     """
-    limpar_tela()
   
     global usuario_logado, usuarios #declarando ambos como globais, para que possam ser utilizados e modificados.
     print('\n-----Login-----')
@@ -267,12 +262,15 @@ def fazer_login(): #criando a função de login.
     if email not in usuarios:
         print('|Email não cadastrado.|')
         return False
+    
     elif usuarios[email]["senha"] != senha:
         print('|Senha incorreta.|')
         return False
+    
     else:
         usuario_logado = email #chave do dicionário principal.
         print(f'Bem-vindo(a), {usuarios[email]["nome"]}!')
+        menu_logado()
         return True
 
 def atualizar_usuario(): #criando a função atualizar (parte do crud)
@@ -282,7 +280,6 @@ def atualizar_usuario(): #criando a função atualizar (parte do crud)
     é permitido atualizar email, nome ou senha,
     os novos dados são salvos após mudanças.
     """
-    limpar_tela()
     global usuario_logado, usuarios
     if usuario_logado is None: #caso o usuario não esteja logado.
         print('|Faça login primeiro!|')
@@ -291,7 +288,7 @@ def atualizar_usuario(): #criando a função atualizar (parte do crud)
     while True:
 
         print('\n-----ATUALIZAR PERFIL-----')
-        print(f'1.Alterar nome. (nome atual:{usuarios[usuario_logado]['nome']})')
+        print(f'1.Alterar nome. (nome atual:{usuarios[usuario_logado]["nome"]})')
         print('2.Alterar senha.')
         print(f'3.Alterar EMAIL. (email atual:{usuario_logado})')
         print('4.Voltar ao MENU anterior.')
@@ -299,7 +296,7 @@ def atualizar_usuario(): #criando a função atualizar (parte do crud)
         opçao3 = input('O que deseja atualizar? (1-4): ')
 
         if opçao3 == '1':
-            novo_nome = input(f'Digite o novo nome (atual: {usuarios[usuario_logado]['nome']}):').strip()
+            novo_nome = input(f'Digite o novo nome (atual: {usuarios[usuario_logado]["nome"]}):').strip()
             if novo_nome:
                 usuarios[usuario_logado]["nome"] = novo_nome
                 print('Nome atualizado com sucesso!')
@@ -341,7 +338,6 @@ def atualizar_usuario(): #criando a função atualizar (parte do crud)
             print('|Opção inválida. Digite uma opção disponível (1-4)|')
 
 def atualizar_dados():
-    limpar_tela()
     global usuario_logado, usuarios
 
     if usuario_logado is None:
@@ -425,9 +421,8 @@ def atualizar_dados():
                 aguardar_volta()
                 
             elif campo == '5':
-                aguardar_volta()
-                return
-
+                break
+                
             else:
                 print('Opção inválida! digite uma opção disponível.')
                 aguardar_volta()
@@ -441,7 +436,6 @@ def deletar_usuario():
     Deleta o usuário cadastrado,
     apaga todos os dados inseridos e salvos.
     """
-    limpar_tela()
     global usuario_logado,usuarios
 
     if usuario_logado is None:
@@ -462,11 +456,10 @@ def menu_principal():
     é exibido logo após iniciar o programa,
     abre ao usuário as opções de cadastro e login.
     """
-    
+    limpar_tela()
     global usuario_logado #declarando novamente como global
  
     while True:
-        limpar_tela()
         print('<<<VITALTRACK>>>')
         
         print('\n(MENU INICIAL)\n') 
@@ -478,13 +471,18 @@ def menu_principal():
 
         if opçao1 == '1':
             if cadastro_de_usuario():
-                menu_logado()    
+                menu_logado()
+                break  
+
         elif opçao1 == '2':
             if fazer_login():
                 menu_logado()
+                break
+
         elif opçao1 == '3':
             print('Saindo... até logo! 👋')
             break
+
         else:
             print('|Opção inválida! Digite uma opção presente no MENU.|')
 
@@ -495,7 +493,6 @@ def calcular_imc():
     ou pode optar por calcular outro IMC qualquer,
     a função retorna o status após calcular o valor do imc, em ambos os casos.
     """
-    limpar_tela()
     global usuarios,usuario_logado
 
     if usuario_logado is None:
@@ -594,7 +591,6 @@ def calcular_imc():
                     break
                 
         elif calcularimc_visualizarimc == '3':
-            aguardar_volta()
             break
 
 #função para calcular a taxa metabólica basal.
@@ -603,7 +599,6 @@ def calcular_taxametabolicabasal():
     Calcula a tmb (Taxa metabólica basal) do usuário,
     o usuário pode escolher entre calcular sua TBM (com seus dados salvos),
     ou pode optar por calcular outra qualquer"""
-    limpar_tela()
     global usuarios, usuario_logado
 
     #verifica se o usuário está logado.
@@ -670,7 +665,7 @@ def calcular_taxametabolicabasal():
                 print(f'-----Sua TMB é :({TMB:.2f})----')
                 print('-----------------------------')
                 aguardar_volta()
-                break
+                return True
 
             elif calculartmb_visualizartmb == '2':
 
@@ -728,6 +723,7 @@ def calcular_taxametabolicabasal():
                                             print('\n|Digite um valor válido.|')
                                             continue
                                         break
+
                                     except ValueError:
                                         print('\n|Digite um número válido.|')
                         
@@ -779,15 +775,14 @@ def calcular_taxametabolicabasal():
                                 print('Como não há uso de hormônios, o cálculo foi feito com base no sexo biológico.')
                         
                         aguardar_volta()
-                        break
+                        return True
                         
                     except ValueError:
                         print('\n|Valor inválido! Digite números válidos.|')
                     break
 
             elif calculartmb_visualizartmb == '3':
-                aguardar_volta()
-                break
+                return False
 
             else:
                 print('\n|Opção inválida! Digite 1, 2 ou 3.|')
@@ -800,7 +795,6 @@ def registrar_calorias():
     usuário tem a opção de "finalizar dia",
     após isso, recebe um feedback e pode verificar o histórico de consumo de acordo com o dia.
     """
-    limpar_tela()
     global usuarios, usuario_logado
 
     if usuario_logado is None:
@@ -810,9 +804,10 @@ def registrar_calorias():
     
     user = usuarios[usuario_logado]
 
-    if 'TMB' not in user:
+    if 'TMB' not in user or not user.get('dados'):
         print('\n|Você precisa calcular sua taxa metabólica basal primeiro!|')
-        calcular_taxametabolicabasal()
+        if not calcular_taxametabolicabasal():  
+            return  
     
     if 'historico_dias' not in user:
         user['historico_dias'] = {}
@@ -910,6 +905,7 @@ def registrar_calorias():
                     else:
                         print('Digite (s) ou (n).')
                         continue
+
             elif opcao == '3':
                 print('\n📅 HISTÓRICO DE CONSUMO:')
 
@@ -936,11 +932,9 @@ def menu_logado():
     Menu onde o usuário tem acesso as funcionalidades do programa,
     só é possível ter acesso a esse menu após o login.
     """
-    
     global usuario_logado, usuarios 
 
     while True:
-        limpar_tela()
         print('\n(VITALTRACK)')
         
         print('\n(MENU PRINCIPAL)')
@@ -957,7 +951,6 @@ def menu_logado():
         opcao = input('\nEscolha uma opção: ').strip()
         
         if opcao == '1':
-            limpar_tela()
             print('\n(SEU PERFIL)')
             print(f'\nNome: {usuarios[usuario_logado]["nome"]}')
             print(f'Email: {usuario_logado}')
@@ -989,7 +982,8 @@ def menu_logado():
         elif opcao == '7':
             usuario_logado = None
             print('Deslogado com sucesso!')
-            break
+            aguardar_volta()
+            return
         
         elif opcao == '8':
             if deletar_usuario():
