@@ -4,6 +4,7 @@ from datetime import datetime
 import json
 import os
 import platform
+import time
 
 def salvar_dadosjson():
     with open('usuarios.json', 'w') as arquivo:
@@ -18,21 +19,18 @@ def carregar_dadosjson():
         return {}
 
 def limpar_tela():
-
     try:
         if platform.system() == 'Windows':
             os.system('cls')
-
         else:
             os.system('clear')
     except:
         print('\n' * 100)
-   
+
 def aguardar_volta():
     """Pausa a execução do programa até que o usuário tecle "enter".""" 
     input('\nPressione "Enter" para voltar...')
     
-
 def cadastro_de_usuario(): 
     """Cadastra o usuário e salva seus dados em um dicionário,
        em que a chave é o email.
@@ -83,7 +81,6 @@ def cadastro_de_usuario():
     
     nome = input('\nDigite seu nome: (Será seu nome de usuário) ').strip()
     
-     
     usuarios[email] = {
         'senha': senha,
         'nome': nome,
@@ -134,7 +131,7 @@ def escolher_objetivo():
             '1': 'GANHO DE MASSA',
             '2': 'PERDA DE PESO', 
             '3': 'MANUTENÇÃO DA SAÚDE' }
-        
+        limpar_tela()
         print('\n-----------------------------')
         print(f'Você escolheu: {objetivos[objetivo]}')
         print('-----------------------------')
@@ -152,7 +149,8 @@ def escolher_objetivo():
             print('É extremamente importante acompanhar a própria saúde, isso vale para pessoas de qualquer faixa etária. 🧒👨👴')
             print('\nDica: mantenha seu consumo de calorias em um valor próximo a sua TMB.')
             print('Não sabe o que é TMB? não se preocupe! mais na frente eu te explico. 😉')
-
+        aguardar_volta()
+        limpar_tela()
         print('\nBeleza! Agora vamos coletar algumas informações sobre você.')
 
         try:
@@ -181,10 +179,12 @@ def escolher_objetivo():
                     if sexo_escolha == '1':
                         sexo = 'm'
                         sexo_biologico = 'm'
+                        limpar_tela()
 
                     elif sexo_escolha == '2':
                         sexo = 'f'
                         sexo_biologico = 'f'
+                        limpar_tela()
                     
                     elif sexo_escolha in ['3', '4']:
                         while True:
@@ -196,11 +196,12 @@ def escolher_objetivo():
                                 continue 
                             em_transicao = resposta == 's'
                             break
-
+                        
                         if em_transicao:
                             while True:
                                 try:
                                     tempo_transicao = int(input('\nHá quanto tempo (em meses) você faz uso de hormônios?: '))
+                                    limpar_tela()
                                     if tempo_transicao <= 0:
                                         print('\n|Digite um valor válido.|')
                                         aguardar_volta()
@@ -239,11 +240,13 @@ def escolher_objetivo():
                             'tempo_transicao': tempo_transicao if (sexo_escolha in ['3', '4'] and em_transicao) else None,
                             'sexo_escolha': sexo_escolha
                         }
-
+                        
                         usuarios[usuario_logado]['dados'] = dados
                         usuarios[usuario_logado]['objetivo'] = objetivo
+                        time.sleep(0.05)
+                        limpar_tela()
                         return True
-
+                        
                     except ValueError:
                         print('\n|Valores inválidos! Digite dados válidos para cada solicitação.|')
                         continue
@@ -267,10 +270,13 @@ def fazer_login(): #criando a função de login.
   
     if email not in usuarios:
         print('|Email não cadastrado.|')
+        aguardar_volta()
         return False
     
     elif usuarios[email]["senha"] != senha:
         print('|Senha incorreta.|')
+        aguardar_volta(
+        )
         return False
     
     else:
@@ -472,10 +478,10 @@ def menu_principal():
     é exibido logo após iniciar o programa,
     abre ao usuário as opções de cadastro e login.
     """
-    limpar_tela()
     global usuario_logado 
  
     while True:
+        limpar_tela()
         print('<<<VITALTRACK>>>')
         
         print('\n(MENU INICIAL)\n') 
@@ -488,13 +494,13 @@ def menu_principal():
         if opçao1 == '1':
             if cadastro_de_usuario():
                 menu_logado()
+                
                   
-
         elif opçao1 == '2':
             if fazer_login():
                 menu_logado()
                 
-
+                
         elif opçao1 == '3':
             print('Saindo... até logo! 👋')
             break
@@ -509,6 +515,7 @@ def calcular_imc():
     ou pode optar por calcular outro IMC qualquer,
     a função retorna o status após calcular o valor do imc, em ambos os casos.
     """
+    limpar_tela()
     global usuarios,usuario_logado
 
     if usuario_logado is None:
@@ -606,12 +613,14 @@ def calcular_imc():
                 
         elif calcularimc_visualizarimc == '3':
             break
+        limpar_tela()
 
 def calcular_taxametabolicabasal():
     """
     Calcula a tmb (Taxa metabólica basal) do usuário,
     o usuário pode escolher entre calcular sua TBM (com seus dados salvos),
     ou pode optar por calcular outra qualquer"""
+    limpar_tela()
     global usuarios, usuario_logado
 
     if usuario_logado is None:
@@ -839,6 +848,7 @@ def calcular_taxametabolicabasal():
         else:
             print('\n|Opção inválida! Digite 1, 2 ou 3.|')
             continue
+        limpar_tela()
 
 def registrar_calorias():
     """
@@ -847,6 +857,7 @@ def registrar_calorias():
     usuário tem a opção de "finalizar dia",
     após isso, recebe um feedback e pode verificar o histórico de consumo de acordo com o dia.
     """
+    limpar_tela()
     global usuarios, usuario_logado
 
     if usuario_logado is None:
@@ -980,6 +991,7 @@ def registrar_calorias():
 
         except:
             print('\nDigite apenas números.')
+        limpar_tela()
 
 def menu_logado():
     """
@@ -989,7 +1001,7 @@ def menu_logado():
     global usuario_logado, usuarios 
 
     while True:
-        print('\n(VITALTRACK)')
+        limpar_tela()
         
         print('\n(MENU PRINCIPAL)')
         print(f'Logado como: {usuarios[usuario_logado]["nome"]}')
@@ -1047,13 +1059,17 @@ def menu_logado():
 
         elif opcao == '7':
             usuario_logado = None
+            limpar_tela()
             print('Deslogado com sucesso!')
             aguardar_volta()
+            limpar_tela()
             return
         
         elif opcao == '8':
             if deletar_usuario():
+                limpar_tela()
                 aguardar_volta()
+                limpar_tela()
                 return
         else:
             print('Opção inválida! Digite um número de 1 a 8.')
