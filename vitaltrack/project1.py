@@ -2,9 +2,12 @@ usuarios = {}
 usuario_logado = None 
 from datetime import datetime 
 import json
-import os
-import platform
 import time
+from rich.console import Console
+from rich.panel import Panel
+from rich.text import Text
+
+c = Console()
 
 def salvar_dadosjson():
     with open('usuarios.json', 'w') as arquivo:
@@ -18,68 +21,85 @@ def carregar_dadosjson():
     except FileNotFoundError:
         return {}
 
-def limpar_tela():
-    try:
-        if platform.system() == 'Windows':
-            os.system('cls')
-        else:
-            os.system('clear')
-    except:
-        print('\n' * 100)
-
 def aguardar_volta():
     """Pausa a execução do programa até que o usuário tecle "enter".""" 
     input('\nPressione "Enter" para voltar...')
+    
     
 def cadastro_de_usuario(): 
     """Cadastra o usuário e salva seus dados em um dicionário,
        em que a chave é o email.
     """
-    limpar_tela()
+    
     global usuarios,usuario_logado 
-    print('\n(Cadastro)')
+    c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
+    print(' ')
+    conteudo = Text("Siga as instruções para um cadastro bem sucedido.", justify="center")
+    textcadastro = Panel(conteudo,title="[i][bold blue]CADASTRO[/bold blue][/i]",title_align="center",border_style="cyan",expand=True)
+    c.print(textcadastro)
+
 
     while True:
-        email = input('\nDigite o seu email: ').strip().lower() #.strip() para ignorar espaços e .lower() para manter as letras minusculas.
+        c.print(Panel('Digite o seu [green][b][u]email[/u][/b][/]: ', expand = False, border_style = 'yellow' ))
+        email = input('>>> ').strip().lower()
         
         if email in usuarios:
-            print('|Este email já foi cadastrado!|')
-            print('|Insira um email ainda não cadastrado.|')
+            erroremail_text = Text()
+            erroremail_text.append('Este email já foi cadastrado!')
+            erroremail_text.append('\nInsira um email ainda não cadastrado.')
+            perroremail = Panel(erroremail_text, border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center")
+            c.print(perroremail)
             aguardar_volta()
             continue 
         
         elif '@' not in email or '.com' not in email:
-            print('\n|O email precisa estar em um formato válido.|')
-            print('|O email precisa ter ".com" e "@".|')
+            erroremail_text2 = Text()
+            erroremail_text2.append('O email precisa estar em um formato válido.')
+            erroremail_text2.append('\nO email precisa ter ".com" e "@".')
+            perroremail2 = Panel(erroremail_text2, border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center")
+            c.print(perroremail2)
             aguardar_volta()
             continue 
 
         dominios_validos = ['gmail.com', 'outlook.com', 'hotmail.com', 'yahoo.com', 'icloud.com'] #criando essa lista pra salvar os dominios validos.
         
         if not any(email.endswith(dominio) for dominio in dominios_validos): #o comando endswith vai verficiar se o email termina com o domínio de forma correta, para evitar falsos positivos e emails no formato errado, ex: arthur@xcsgmail.com
-            print('\n|Domínio inválido! Use: Gmail, Outlook, Hotmail, Yahoo ou iCloud.|')
+            erroremail_text3 = Text()
+            erroremail_text3.append('Domínio inválido! Use: Gmail, Outlook, Hotmail, Yahoo ou iCloud.')
+            perroremail3 = Panel(erroremail_text3, border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center")
+            c.print(perroremail3)
+            aguardar_volta()
             continue
 
         break
     
     while True:
-        senha = input('Digite sua senha(mínimo 6 caracteres): ')
+        c.print(Panel('Digite sua [green][u][b]senha[/u][/b][/](mínimo 6 caracteres): ', expand = False, border_style = 'yellow'))
+        senha = input('>>> ')
 
         if len(senha) < 6:
-            print('\n|Senha muito curta, a sua senha precisa ter, no mínimo, 6 caracteres.|')
+            errorsenha_text = Text()
+            errorsenha_text.append('Senha muito curta, a sua senha precisa ter, no mínimo, 6 caracteres.')
+            perrorsenha = Panel(errorsenha_text, border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center")
+            c.print(perrorsenha)
             aguardar_volta()
             continue 
             
-        confirmaçao_de_senha = input('\nConfirme sua senha: ').strip()
+        c.print(Panel('Confirme sua [green][u][b]senha[/b][/u][/]: ', expand = False, border_style = 'yellow'))
+        confirmaçao_de_senha = input('>>> ')
 
         if senha != confirmaçao_de_senha:
-            print('\n|As senhas não coinscidem.|')
+            errorsenha_text2 = Text()
+            errorsenha_text2.append('As senhas não coinscidem.')
+            perrorsenha2 = Panel(errorsenha_text2, border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center")
+            c.print(perrorsenha2)
             aguardar_volta()
             continue 
         else:
             break
     
-    nome = input('\nDigite seu nome: (Será seu nome de usuário) ').strip()
+    c.print(Panel('Digite seu [green][u][b]nome[/b][/u][/]: (Será seu nome de usuário)', expand = False, border_style = 'yellow'))
+    nome = input('>>> ').strip()
     
     usuarios[email] = {
         'senha': senha,
@@ -91,7 +111,10 @@ def cadastro_de_usuario():
     }
 
     usuario_logado = email
-    print('\nAgora vamos definir o seu objetivo! 👇')
+    c.rule('[i][blue]VitalTrack[/][/i]')
+    print(' ')
+    c.print(Panel('Agora vamos definir o [green][u]seu[/u][/] objetivo! 👇', expand = False, border_style = 'cyan'))
+
     escolher_objetivo()
     
     print('\nUsuário Cadastrado com sucesso! ✔')
@@ -106,24 +129,44 @@ def escolher_objetivo():
     Usuário escolhe seu objetivo e fornece seus dados,
     armazena os dados do usuário em um outro dicionário "dados".
     """
-    limpar_tela()
+    
     global usuario_logado, usuarios
 
     while True:
 
-        print('\n(Qual é o seu objetivo? 🤔)')
-        print('\nAntes de começarmos, é importante entender qual é o seu foco atual em relação à sua saúde. o VitalTrack foi pensado para se adaptar as suas necesssidades e objetivos. ✍')
-        print('É como uma parceria, entendeu? 👊🤝')
-        print('\nVocê pode escolher entre três caminhos:')
-        print('\n1. Ganho de massa (Foco em ganho de peso e aumento da massa muscular.🏋️ 💪)')
-        print('2. Perda de peso (ideal para quem deseja reduzir o percentual de gordura corporal de forma saudável.)🏃')
-        print('3. Manutenção da saúde (Para quem quer manter o equilíbrio, hábitos saudáveis e o bem-estar geral.)❤')
-        print(' ')
+        textoescolhaobj_text = Text()
+        textoescolhaobj_text.append('\n')
+        textoescolhaobj_text.append('Qual é o seu objetivo? 🤔')
+        textoescolhaobj_text.append('\n')
 
-        objetivo = input('Agora é com você! 🕺 Escolha um objetivo (1-3): ')
+        textoescolhaobj_text.append('\nAntes de começarmos, é importante entender qual é o seu foco atual em relação à sua saúde. ✍\n')
+        textoescolhaobj_text.append('É como uma parceria, entendeu? 👊🤝')
+        textoescolhaobj_text.append('\n')
+        textoescolhaobj_text.append('\nVocê pode escolher entre três caminhos:\n')
+        textoescolhaobj_text.append('\n')
+
+        textoescolhaobj_text.append('1. ', style = 'red')
+        textoescolhaobj_text.append('Ganho de massa (Foco em ganho de peso e aumento da massa muscular.🏋️ 💪)\n')
+
+        textoescolhaobj_text.append('2. ', style = 'red')
+        textoescolhaobj_text.append('Perda de peso (ideal para quem deseja reduzir o percentual de gordura corporal de forma saudável.)🏃\n')
+
+        textoescolhaobj_text.append('3. ', style = 'red')
+        textoescolhaobj_text.append('Manutenção da saúde (Para quem quer manter o equilíbrio, hábitos saudáveis e o bem-estar geral.)❤\n')
+
+        painelescolhadeobj = Panel(textoescolhaobj_text, border_style="cyan", expand = False,title="[bold cyan]Escolha de objetivo[/bold cyan]",
+            title_align="center")
+
+        c.print(painelescolhadeobj)
+
+        c.print(Panel('Agora é com [u][green][b]você![/b][/][/u] 🕺 Escolha um objetivo (1-3): ', border_style = 'yellow', expand = False))
+        objetivo = input('>>> ').strip()
 
         if objetivo not in ['1', '2', '3']:
-            print('\n|Opção inválida! Escolha 1, 2 ou 3.|')
+            errorescolhaobj_text = Text()
+            errorescolhaobj_text.append('Opção inválida! Escolha 1, 2 ou 3.')
+            perrorescolhaobjt = Panel(errorescolhaobj_text, border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center")
+            c.print(perrorescolhaobjt)
             aguardar_volta()
             continue 
 
@@ -131,38 +174,71 @@ def escolher_objetivo():
             '1': 'GANHO DE MASSA',
             '2': 'PERDA DE PESO', 
             '3': 'MANUTENÇÃO DA SAÚDE' }
-        limpar_tela()
-        print('\n-----------------------------')
-        print(f'Você escolheu: {objetivos[objetivo]}')
-        print('-----------------------------')
+        with c.status('salvando', spinner = 'point'):  
+                time.sleep(2)
+        c.rule('[b][i][blue]VitalTrack[/][/i][/b]')
+        print(' ')
+        c.print(Panel(f'Você escolheu: {objetivos[objetivo]}', border_style = 'cyan', expand = False))
+        
         if objetivo == '1':
-            print('\nBoa! Você deseja aumentar sua massa corporal, tô contigo nessa! 😎 💪')
-            print('Uma dica: é importante que você consuma uma quantidade de calorias maior que a sua TMB.')
-            print('\nNão sabe o que é TMB? não se preocupe! mais na frente eu te explico. 😉')
+            textoescolhaobj_text2 = Text()
+            textoescolhaobj_text2.append('Boa! Você deseja aumentar sua massa corporal, tô contigo nessa! 😎 💪')
+            textoescolhaobj_text2.append('\nUma dica: é importante que você consuma uma quantidade de calorias maior que a sua TMB.')
+            textoescolhaobj_text2.append('\nNão sabe o que é TMB? não se preocupe! mais na frente eu te explico. 😉')
+            textoescolha2 = Panel(textoescolhaobj_text2, border_style="cyan", expand = False,title="[bold cyan]Feedback[/bold cyan]",
+                title_align="center")
+            c.print(textoescolha2)
+
         elif objetivo == '2':
-            print('\nVocê escolheu perder peso, que legal! Tamo junto nessa jornada. 👊')
-            print('Com foco e disciplina, qualquer objetivo pode se concretizar, vai dar tudo certo!')
-            print('\nDica: é importante que você consuma uma quantidade de calorias inferior a sua TMB.')
-            print('Não sabe o que é TMB? não se preocupe! mais na frente eu te explico. 😉')
+            textoescolhaobj_text3 = Text()
+            textoescolhaobj_text3.append('Você escolheu perder peso, que legal! Tamo junto nessa jornada. 👊')
+            textoescolhaobj_text3.append('\nCom foco e disciplina, qualquer objetivo pode se concretizar, vai dar tudo certo!')
+            textoescolhaobj_text3.append('\nDica: é importante que você consuma uma quantidade de calorias inferior a sua TMB.')
+            textoescolhaobj_text3.append('\nNão sabe o que é TMB? não se preocupe! mais na frente eu te explico. 😉')
+            textoescolha3 = Panel(textoescolhaobj_text3, border_style="cyan", expand = False,title="[bold cyan]Feedback[/bold cyan]",
+                title_align="center")
+            c.print(textoescolha3)
+            
+
         else:
-            print('\nÉ isso ai! Você optou por manter-se saudável, conte comigo pra te auxiliar! ✋')
-            print('É extremamente importante acompanhar a própria saúde, isso vale para pessoas de qualquer faixa etária. 🧒👨👴')
-            print('\nDica: mantenha seu consumo de calorias em um valor próximo a sua TMB.')
-            print('Não sabe o que é TMB? não se preocupe! mais na frente eu te explico. 😉')
+            textoescolhaobj_text4 = Text()
+            textoescolhaobj_text4.append('É isso ai! Você optou por manter-se saudável, conte comigo pra te auxiliar! ✋')
+            textoescolhaobj_text4.append('\nÉ extremamente importante acompanhar a própria saúde, isso vale para pessoas de qualquer faixa etária. 🧒👨👴')
+            textoescolhaobj_text4.append('\nDica: mantenha seu consumo de calorias em um valor próximo a sua TMB.')
+            textoescolhaobj_text4.append('\nNão sabe o que é TMB? não se preocupe! mais na frente eu te explico. 😉')
+            textoescolha4 = Panel(textoescolhaobj_text4, border_style="cyan", expand = False,title="[bold cyan]Feedback[/bold cyan]",
+                title_align="center")
+            c.print(textoescolha4)
         aguardar_volta()
-        limpar_tela()
-        print('\nBeleza! Agora vamos coletar algumas informações sobre você.')
+        
+        c.rule('[b][i][blue]VitalTrack[/][/i][/b]')
+        print(' ')
+        c.print(Panel('Beleza! Agora vamos coletar algumas informações sobre [green][u]você.[/u][/]', border_style = 'cyan', expand = False))
 
         try:
             while True:
                 try:
-                    print('\nPara que os cálculos de saúde e metabolismo sejam mais precisos, gostaríamos de saber sua identidade de gênero. Essa informação nos ajuda a oferecer resultados mais adequados para você.')
+                    c.print(Panel('Para que os cálculos de saúde e metabolismo sejam mais precisos, gostaríamos de saber sua identidade de gênero. Essa informação nos ajuda a oferecer resultados mais adequados para você.', border_style = 'cyan', expand = False))
+                    textoidentidade_text = Text()
+                    textoidentidade_text.append('\n')
+                    textoidentidade_text.append('Qual é a sua identidade de gênero?\n')
+                    textoidentidade_text.append('\n')
 
-                    print('\nQual é a sua identidade de gênero?')
-                    print('\n1. Homem Cis')
-                    print('2. Mulher Cis')
-                    print('3. Homem Trans')
-                    print('4. Mulher Trans')
+                    textoidentidade_text.append('1. ', style = 'red')
+                    textoidentidade_text.append('Homem Cis ')
+
+                    textoidentidade_text.append('2. ', style = 'red')
+                    textoidentidade_text.append('Mulher Cis ')
+
+                    textoidentidade_text.append('3. ', style = 'red')
+                    textoidentidade_text.append('Homem Trans ')
+
+                    textoidentidade_text.append('4. ', style = 'red')
+                    textoidentidade_text.append('Mulher Trans ')
+
+                    painelidentidade = Panel(textoidentidade_text, border_style="cyan", expand = False,title="[bold cyan]Sua identidade[/bold cyan]",title_align="center")
+                    c.print(painelidentidade)
+
 
                     sexo_escolha = input('\nEscolha a sua opção (1-4): ').strip()
 
@@ -179,12 +255,12 @@ def escolher_objetivo():
                     if sexo_escolha == '1':
                         sexo = 'm'
                         sexo_biologico = 'm'
-                        limpar_tela()
+                        
 
                     elif sexo_escolha == '2':
                         sexo = 'f'
                         sexo_biologico = 'f'
-                        limpar_tela()
+                        
                     
                     elif sexo_escolha in ['3', '4']:
                         while True:
@@ -201,7 +277,7 @@ def escolher_objetivo():
                             while True:
                                 try:
                                     tempo_transicao = int(input('\nHá quanto tempo (em meses) você faz uso de hormônios?: '))
-                                    limpar_tela()
+                                    
                                     if tempo_transicao <= 0:
                                         print('\n|Digite um valor válido.|')
                                         aguardar_volta()
@@ -244,7 +320,7 @@ def escolher_objetivo():
                         usuarios[usuario_logado]['dados'] = dados
                         usuarios[usuario_logado]['objetivo'] = objetivo
                         time.sleep(0.05)
-                        limpar_tela()
+                        
                         return True
                         
                     except ValueError:
@@ -261,7 +337,7 @@ def fazer_login(): #criando a função de login.
     O usuário digita seu email e sua senha,
     caso estejam corretos, libera o acesso ao "menu logado".
     """
-    limpar_tela()
+    
     global usuario_logado, usuarios 
     print('\n(Login)')
     email = input('\nDigite o seu email cadastrado: ').lower().strip()
@@ -282,7 +358,7 @@ def fazer_login(): #criando a função de login.
     else:
         usuario_logado = email 
         print(f'Bem-vindo(a), {usuarios[email]["nome"]}!')
-        limpar_tela()
+        
         return True
 
 def atualizar_usuario(): 
@@ -298,7 +374,7 @@ def atualizar_usuario():
         return
     
     while True:
-
+        
         print('\n(ATUALIZAR PERFIL)')
         print(f'\n1.Alterar nome. (nome atual:{usuarios[usuario_logado]["nome"]})')
         print('2.Alterar senha.')
@@ -370,7 +446,7 @@ def atualizar_dados():
     while True:
 
         try:
-
+            
             print('\nATUALIZAR DADOS PESSOAIS')
             dados = user['dados']
             objetivo_atual = user['objetivo']
@@ -481,32 +557,53 @@ def menu_principal():
     global usuario_logado 
  
     while True:
-        limpar_tela()
-        print('<<<VITALTRACK>>>')
         
-        print('\n(MENU INICIAL)\n') 
-        print('1.Cadastro')
-        print('2.Fazer login')
-        print('3.Sair')
+        c.rule('[blue][i][b]Boas vindas ao VitalTrack![/b][/i][/]')
 
-        opçao1 = input('Digite sua opção: ')
+        textomenuprincipal_text = Text()
+
+        textomenuprincipal_text.append('\n')
+        textomenuprincipal_text.append('Seja bem vindo(a) ao menu inicial!\n', style = 'blue')
+        textomenuprincipal_text.append('\nEscolha uma opção dentre as disponíveis.\n')
+
+        textomenuprincipal_text.append('\n1 ', style = 'red')
+        textomenuprincipal_text.append('Cadastro\n')
+
+        textomenuprincipal_text.append('2 ', style = 'red')
+        textomenuprincipal_text.append('Login\n')
+
+        textomenuprincipal_text.append('3 ', style = 'red')
+        textomenuprincipal_text.append('Sair\n')
+
+        panel = Panel(textomenuprincipal_text, border_style="cyan", expand = False,title="[bold cyan]Menu Inicial[/bold cyan]",
+    title_align="center")
+
+        c.print(panel)
+
+        c.print(Panel('Digite [green][u][b]sua[/b][/u][/] opção: ', expand = False, border_style = 'yellow'))
+        opçao1 = input('>>> ')
 
         if opçao1 == '1':
+            with c.status('carregando', spinner = 'point'):  
+                time.sleep(2)
             if cadastro_de_usuario():
                 menu_logado()
-                
-                  
+                     
         elif opçao1 == '2':
+            with c.status('carregando', spinner = 'point'):  
+                time.sleep(2)
             if fazer_login():
                 menu_logado()
                 
-                
         elif opçao1 == '3':
-            print('Saindo... até logo! 👋')
+            with c.status('saindo', spinner = 'point'):  
+                time.sleep(2)
+            print('até logo! 👋')
             break
 
         else:
             print('|Opção inválida! Digite uma opção presente no MENU.|')
+            aguardar_volta()
 
 def calcular_imc():
     """
@@ -515,7 +612,7 @@ def calcular_imc():
     ou pode optar por calcular outro IMC qualquer,
     a função retorna o status após calcular o valor do imc, em ambos os casos.
     """
-    limpar_tela()
+    
     global usuarios,usuario_logado
 
     if usuario_logado is None:
@@ -613,14 +710,14 @@ def calcular_imc():
                 
         elif calcularimc_visualizarimc == '3':
             break
-        limpar_tela()
+        
 
 def calcular_taxametabolicabasal():
     """
     Calcula a tmb (Taxa metabólica basal) do usuário,
     o usuário pode escolher entre calcular sua TBM (com seus dados salvos),
     ou pode optar por calcular outra qualquer"""
-    limpar_tela()
+    
     global usuarios, usuario_logado
 
     if usuario_logado is None:
@@ -848,7 +945,7 @@ def calcular_taxametabolicabasal():
         else:
             print('\n|Opção inválida! Digite 1, 2 ou 3.|')
             continue
-        limpar_tela()
+        
 
 def registrar_calorias():
     """
@@ -857,7 +954,7 @@ def registrar_calorias():
     usuário tem a opção de "finalizar dia",
     após isso, recebe um feedback e pode verificar o histórico de consumo de acordo com o dia.
     """
-    limpar_tela()
+    
     global usuarios, usuario_logado
 
     if usuario_logado is None:
@@ -991,7 +1088,7 @@ def registrar_calorias():
 
         except:
             print('\nDigite apenas números.')
-        limpar_tela()
+        
 
 def menu_logado():
     """
@@ -1001,7 +1098,7 @@ def menu_logado():
     global usuario_logado, usuarios 
 
     while True:
-        limpar_tela()
+        
         
         print('\n(MENU PRINCIPAL)')
         print(f'Logado como: {usuarios[usuario_logado]["nome"]}')
@@ -1017,6 +1114,7 @@ def menu_logado():
         opcao = input('\nEscolha uma opção: ').strip()
         
         if opcao == '1':
+            
             print('\n(SEU PERFIL)')
             print(f'\nNome: {usuarios[usuario_logado]["nome"]}')
             print(f'Email: {usuario_logado}')
@@ -1059,17 +1157,13 @@ def menu_logado():
 
         elif opcao == '7':
             usuario_logado = None
-            limpar_tela()
             print('Deslogado com sucesso!')
             aguardar_volta()
-            limpar_tela()
             return
         
         elif opcao == '8':
             if deletar_usuario():
-                limpar_tela()
                 aguardar_volta()
-                limpar_tela()
                 return
         else:
             print('Opção inválida! Digite um número de 1 a 8.')
