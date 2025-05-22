@@ -6,6 +6,8 @@ import time
 from rich.console import Console
 from rich.panel import Panel
 from rich.text import Text
+from rich.layout import Layout
+import random
 
 c = Console()
 
@@ -35,7 +37,7 @@ def cadastro_de_usuario():
     c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
     print(' ')
     conteudo = Text("Siga as instruções para um cadastro bem sucedido.", justify="center")
-    textcadastro = Panel(conteudo,title="[i][bold blue]CADASTRO[/bold blue][/i]",title_align="center",border_style="cyan",expand=True)
+    textcadastro = Panel(conteudo,title="[i][cyan]CADASTRO[/cyan][/i]",title_align="center",border_style="cyan",expand=True)
     c.print(textcadastro)
 
 
@@ -100,6 +102,8 @@ def cadastro_de_usuario():
     
     c.print(Panel('Digite seu [green][u][b]nome[/b][/u][/]: (Será seu nome de usuário)', expand = False, border_style = 'yellow'))
     nome = input('>>> ').strip()
+    with c.status('guardando os dados', spinner = 'hearts'):  
+        time.sleep(2)
     
     usuarios[email] = {
         'senha': senha,
@@ -174,7 +178,7 @@ def escolher_objetivo():
             '1': 'GANHO DE MASSA',
             '2': 'PERDA DE PESO', 
             '3': 'MANUTENÇÃO DA SAÚDE' }
-        with c.status('salvando', spinner = 'point'):  
+        with c.status('salvando', spinner = 'moon'):  
                 time.sleep(2)
         c.rule('[b][i][blue]VitalTrack[/][/i][/b]')
         print(' ')
@@ -239,11 +243,14 @@ def escolher_objetivo():
                     painelidentidade = Panel(textoidentidade_text, border_style="cyan", expand = False,title="[bold cyan]Sua identidade[/bold cyan]",title_align="center")
                     c.print(painelidentidade)
 
-
-                    sexo_escolha = input('\nEscolha a sua opção (1-4): ').strip()
+                    c.print(Panel('Digite [green][u][b]sua[/b][/u][/] opção: ', expand = False, border_style = 'yellow'))
+                    sexo_escolha = input('>>> ').strip()
 
                     if sexo_escolha not in ['1','2','3','4']:
-                        print('\nEscolha uma opção disponível (1-4).')
+                        erroridentidade_text = Text()
+                        erroridentidade_text.append('Escolha uma opção disponível (1-4).')
+                        perroridentidade = Panel(erroridentidade_text, border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center")
+                        c.print(perroridentidade)
                         aguardar_volta()
                         continue
 
@@ -264,10 +271,19 @@ def escolher_objetivo():
                     
                     elif sexo_escolha in ['3', '4']:
                         while True:
-                            print('\nPara adaptar melhor os cálculos às mudanças metabólicas:')
-                            resposta = input('Você já fez uso de terapia hormonal? (s/n): ').lower().strip()
+                            textoterapiahormonal = Text()
+                            textoterapiahormonal.append('\n')
+                            textoterapiahormonal.append('Para adaptar melhor os cálculos às mudanças metabólicas:')
+                            textoterapiahormonal.append('\n')
+                            ptextoterapiahormonal = Panel(textoterapiahormonal, border_style="cyan", expand = False,title="[bold cyan]Sua identidade[/bold cyan]",title_align="center")
+                            c.print(ptextoterapiahormonal)
+                            c.print(Panel('Você já fez uso de terapia hormonal? (s/n):', expand = False, border_style = 'yellow'))
+                            resposta = input('>>> ').lower().strip()
                             if resposta not in ['s','n']:
-                                print('\nDigite (s) ou (n).')
+                                errorterapiahormonal_text = Text()
+                                errorterapiahormonal_text.append('Digite (s) ou (n).')
+                                perrorterapiahormonal = Panel(errorterapiahormonal_text, border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center")
+                                c.print(perrorterapiahormonal)
                                 aguardar_volta()
                                 continue 
                             em_transicao = resposta == 's'
@@ -276,33 +292,45 @@ def escolher_objetivo():
                         if em_transicao:
                             while True:
                                 try:
-                                    tempo_transicao = int(input('\nHá quanto tempo (em meses) você faz uso de hormônios?: '))
+                                    c.print(Panel('Há quanto tempo (em meses) você faz uso de hormônios?', expand = False, border_style = 'yellow'))
+                                    tempo_transicao = int(input('>>> '))
                                     
                                     if tempo_transicao <= 0:
-                                        print('\n|Digite um valor válido.|')
+                                        c.print(Panel('Digite um valor válido.', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
                                         aguardar_volta()
                                         continue
                                     break
                                 except ValueError:
-                                    print('\n|Digite somente números.|')
+                                    c.print(Panel('Digite somente números.', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
                                     aguardar_volta()
                                     continue
 
                 except ValueError:
-                    print('\n|Valores inválidos! Digite números válidos.|')        
-
+                    c.print(Panel('Valores inválidos! Digite números válidos.', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))        
+                with c.status('salvando', spinner = 'moon'):  
+                            time.sleep(2)
                 while True:
                     try:
-                        print('\nPreciso de mais alguns de seus dados.')
-                        idade = int(input('\nIdade: ').strip())
-                        peso = float(input('Peso (kg): ').strip())
-                        altura = float(input('Altura (m): ').strip())
+                        
+                        c.rule('[b][i][blue]VitalTrack[/][/i][/b]')
+                        print(' ')
+                        c.print(Panel('Preciso de mais alguns de [green][b][u]seus[/u][/b][/] dados.', expand = False, border_style = 'cyan'))
+                        c.print(Panel('Digite sua [u][green][b]idade[/b][/][/u]: ', expand = False, border_style = 'yellow'))
+                        idade = int(input('>>> ').strip())
+                        c.print(Panel('Digite o seu [u][green][b]peso[/b][/][/u] em quilogramas: ', expand = False, border_style = 'yellow'))
+                        peso = float(input('>>> ').strip())
+                        c.print(Panel('Digite sua [u][green][b]altura[/b][/][/u] em metros: ', expand = False, border_style = 'yellow'))
+                        altura = float(input('>>> ').strip())
+                        with c.status('validando seus dados, já te levo pro menu', spinner = 'bouncingBar'):  
+                            time.sleep(2)
                         
                         if idade <= 0 or peso <= 0 or altura <= 0:
-                            print('\n|Valores inválidos! Digite números positivos.|')
+                            c.print(Panel('Valores inválidos! Digite números positivos.', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
+                            aguardar_volta()
                             continue
                         if idade > 100 or peso > 350 or altura > 2.5:
-                            print('\n|Valores fora do intervalo estimado.|')
+                            c.print(Panel('Valores fora do intervalo estimado.', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
+                            aguardar_volta()
                             continue
 
                         dados = {
@@ -338,28 +366,36 @@ def fazer_login(): #criando a função de login.
     caso estejam corretos, libera o acesso ao "menu logado".
     """
     
-    global usuario_logado, usuarios 
-    print('\n(Login)')
-    email = input('\nDigite o seu email cadastrado: ').lower().strip()
-    senha = input('Digite sua senha: ')
+    global usuario_logado, usuarios
+    c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
+    print(' ') 
+    conteudo1 = Text('Seja bem vindo(a) a etapa de login', justify = 'center')
+    textlogin = Panel(conteudo1,title="[i][cyan]LOGIN[/cyan][/i]",title_align="center",border_style="cyan",expand=True)
+    c.print(textlogin)
 
-  
-    if email not in usuarios:
-        print('|Email não cadastrado.|')
-        aguardar_volta()
-        return False
-    
-    elif usuarios[email]["senha"] != senha:
-        print('|Senha incorreta.|')
-        aguardar_volta(
-        )
-        return False
-    
-    else:
-        usuario_logado = email 
-        print(f'Bem-vindo(a), {usuarios[email]["nome"]}!')
+    while True:
+        c.print(Panel('Digite o seu email cadastrado: ',expand = False, border_style = 'yellow' ))
+        email = input('>>> ').lower().strip()
         
-        return True
+        if email not in usuarios:
+            c.print(Panel('Email não cadastrado.', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
+            aguardar_volta()
+            continue
+        break
+
+    while True:
+        c.print(Panel('Digite sua senha: ',expand = False, border_style = 'yellow'))
+        senha = input('>>> ').strip()
+
+        if usuarios[email]["senha"] != senha:
+            c.print(Panel('Senha incorreta.', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
+            aguardar_volta()
+            continue
+    
+        else:
+            usuario_logado = email 
+            print(f'Bem-vindo(a), {usuarios[email]["nome"]}!')
+            return True
 
 def atualizar_usuario(): 
     """
@@ -602,7 +638,11 @@ def menu_principal():
             break
 
         else:
-            print('|Opção inválida! Digite uma opção presente no MENU.|')
+            errormenuprincipal_text = Text()
+            errormenuprincipal_text.append('Opção inválida!')
+            errormenuprincipal_text.append('Digite uma opção presente no MENU.')
+            perrormenuprincipal = Panel(errormenuprincipal_text, border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center")
+            c.print(perrormenuprincipal)
             aguardar_volta()
 
 def calcular_imc():
@@ -1098,20 +1138,77 @@ def menu_logado():
     global usuario_logado, usuarios 
 
     while True:
+
+        layout = Layout()
+        layout.split(
+            Layout(name="header", size=3),
+            Layout(name="body", ratio=1),
+            Layout(name="footer", size=3),)
+
+        layout["body"].split_row(
+                Layout(name="opcoes_1_4"),
+                Layout(name="opcoes_5_8"),
+                Layout(name="inspiracao"))
         
+        nome = usuarios[usuario_logado]["nome"]
+        texto_header = Text(f"👤 Logado como: {nome}", style="blue")
+        painel_header = Panel(texto_header, style="red", title="Menu Principal")
+        layout["header"].update(painel_header)
+
+        parte1_1menu = Text()
+        parte1_1menu.append('\n')
+        parte1_1menu.append('Escolha uma opção dentre as disponíveis.\n')
+        parte1_1menu.append("\n[1] Ver perfil completo", style="cyan")
+        parte1_1menu.append("\n[2] Calcular IMC\n", style="cyan")
+        parte1_1menu.append("[3] Calcular TMB\n", style="cyan")
+        parte1_1menu.append("[4] Registro de calorias\n", style="cyan")
+        painel_parte1_1menu = Panel(parte1_1menu, title="Vital", border_style="cyan")
+        layout["opcoes_1_4"].update(painel_parte1_1menu)
+
+        parte2_2menu = Text()
+        parte2_2menu.append('\n')
+        parte2_2menu.append('No VitalTrack, o foco é você.\n')
+        parte2_2menu.append("\n[5] Atualizar perfil", style="cyan")
+        parte2_2menu.append("\n[6] Atualizar objetivo/dados\n", style="cyan")
+        parte2_2menu.append("[7] Deslogar\n", style="cyan")
+        parte2_2menu.append("[8] Deletar conta\n", style="red")
+        painel_parte2_2menu = Panel(parte2_2menu, title="Track", border_style="cyan")
+        layout["opcoes_5_8"].update(painel_parte2_2menu)
+
+        frases = [
+            "\n💧 Não esqueça de se hidratar!",
+            "\n🚀 O sucesso é uma jornada, não um destino.",
+            "\n💡 Você é capaz de grandes coisas!",
+            "\n🔥 Um passo por dia já é progresso.",
+            "\n🌱 Grandes mudanças começam com pequenas atitudes.",
+            "\n🏃‍♂️ Mexa-se pelo seu bem-estar!",
+            "\n🧠 Mente sã, corpo são.",
+            "\n⏳ Cada segundo investido vale a pena."
+        ]
+
+        mensagem_aleatoria = random.choice(frases)
+
+        mensagens_inspiradoras = Text(
+            f"\n{mensagem_aleatoria}",
+            style="magenta",
+            justify="center"
+        )
+
+        painel_inspiracao = Panel(
+        mensagens_inspiradoras,
+        title="Seja bem vindo(a)!",
+        border_style="magenta"
+        )
+
+        painel_inspiracao = Panel(mensagens_inspiradoras, title="Seja bem vindo(a)!", border_style="magenta")
+        layout["inspiracao"].update(painel_inspiracao)
+
+        painel_footer = Panel(Text("Digite a opção desejada.", justify="center", style="yellow"), style="grey37")
+        layout["footer"].update(painel_footer)
+
+        c.print(layout)
         
-        print('\n(MENU PRINCIPAL)')
-        print(f'Logado como: {usuarios[usuario_logado]["nome"]}')
-        print('\n1. Ver perfil completo')
-        print('2. Calcular IMC')
-        print('3. Calcular TMB')
-        print('4. Registro de calorias')
-        print('5. Atualizar perfil')
-        print('6. Atualizar objetivo/dados')
-        print('7. Deslogar')
-        print('8. Deletar conta')
-        
-        opcao = input('\nEscolha uma opção: ').strip()
+        opcao = input('>>> ').strip()
         
         if opcao == '1':
             
