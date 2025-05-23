@@ -40,7 +40,6 @@ def cadastro_de_usuario():
     textcadastro = Panel(conteudo,title="[i][cyan]CADASTRO[/cyan][/i]",title_align="center",border_style="cyan",expand=True)
     c.print(textcadastro)
 
-
     while True:
         c.print(Panel('Digite o seu [green][b][u]email[/u][/b][/]: ', expand = False, border_style = 'yellow' ))
         email = input('>>> ').strip().lower()
@@ -656,13 +655,13 @@ def calcular_imc():
     global usuarios,usuario_logado
 
     if usuario_logado is None:
-        print('|Faça login primeiro!|')
+        c.print(Panel('Faça login primeiro!', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
         aguardar_volta()
         return
     
     user = usuarios[usuario_logado]
     if not user.get('dados'):
-        print('|Complete seus dados primeiro!|')
+        c.print(Panel('Complete seus dados primeiro!', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
         escolher_objetivo()
         return
     
@@ -670,14 +669,24 @@ def calcular_imc():
     imc = dados['peso'] / (dados['altura'] ** 2)
 
     while True:
-        print('\nCALCULADORA DE IMC (ÍNDICE DE MASSA CORPORAL)')
-        calcularimc_visualizarimc = input('\nDeseja calcular o seu IMC (1), calcular outro qualquer (2), ou voltar (3)? ')
+        c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
+        print(' ')
+        imc_text = Text('CALCULADORA DE IMC (ÍNDICE DE MASSA CORPORAL)', justify = 'center')
+        p_imctext = Panel(imc_text, title="[i][cyan]IMC[/cyan][/i]",title_align="center",border_style="cyan",expand=True)
+        c.print(p_imctext)
+        c.print(Panel('Deseja calcular o seu IMC (1), calcular outro qualquer (2), ou voltar (3)?', expand = False, border_style = 'yellow'))
+        calcularimc_visualizarimc = input('>>> ')
+
+        if calcularimc_visualizarimc not in ['1','2','3']:
+            c.print(Panel('Digite "1", "2" ou "3".', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
+            aguardar_volta()
+            continue
 
         if calcularimc_visualizarimc == '1':
-            print('\n-----------------------------')
-            print(f'------ SEU IMC: {imc:.2f} -------')
-            print('-----------------------------')
-
+            calcularimc1_text = Text()
+            calcularimc1_text.append(f'SEU IMC: {imc:.2f}')
+            
+            
             if imc < 18.5:
                 status = 'Abaixo do peso'
             elif 18.5 <= imc < 25:
@@ -686,22 +695,39 @@ def calcular_imc():
                 status = 'Sobrepeso'
             else:
                 status = 'Obesidade'
-    
-            print(f'\nStatus: {status}')
+            calcularimc1_text.append(f'\nStatus: {status}')
+            pcalcularimc1 = Panel(calcularimc1_text, expand = False, border_style = 'cyan')
+            with c.status('calculando', spinner = 'hearts'):  
+                time.sleep(2)
+            c.print(pcalcularimc1)
 
             
             objetivo = user['objetivo']
-            if objetivo == '1':  
-                    print('Dica: Aumente a ingestão de proteínas e calorias saudáveis')
-                    print('Além disso, Foque em treinos de força e superávit calórico')
-                    print('Consuma alimentos com alta quantidade de proteínas e carboidratos.')
-            elif objetivo == '2':  
-                    print('Dica: Combine dieta balanceada com exercícios aeróbicos')
-                    print('Utilize alimentos com baixa quantidade de carboidratos e alta quantidade de proteínas.')
-            else:  
-                    print('Dica: Mantenha hábitos equilibrados e pratique atividades físicas')
-                    print('Existem diversos tipos de atividades físicas que podem te auxiliar.')
-                    print('Até mesmo uma caminhada de 40/50 minutos, acelera seu metabolismo, e melhora sua saúde.')
+            if objetivo == '1':
+                    feedbackobj1_text = Text()
+                    feedbackobj1_text.append('Dica: Aumente a ingestão de proteínas e calorias saudáveis')  
+                    feedbackobj1_text.append('\nAlém disso, Foque em treinos de força e superávit calórico')
+                    feedbackobj1_text.append('\nConsuma alimentos com alta quantidade de proteínas e carboidratos.')
+                    pfeedbackobj1 = Panel(feedbackobj1_text, border_style="cyan", expand = False,title="[bold cyan]Feedback[/bold cyan]",
+                title_align="center")
+                    c.print(pfeedbackobj1)
+                    
+            elif objetivo == '2':
+                    feedbackobj2_text = Text()
+                    feedbackobj2_text.append('Dica: Combine dieta balanceada com exercícios aeróbicos')
+                    feedbackobj2_text.append('\nUtilize alimentos com baixa quantidade de carboidratos e alta quantidade de proteínas.')
+                    pfeedbackobj2 = Panel(feedbackobj2_text, border_style="cyan", expand = False,title="[bold cyan]Feedback[/bold cyan]",
+                title_align="center")
+                    c.print(pfeedbackobj2)
+                    
+            else:
+                    feedbackobj3_text = Text()
+                    feedbackobj3_text.append('Dica: Mantenha hábitos equilibrados e pratique atividades físicas')  
+                    feedbackobj3_text.append('\nExistem diversos tipos de atividades físicas que podem te auxiliar.')
+                    feedbackobj3_text.append('\nAté mesmo uma caminhada de 40/50 minutos, acelera seu metabolismo, e melhora sua saúde.')
+                    pfeedbackobj3 = Panel(feedbackobj3_text, border_style="cyan", expand = False,title="[bold cyan]Feedback[/bold cyan]",
+                title_align="center")
+                    c.print(pfeedbackobj3)
     
             aguardar_volta()
             break
@@ -711,30 +737,36 @@ def calcular_imc():
             while True:
                     
                     try:
-                        pesoimc = float(input('\nDigite o seu peso em kg: '))
+                        c.print(Panel('Digite o seu peso em kg:', expand = False, border_style = 'yellow'))
+                        pesoimc = float(input('>>> '))
                         if pesoimc > 350 or pesoimc <= 0:
-                            print('\nDigite um peso válido.')
+                            c.print(Panel('Digite um peso válido.', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
+                            aguardar_volta()
                             continue
                     except ValueError:
-                        print('\nDigite apenas números')
+                        c.print(Panel('Digite apenas números', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
+                        aguardar_volta()
                         continue
                     break
             
             while True:
                     
                     try:
-
-                        alturaimc = float(input('Digite a sua altura em m: '))
+                        c.print(Panel('Digite a sua altura em m:', expand = False, border_style = 'yellow'))
+                        alturaimc = float(input('>>> '))
                         if alturaimc > 2.2 or alturaimc <= 0:
-                            print('\nDigite uma altura válida')
+                            c.print(Panel('Digite uma altura válida', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
+                            aguardar_volta()
                             continue
                     except ValueError:
-                        print('\nDigite apenas números')
+                        c.print(Panel('Digite apenas números', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
+                        aguardar_volta()
                         continue
                     
-                        
                     imc = (pesoimc/alturaimc**2)
-                    print(f'\nO IMC é {imc:.2f}')
+                    with c.status('calculando', spinner = 'hearts'):  
+                        time.sleep(2)
+                    c.print(Panel(f'O IMC é {imc:.2f}', expand = False, border_style = 'cyan'))
 
                     if imc < 18.5:
                         status = 'Abaixo do peso'
@@ -744,7 +776,7 @@ def calcular_imc():
                         status = 'Sobrepeso'
                     else:
                         status = 'Obesidade'
-                    print(f'Status: {status}')
+                    c.print(Panel(f'Status: {status}', expand = False, border_style = 'cyan'))
                     aguardar_volta()
                     break
                 
@@ -1138,7 +1170,8 @@ def menu_logado():
     global usuario_logado, usuarios 
 
     while True:
-
+        c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
+        print(' ')
         layout = Layout()
         layout.split(
             Layout(name="header", size=3),
@@ -1211,16 +1244,26 @@ def menu_logado():
         opcao = input('>>> ').strip()
         
         if opcao == '1':
-            
-            print('\n(SEU PERFIL)')
-            print(f'\nNome: {usuarios[usuario_logado]["nome"]}')
-            print(f'Email: {usuario_logado}')
+            with c.status('carregando', spinner = 'hearts'):  
+                time.sleep(2)
+            c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
+            print(' ')
+            verpefil_text = Text()
+            verpefil_text.append('\n')
+            verpefil_text.append('SEU PERFIL', style = 'blue')
+            verpefil_text.append('\n')
+            verpefil_text.append(f'\nNome: {usuarios[usuario_logado]["nome"]}')
+            verpefil_text.append(f'\nEmail: {usuario_logado}')
+        
             if usuarios[usuario_logado]["dados"]:
                 dados = usuarios[usuario_logado]["dados"]
-                print(f'Objetivo: {["Ganho de massa", "Perda de peso", "Manutenção"][int(dados["objetivo"])-1]}')
-                print(f'Idade: {dados["idade"]} anos')
-                print(f'Peso: {dados["peso"]} kg')
-                print(f'Altura: {dados["altura"]} m')
+                verpefil_text.append(f'\nObjetivo: {["Ganho de massa", "Perda de peso", "Manutenção"][int(dados["objetivo"])-1]}')
+                verpefil_text.append(f'\nIdade: {dados["idade"]} anos')
+                verpefil_text.append(f'\nPeso: {dados["peso"]} kg')
+                verpefil_text.append(f'\nAltura: {dados["altura"]} m')
+                
+                pverperfil = Panel(verpefil_text, border_style="cyan", expand = False,title="[bold cyan]Seu perfil[/bold cyan]",
+    title_align="center")
                 
                 sexo_escolha = dados.get('sexo_escolha', None)
 
@@ -1232,11 +1275,14 @@ def menu_logado():
 
                 else:
                     sexo_exibicao = 'Não informado'
-
-                print(f'Sexo: {sexo_exibicao}')
+            verpefil_text.append(f'\nSexo: {sexo_exibicao}')        
+            c.print(pverperfil)
+                
             aguardar_volta()
 
         elif opcao == '2':
+            with c.status('carregando', spinner = 'hearts'):  
+                time.sleep(2)
             calcular_imc()
 
         elif opcao == '3':
