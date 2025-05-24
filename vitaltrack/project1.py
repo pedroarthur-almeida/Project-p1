@@ -351,11 +351,13 @@ def escolher_objetivo():
                         return True
                         
                     except ValueError:
-                        print('\n|Valores inválidos! Digite dados válidos para cada solicitação.|')
+                        c.print(Panel('Valores inválidos! Digite dados válidos para cada solicitação.', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
+                        aguardar_volta()
                         continue
 
         except ValueError:
-            print('\n|Valores inválidos! Digite números válidos.|')
+            c.print(Panel('Valores inválidos! Digite números válidos.', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
+            aguardar_volta()
 
 
 def fazer_login(): #criando a função de login.
@@ -619,13 +621,13 @@ def menu_principal():
         opçao1 = input('>>> ')
 
         if opçao1 == '1':
-            with c.status('carregando', spinner = 'point'):  
+            with c.status('carregando', spinner = 'hearts'):  
                 time.sleep(2)
             if cadastro_de_usuario():
                 menu_logado()
                      
         elif opçao1 == '2':
-            with c.status('carregando', spinner = 'point'):  
+            with c.status('carregando', spinner = 'hearts'):  
                 time.sleep(2)
             if fazer_login():
                 menu_logado()
@@ -790,7 +792,7 @@ def calcular_taxametabolicabasal():
     o usuário pode escolher entre calcular sua TBM (com seus dados salvos),
     ou pode optar por calcular outra qualquer"""
     
-    global usuarios, usuario_logado
+    global usuarios, usuario_logado 
 
     if usuario_logado is None:
         print('|Faça login primeiro!|')
@@ -805,12 +807,16 @@ def calcular_taxametabolicabasal():
         return
 
     while True:
-            
-        print('\n-----TAXA METABÓLICA BASAL (TMB)-----')
+        c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
+        print(' ')
+        tmb_text = Text('TAXA METABÓLICA BASAL (TMB)', justify = 'center')
+        p_tmbtext = Panel(tmb_text, title="[i][cyan]TMB[/cyan][/i]",title_align="center",border_style="cyan",expand=True)
+        c.print(p_tmbtext)    
 
-        print('\nInformação: Taxa Metabólica Basal (TMB) é a quantidade mínima de calorias que seu corpo precisa para manter funções vitais (como respiração, circulação e temperatura) em repouso completo.')
+        c.print(Panel('[violet]Informação:[/] Taxa Metabólica Basal (TMB) é a quantidade [red]mínima[/] de calorias que seu corpo precisa para manter funções vitais (como [chartreuse2]respiração[/], [chartreuse2]circulação[/] e [chartreuse2]temperatura[/]) em repouso completo.', expand = False, border_style = 'cyan'))
 
-        calculartmb_visualizartmb = input('\nDeseja calcular sua taxa metabólica basal (1), calcular outra qualquer (2), ou voltar (3)? ').strip()
+        c.print(Panel('Deseja calcular sua taxa metabólica basal (1), calcular outra qualquer (2), ou voltar (3)?', expand = False, border_style = 'yellow'))
+        calculartmb_visualizartmb = input('>>> ').strip()
 
         if calculartmb_visualizartmb == '1':
 
@@ -837,11 +843,13 @@ def calcular_taxametabolicabasal():
                         usuarios[usuario_logado]['TMB'] = TMB
                         salvar_dadosjson()
 
-                        print('\n-----------------------------')
-                        print(f'-----Sua TMB é :({TMB:.2f})----')
-                        print('-----------------------------')
-                        print('\nO cálculo foi feito com base no seu sexo de identidade, pois você informou que está em transição hormonal há mais de 12 meses.')
-                        print('Após esse tempo, a terapia hormonal tende a modificar significativamente o metabolismo, e por isso essa abordagem é mais precisa.')
+                        
+                        c.print(Panel(f'Sua TMB é :({TMB:.2f})',expand = False, border_style = 'cyan'))
+                        retornotmb1_text = Text()
+                        retornotmb1_text.append('O cálculo foi feito com base no seu sexo de identidade, pois você informou que está em transição hormonal há mais de 12 meses.')
+                        retornotmb1_text.append('\nApós esse tempo, a terapia hormonal tende a modificar significativamente o metabolismo, e por isso essa abordagem é mais precisa.')
+                        pretornotmb1 = Panel(retornotmb1_text, expand = False, border_style = 'cyan', title = '[blue]INFO[/]')
+                        c.print(pretornotmb1)
                         aguardar_volta()
                         return True
 
@@ -850,9 +858,12 @@ def calcular_taxametabolicabasal():
                         tmb_m = (10 * peso) + (6.25 * altura_cm) - (5 * idade) + 5
                         tmb_f = (10 * peso) + (6.25 * altura_cm) - (5 * idade) - 161
                         TMB = (tmb_m + tmb_f) / 2
-                        print(f'\nSua TMB é: {TMB:.2f} calorias (Resultado baseado na média entre os cálculos masculino e feminino.)')
-                        print('Utilizamos essa maneira, pois como você está em transição, seu corpo, fisiologicamente falando, está mudando gradualmente.')
-                        print('A média entre TMB masculina e feminina representa um ponto intermediário mais realista para estimar a sua necessidade calórica durante essa fase.')
+                        c.print(Panel(f'Sua TMB é: {TMB:.2f} calorias (Resultado baseado na média entre os cálculos masculino e feminino.)', expand = False, border_style = 'cyan'))
+                        retornotmb2_text = Text()
+                        retornotmb2_text.append('Utilizamos essa maneira, pois como você está em transição, seu corpo, fisiologicamente falando, está mudando gradualmente.')
+                        retornotmb2_text.append('\nA média entre TMB masculina e feminina representa um ponto intermediário mais realista para estimar a sua necessidade calórica durante essa fase.')
+                        pretornotmb2 = Panel(retornotmb2_text, expand = False, border_style = 'cyan', title = '[blue]INFO[/]')
+                        c.print(pretornotmb2)
                         usuarios[usuario_logado]['TMB'] = TMB
                         aguardar_volta()
                         continue
@@ -870,11 +881,12 @@ def calcular_taxametabolicabasal():
                 usuarios[usuario_logado]['TMB'] = TMB
                 salvar_dadosjson()
                 
-                print('\n-----------------------------')
-                print(f'-----Sua TMB é :({TMB:.2f})----')
-                print('-----------------------------')
-                print('\nO cálculo foi feito com base no seu sexo biológico, pois você indicou que não faz uso de terapia hormonal.')
-                print('Isso é importante porque, sem o uso de hormônios, seu metabolismo segue padrões fisiológicos relacionados ao sexo biológico.')
+                c.print(Panel(f'Sua TMB é :({TMB:.2f})', expand = False, border_style = 'cyan'))
+                retornotmb3_text = Text()
+                retornotmb3_text.append('O cálculo foi feito com base no seu sexo biológico, pois você indicou que não faz uso de terapia hormonal.')
+                retornotmb3_text.append('\nIsso é importante porque, sem o uso de hormônios, seu metabolismo segue padrões fisiológicos relacionados ao sexo biológico.')
+                pretornotmb3 = Panel(retornotmb3_text, expand = False, border_style = 'cyan', title = '[blue]INFO[/]')
+                c.print(pretornotmb3)
                 aguardar_volta()
                 return True
         
@@ -890,10 +902,8 @@ def calcular_taxametabolicabasal():
                 usuarios[usuario_logado]['TMB'] = TMB
                 salvar_dadosjson()
 
-                print('\n-----------------------------')
-                print(f'-----Sua TMB é :({TMB:.2f})----')
-                print('-----------------------------')
-                print('\nO cálculo foi feito com base no sexo informado no seu cadastro.')
+                c.print(Panel(f'Sua TMB é :({TMB:.2f})', expand = False, border_style = 'cyan'))
+                c.print(Panel('O cálculo foi feito com base no sexo informado no seu cadastro.', expand = False, border_style = 'cyan', title = '[blue]INFO[/]'))
                 aguardar_volta()
                 return True
 
@@ -902,42 +912,63 @@ def calcular_taxametabolicabasal():
             while True:
 
                 try:
-                    pesoex = float(input('\nDigite o peso (em kg): '))
+                    c.print(Panel('Digite o [chartreuse2]peso[/] em quilogramas:', expand = False, border_style = 'yellow'))
+                    pesoex = float(input('>>> '))
                     if pesoex > 350:
-                        print('Digite um peso válido.')
+                        c.print(Panel('Digite um peso válido.',expand = False, border_style = 'red', title = '[b]ERRO[/b]', title_align = 'center'))
+                        aguardar_volta()
                         continue
                     
-
-                    alturaex = float(input('\nDigite a altura (em cm): '))
+                    c.print(Panel('Digite a altura em centímetros:', expand = False, border_style = 'yellow'))
+                    alturaex = float(input('>>> '))
                     if alturaex > 220:
-                        print('\nDigite uma altura válida, em centímetros.')
+                        c.print(Panel('Digite uma altura válida, em centímetros.', expand = False, border_style = 'red', title = '[b]ERRO[/b]', title_align = 'center'))
+                        aguardar_volta()
                         continue
                     
-        
-                    idadeex = int(input('\nDigite a idade: '))
+                    c.print(Panel('Digite a idade:', expand = False, border_style = 'yellow'))
+                    idadeex = int(input('>>> '))
                     if idadeex > 100:
-                        print('\nDigite uma idade válida.')
+                        c.print(Panel('Digite uma idade válida.', expand = False, border_style = 'red', title = '[b]ERRO[/b]', title_align = 'center'))
+                        aguardar_volta()
                         continue
-                
-                    print('\nQual é a sua identidade de gênero?')
-                    print('\n1. Homem Cis')
-                    print('2. Mulher Cis')
-                    print('3. Homem Trans')
-                    print('4. Mulher Trans')
-        
-                    sexo_opcao = input('\nEscolha a sua opção: (1-4): ').strip()
+                    
+                    textoidentidade_text = Text()
+                    textoidentidade_text.append('\n')
+                    textoidentidade_text.append('Qual é a sua identidade de gênero?\n')
+                    textoidentidade_text.append('\n')
+
+                    textoidentidade_text.append('1. ', style = 'red')
+                    textoidentidade_text.append('Homem Cis ')
+
+                    textoidentidade_text.append('2. ', style = 'red')
+                    textoidentidade_text.append('Mulher Cis ')
+
+                    textoidentidade_text.append('3. ', style = 'red')
+                    textoidentidade_text.append('Homem Trans ')
+
+                    textoidentidade_text.append('4. ', style = 'red')
+                    textoidentidade_text.append('Mulher Trans ')
+
+                    painelidentidade = Panel(textoidentidade_text, border_style="cyan", expand = False,title="[bold cyan]Sua identidade[/bold cyan]",title_align="center")
+                    c.print(painelidentidade)
+                    
+                    c.print(Panel('Digite [green][u][b]sua[/b][/u][/] opção: ', expand = False, border_style = 'yellow'))
+                    sexo_opcao = input('>>> ').strip()
         
                     if sexo_opcao not in ['1', '2', '3', '4']:
-                        print('\n|Opção inválida! Escolha 1-4|')
+                        c.print(Panel('Opção inválida! Escolha 1-4', expand = False, border_style = 'red', title = '[b]ERRO[/b]', title_align = 'center'))
+                        aguardar_volta()
                         continue
                     
                     em_transicao = False
                     tempo_transicao = 0
                     
                     if sexo_opcao in ['3', '4']:
-                        resposta = input('\nVocê já fez uso de terapia hormonal? (s/n): ').lower().strip()
+                        c.print(Panel('Você já fez uso de terapia hormonal? (s/n):', expand = False, border_style = 'yellow'))
+                        resposta = input('>>> ').lower().strip()
                         if resposta not in ['s','n']:
-                            print('\nDigite (s) ou (n).')
+                            c.print(Panel('Digite (s) ou (n).', expand = False, border_style = 'red', title = '[b]ERRO[/b]', title_align = 'center'))
                             aguardar_volta()
                             continue 
                         em_transicao = resposta == 's'
@@ -947,15 +978,16 @@ def calcular_taxametabolicabasal():
                             while True:
 
                                 try:
-
-                                    tempo_transicao = int(input('\nHá quantos meses você faz uso? '))
+                                    c.print(Panel('Há quantos meses você faz uso?', expand = False, border_style = 'yellow'))
+                                    tempo_transicao = int(input('>>> '))
                                     if tempo_transicao < 0:
-                                        print('\n|Digite um valor válido.|')
+                                        c.print(Panel('Digite um valor válido.', expand = False, border_style = 'red', title = '[b]ERRO[/b]', title_align = 'center'))
+                                        aguardar_volta()
                                         continue
                                     break
 
                                 except ValueError:
-                                    print('\n|Digite um número válido.|')
+                                    c.print(Panel('Digite um número válido.', expand = False, border_style = 'red', title = '[b]ERRO[/b]', title_align = 'center'))
                     
                     tmb_m = (10 * pesoex) + (6.25 * alturaex) - (5 * idadeex) + 5
                     tmb_f = (10 * pesoex) + (6.25 * alturaex) - (5 * idadeex) - 161
@@ -963,59 +995,61 @@ def calcular_taxametabolicabasal():
                     if sexo_opcao == '1':  
 
                         TMB = tmb_m
-                        print(f'\nSua TMB é: {TMB:.2f}')
+                        c.print(Panel(f'Sua TMB é: {TMB:.2f}', expand = False, border_style = 'cyan'))
                         
                     elif sexo_opcao == '2':  
 
                         TMB = tmb_f
-                        print(f'\nSua TMB é: {TMB:.2f}')
+                        c.print(Panel(f'Sua TMB é: {TMB:.2f}', expand = False, border_style = 'cyan'))
                         
                     elif sexo_opcao == '3':  
 
                         if em_transicao and tempo_transicao >= 12:
                             TMB = tmb_m  
-                            print(f'\nSua TMB é: {TMB:.2f}')
-                            print('✅ Cálculo feito com base no seu sexo atual, conforme sua identidade de gênero.')
+                            c.print(Panel(f'\nSua TMB é: {TMB:.2f}', expand = False, border_style = 'cyan'))
+                            c.print(Panel('✅ Cálculo feito com base no seu sexo atual, conforme sua identidade de gênero.', expand = False, border_style = 'cyan', title = '[blue]INFO[/]', title_align = 'center'))
 
                         elif em_transicao:
                             TMB = (tmb_m + tmb_f) / 2  
-                            print(f'\nSua TMB é: {TMB:.2f}')
-                            print('Como sua transição é recente, usamos uma média para tornar o cálculo mais preciso.')
+                            c.print(Panel(f'Sua TMB é: {TMB:.2f}', expand = False, border_style = 'cyan'))
+                            c.print(Panel('Como sua transição é recente, usamos uma média para tornar o cálculo mais preciso.', expand = False, border_style = 'cyan', title = '[blue]INFO[/]', title_align = 'center'))
 
                         else:
                             TMB = tmb_f  
-                            print(f'\nSua TMB é: {TMB:.2f}')
-                            print('Como não há uso de hormônios, o cálculo foi feito com base no sexo biológico.')
+                            c.print(Panel(f'Sua TMB é: {TMB:.2f}', expand = False, border_style = 'cyan'))
+                            c.print(Panel('Como não há uso de hormônios, o cálculo foi feito com base no sexo biológico.', expand = False, border_style = 'cyan', title = '[blue]INFO[/]', title_align = 'center'))
                             
                     elif sexo_opcao == '4':  
 
                         if em_transicao and tempo_transicao >= 12:
                             TMB = tmb_f  
-                            print(f'\nSua TMB é: {TMB:.2f}')
-                            print('✅ Cálculo feito com base no seu sexo atual, conforme sua identidade de gênero.')
+                            c.print(Panel(f'Sua TMB é: {TMB:.2f}', expand = False, border_style = 'cyan'))
+                            c.print(Panel('✅ Cálculo feito com base no seu sexo atual, conforme sua identidade de gênero.', expand = False, border_style = 'cyan', title = '[blue]INFO[/]', title_align = 'center'))
 
                         elif em_transicao:
                             TMB = (tmb_m + tmb_f) / 2  
-                            print(f'\nSua TMB é: {TMB:.2f}')
-                            print('Como sua transição é recente, usamos uma média para tornar o cálculo mais preciso.')
+                            c.print(Panel(f'Sua TMB é: {TMB:.2f}', expand = False, border_style = 'cyan'))
+                            c.print(Panel('Como sua transição é recente, usamos uma média para tornar o cálculo mais preciso.', expand = False, border_style = 'cyan', title = '[blue]INFO[/]', title_align = 'center'))
 
                         else:
                             TMB = tmb_m  
-                            print(f'\nSua TMB é: {TMB:.2f}')
-                            print('Como não há uso de hormônios, o cálculo foi feito com base no sexo biológico.')
+                            c.print(Panel(f'Sua TMB é: {TMB:.2f}', expand = False, border_style = 'cyan'))
+                            c.print(Panel('Como não há uso de hormônios, o cálculo foi feito com base no sexo biológico.', expand = False, border_style = 'cyan', title = '[blue]INFO[/]', title_align = 'center'))
                     
                     aguardar_volta()
                     return True
                     
                 except ValueError:
-                    print('\n|Valor inválido! Digite números válidos.|')
+                    c.print(Panel('Valor inválido! Digite números válidos.', expand = False, border_style = 'red', title = '[b]ERRO[/b]', title_align = 'center'))
+                    aguardar_volta()
                 break
 
         elif calculartmb_visualizartmb == '3':
             return False
 
         else:
-            print('\n|Opção inválida! Digite 1, 2 ou 3.|')
+            c.print(Panel('Opção inválida! Digite 1, 2 ou 3.', expand = False, border_style = 'red', title = '[b]ERRO[/b]', title_align = 'center'))
+            aguardar_volta()
             continue
         
 
@@ -1184,7 +1218,7 @@ def menu_logado():
                 Layout(name="inspiracao"))
         
         nome = usuarios[usuario_logado]["nome"]
-        texto_header = Text(f"👤 Logado como: {nome}", style="blue")
+        texto_header = Text(f"👤 Logado como: {nome}", style="red")
         painel_header = Panel(texto_header, style="red", title="Menu Principal")
         layout["header"].update(painel_header)
 
@@ -1286,30 +1320,42 @@ def menu_logado():
             calcular_imc()
 
         elif opcao == '3':
+            with c.status('carregando', spinner = 'hearts'):  
+                time.sleep(2)
             calcular_taxametabolicabasal()
 
         elif opcao == '4':
+            with c.status('carregando', spinner = 'hearts'):  
+                time.sleep(2)
             registrar_calorias()
 
         elif opcao == '5':
+            with c.status('carregando', spinner = 'hearts'):  
+                time.sleep(2)
             atualizar_usuario()
 
         elif opcao == '6':
+            with c.status('carregando', spinner = 'hearts'):  
+                time.sleep(2)
             print('\nAtualizando dados...')
             atualizar_dados()
 
         elif opcao == '7':
+            with c.status('carregando', spinner = 'hearts'):  
+                time.sleep(2)
             usuario_logado = None
             print('Deslogado com sucesso!')
             aguardar_volta()
             return
         
         elif opcao == '8':
+            with c.status('carregando', spinner = 'hearts'):  
+                time.sleep(2)
             if deletar_usuario():
                 aguardar_volta()
                 return
         else:
-            print('Opção inválida! Digite um número de 1 a 8.')
+            c.print(Panel('Opção inválida! Digite um número de 1 a 8.', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
 
 if __name__ == "__main__":
     menu_principal() 
