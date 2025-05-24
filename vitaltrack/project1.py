@@ -101,7 +101,10 @@ def cadastro_de_usuario():
     
     c.print(Panel('Digite seu [green][u][b]nome[/b][/u][/]: (Será seu nome de usuário)', expand = False, border_style = 'yellow'))
     nome = input('>>> ').strip()
-    with c.status('guardando os dados', spinner = 'hearts'):  
+    with c.status("[red]G[/red][magenta]u[/magenta][yellow]a[/yellow][green]r[/green]"
+        "[cyan]d[/cyan][blue]a[/blue][red]n[/red][magenta]d[/magenta][yellow]o[/yellow] "
+        "[green]o[/green][cyan]s[/cyan] "
+        "[blue]d[/blue][red]a[/red][magenta]d[/magenta][yellow]o[/yellow][green]s[/green]", spinner = 'hearts'):  
         time.sleep(2)
     
     usuarios[email] = {
@@ -177,8 +180,10 @@ def escolher_objetivo():
             '1': 'GANHO DE MASSA',
             '2': 'PERDA DE PESO', 
             '3': 'MANUTENÇÃO DA SAÚDE' }
-        with c.status('salvando', spinner = 'moon'):  
-                time.sleep(2)
+        with c.status("[red]S[/red][magenta]a[/magenta][yellow]l[/yellow]"
+            "[green]v[/green][cyan]a[/cyan][blue]n[/blue]"
+            "[red]d[/red][magenta]o[/magenta]", spinner = 'hearts'):  
+            time.sleep(2)
         c.rule('[b][i][blue]VitalTrack[/][/i][/b]')
         print(' ')
         c.print(Panel(f'Você escolheu: {objetivos[objetivo]}', border_style = 'cyan', expand = False))
@@ -306,7 +311,12 @@ def escolher_objetivo():
 
                 except ValueError:
                     c.print(Panel('Valores inválidos! Digite números válidos.', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))        
-                with c.status('salvando', spinner = 'moon'):  
+                with c.status("[red]O[/red][magenta]r[/magenta][yellow]g[/yellow][green]a[/green]"
+                            "[cyan]n[/cyan][blue]i[/blue][red]z[/red][magenta]a[/magenta][yellow]n[/yellow]"
+                            "[green]d[/green][cyan]o[/cyan] "
+                            "[blue]s[/blue][red]u[/red][magenta]a[/magenta][yellow]s[/yellow] "
+                            "[green]i[/green][cyan]n[/cyan][blue]f[/blue][red]o[/red][magenta]r[/magenta]"
+                            "[yellow]m[/yellow][green]a[/green][cyan]ç[/cyan][blue]õ[/blue][red]e[/red][magenta]s[/magenta]", spinner = 'hearts'):  
                             time.sleep(2)
                 while True:
                     try:
@@ -320,7 +330,10 @@ def escolher_objetivo():
                         peso = float(input('>>> ').strip())
                         c.print(Panel('Digite sua [u][green][b]altura[/b][/][/u] em metros: ', expand = False, border_style = 'yellow'))
                         altura = float(input('>>> ').strip())
-                        with c.status('validando seus dados, já te levo pro menu', spinner = 'bouncingBar'):  
+                        with c.status("[red]V[/red][magenta]a[/magenta][yellow]l[/yellow][green]i[/green]"
+                            "[cyan]d[/cyan][blue]a[/blue][red]n[/red][magenta]d[/magenta][yellow]o[/yellow] "
+                            "[green]s[/green][cyan]e[/cyan][blue]u[/blue][red]s[/red] "
+                            "[magenta]d[/magenta][yellow]a[/yellow][green]d[/green][cyan]o[/cyan][blue]s[/blue]", spinner = 'hearts'):  
                             time.sleep(2)
                         
                         if idade <= 0 or peso <= 0 or altura <= 0:
@@ -407,49 +420,74 @@ def atualizar_usuario():
     """
     global usuario_logado, usuarios
     if usuario_logado is None: 
-        print('|Faça login primeiro!|')
+        c.print(Panel('Faça login primeiro!',expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
         return
     
     while True:
-        
-        print('\n(ATUALIZAR PERFIL)')
-        print(f'\n1.Alterar nome. (nome atual:{usuarios[usuario_logado]["nome"]})')
-        print('2.Alterar senha.')
-        print(f'3.Alterar EMAIL. (email atual:{usuario_logado})')
-        print('4.Voltar ao MENU anterior.')
+        c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
+        print(' ')
+        atualizarperfil_text = Text()
+        atualizarperfil_text.append('\n')
+        atualizarperfil_text.append('ATUALIZAR PERFIL', style = 'blue')
+        atualizarperfil_text.append('\n')
 
-        opçao3 = input('\nO que deseja atualizar? (1-4): ')
+        atualizarperfil_text.append('\n1. ', style = 'red')
+        atualizarperfil_text.append(f'Alterar nome. (nome atual:{usuarios[usuario_logado]["nome"]})')
+
+        atualizarperfil_text.append('\n2. ', style = 'red')
+        atualizarperfil_text.append('Alterar senha.')
+
+        atualizarperfil_text.append('\n3. ', style = 'red')
+        atualizarperfil_text.append(f'Alterar email. (email atual:{usuario_logado})')
+
+        atualizarperfil_text.append('\n4. ', style = 'red')
+        atualizarperfil_text.append('Voltar')
+
+        patualizarperfil = Panel(atualizarperfil_text, expand = False, border_style = 'cyan', title = '🔹')
+        c.print(patualizarperfil)
+
+        c.print(Panel('O que deseja atualizar? (1-4):', expand = False, border_style = 'yellow'))
+        opçao3 = input('>>> ').strip()
 
         if opçao3 == '1':
-            novo_nome = input(f'Digite o novo nome (atual: {usuarios[usuario_logado]["nome"]}):').strip()
+            c.print(Panel(f'Digite o novo nome (atual: {usuarios[usuario_logado]["nome"]}):',expand = False, border_style = 'yellow'))
+            novo_nome = input('>>> ').strip()
             if novo_nome:
                 usuarios[usuario_logado]["nome"] = novo_nome
                 salvar_dadosjson()
-                print('Nome atualizado com sucesso!')
+                c.print(Panel('Nome atualizado com sucesso!', expand = False, border_style = 'cyan'))
+                aguardar_volta()
 
         elif opçao3 == '2':
-            nova_senha = input('Digite uma nova senha (mínimo 6 caracteres): ')
+            c.print(Panel('Digite uma nova senha (mínimo 6 caracteres):', expand = False, border_style = 'yellow'))
+            nova_senha = input('>>> ')
             if len(nova_senha) >=6:
                 usuarios[usuario_logado]["senha"] = nova_senha
                 salvar_dadosjson()
-                print('Senha atualizada com sucesso!')
+                c.print(Panel('Senha atualizada com sucesso!', expand = False, border_style = 'cyan'))
+                aguardar_volta()
 
             else:
-                print('|Senha muito curta.|') 
+                c.print(Panel('Senha muito curta.', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
+                aguardar_volta() 
 
         elif opçao3 == '3':
-            novo_email = input(f'Digite seu novo email (atual: {usuario_logado}): ').strip().lower()  
+            c.print(Panel(f'Digite seu novo email (atual: {usuario_logado}):', expand = False, border_style = 'yellow'))
+            novo_email = input('>>> ').strip().lower()  
             if not novo_email:
                 continue
 
             if novo_email == usuario_logado:
-                print('|O novo email é igual ao atual.|')   
+                c.print(Panel('O novo email é igual ao atual.', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
+                aguardar_volta()   
 
             elif '@' not in novo_email or '.com' not in novo_email:
-                print("|Formato inválido (use '@' e '.com').|")
+                c.print(Panel("Formato inválido (use '@' e '.com').", expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
+                aguardar_volta()
 
             elif novo_email in usuarios:
-                print('|Email já cadastrado.|') 
+                c.print(Panel('Email já cadastrado.', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center')) 
+                aguardar_volta()
 
             else:
                 
@@ -457,106 +495,146 @@ def atualizar_usuario():
                 del usuarios[usuario_logado]
                 usuario_logado = novo_email
                 salvar_dadosjson()
-                print("Email atualizado com sucesso!") 
+                c.print(Panel("Email atualizado com sucesso!", expand = False, border_style = 'cyan'))
+                aguardar_volta() 
 
         elif opçao3 == '4':
+            with c.status("[red]G[/red][magenta]u[/magenta][yellow]a[/yellow][green]r[/green]"
+                "[cyan]d[/cyan][blue]a[/blue][red]n[/red][magenta]d[/magenta][yellow]o[/yellow] "
+                "[green]o[/green][cyan]s[/cyan] "
+                "[blue]d[/blue][red]a[/red][magenta]d[/magenta][yellow]o[/yellow][green]s[/green]", spinner = 'hearts'):  
+                time.sleep(2)
             break
 
         else:
-            print('|Opção inválida. Digite uma opção disponível (1-4)|')
+            c.print(Panel('Opção inválida. Digite uma opção disponível (1-4)', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
 
 def atualizar_dados():
     global usuario_logado, usuarios
 
     if usuario_logado is None:
-        print('\n|Faça login primeiro!|')
+        c.print(Panel('Faça login primeiro!', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
         aguardar_volta()
         return
     
     user = usuarios[usuario_logado]
     
     if not user.get('dados'):
-        print('\n|Complete seus dados primeiro!|')
+        c.print(Panel('Complete seus dados primeiro!', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
         escolher_objetivo()
         return
+    
+    objetivos = {
+            '1': 'GANHO DE MASSA',
+            '2': 'PERDA DE PESO', 
+            '3': 'MANUTENÇÃO DA SAÚDE' }
     
     while True:
 
         try:
-            
-            print('\nATUALIZAR DADOS PESSOAIS')
             dados = user['dados']
             objetivo_atual = user['objetivo']
+            c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
+            print(' ')
+            atualizarusuario_text = Text()
+            atualizarusuario_text.append('\n')
+            atualizarusuario_text.append('ATUALIZAR DADOS PESSOAIS', style = 'blue')
+            atualizarusuario_text.append('\n')
 
-            objetivos = {
-            '1': 'GANHO DE MASSA',
-            '2': 'PERDA DE PESO', 
-            '3': 'MANUTENÇÃO DA SAÚDE' }
+            atualizarusuario_text.append('\n1. ', style = 'red')
+            atualizarusuario_text.append(f'Idade: {dados["idade"]} anos')
 
-            print(f'\nDados atuais:')
-            print(f'\n1. Idade: {dados["idade"]} anos')
-            print(f'2. Peso: {dados["peso"]} kg')
-            print(f'3. Altura: {dados["altura"]} m')
-            print(f'4. Objetivo: {objetivos[objetivo_atual]}')
-            print('5. Voltar')
+            atualizarusuario_text.append('\n2. ', style = 'red')
+            atualizarusuario_text.append(f'Peso: {dados["peso"]} kg')
+
+            atualizarusuario_text.append('\n3. ', style = 'red')
+            atualizarusuario_text.append(f'Altura: {dados["altura"]} m')
+
+            atualizarusuario_text.append('\n4. ', style = 'red')
+            atualizarusuario_text.append(f'Objetivo: {objetivos[objetivo_atual]}')
+
+            atualizarusuario_text.append('\n5. ', style = 'red')
+            atualizarusuario_text.append('Voltar')
+
+            patualizarusuario = Panel(atualizarusuario_text, expand = False, border_style = 'cyan', title = '🔹', title_align = 'center')
+            c.print(patualizarusuario)
             
-            campo = input('\nQual dado deseja alterar? (1-5): ').strip()
+            
+            c.print(Panel('Qual dado deseja alterar? (1-5):', expand = False, border_style = 'yellow'))
+            campo = input('>>> ').strip()
             
             if campo == '1':
                 nova_idade = int(input('\nNova idade: '))
                 if 0 < nova_idade <= 100:
                     dados['idade'] = nova_idade
                     salvar_dadosjson()
-                    print('Idade atualizada com sucesso!')
+                    c.print(Panel('Idade atualizada com sucesso!', expand = False, border_style = 'cyan'))
+                    aguardar_volta()
 
                 else:
-                    print('Idade deve ser entre 1 e 100 anos')
+                    c.print(Panel('Idade deve ser entre 1 e 100 anos', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
                 aguardar_volta()
                 
             elif campo == '2':
-                novo_peso = float(input('\nNovo peso (kg): '))
+                c.print(Panel('Novo peso, em quilogramas:', expand = False, border_style = 'yellow'))
+                novo_peso = float(input('>>> '))
                 if 0 < novo_peso <= 350:
                     dados['peso'] = novo_peso
                     salvar_dadosjson()
-                    print('Peso atualizado com sucesso!')
+                    c.print(Panel('Peso atualizado com sucesso!', expand = False, border_style = 'cyan'))
+                    aguardar_volta()
 
                 else:
-                    print('Peso deve ser entre 0.1 e 350 kg')
+                    c.print(Panel('Peso deve ser entre 0.1 e 350 kg', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
                 aguardar_volta()
                 
             elif campo == '3':
-                nova_altura = float(input('\nNova altura (m): '))
+                c.print(Panel('Nova altura, em metros:', expand = False, border_style = 'yellow'))
+                nova_altura = float(input('>>> '))
                 if 0 < nova_altura <= 2.5:
                     dados['altura'] = nova_altura
                     salvar_dadosjson()
-                    print('Altura atualizada com sucesso!')
+                    c.print(Panel('Altura atualizada com sucesso!', expand = False, border_style = 'cyan'))
+                    aguardar_volta()
 
                 else:
-                    print('Altura deve ser entre 0.1 e 2.5 metros')
+                    c.print(Panel('Altura deve ser entre 0.1 e 2.5 metros', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
                 aguardar_volta()
                 
             elif campo == '4':
+                mudandoobj_text = Text()
+                mudandoobj_text.append('\n')
+                mudandoobj_text.append('Objetivos disponíveis:')
+                mudandoobj_text.append('\n')
+
+                mudandoobj_text.append('\n1. ', style = 'red')
+                mudandoobj_text.append('Ganho de massa')
+
+                mudandoobj_text.append('\n2 ', style = 'red')
+                mudandoobj_text.append('Perda de peso')
+
+                mudandoobj_text.append('\n3 ', style = 'red')
+                mudandoobj_text.append('Manutenção da saúde')
+
+                pmudandoobjt = Panel(mudandoobj_text, expand = False, border_style = 'cyan', title = 'novo objetivo', title_align = 'center')
+                c.print(pmudandoobjt)
                 
-                print('\nObjetivos disponíveis:')
-                print('1. Ganho de massa')
-                print('2. Perda de peso')
-                print('3. Manutenção da saúde')
-                
-                novo_objetivo = input('\nNovo objetivo (1-3): ').strip()
+                c.print(Panel('Novo objetivo (1-3):', expand = False, border_style = 'yellow'))
+                novo_objetivo = input('>>> ').strip()
                 if novo_objetivo in ['1', '2', '3']:
                     user['objetivo'] = novo_objetivo
                     salvar_dadosjson()
-                    print(f'\nObjetivo atualizado para: {objetivos[novo_objetivo]}')
+                    c.print(Panel(f'Objetivo atualizado para: {objetivos[novo_objetivo]}', expand = False, border_style = 'cyan'))
 
                 else:
-                    print('\n|Opção inválida!|')
+                    c.print(Panel('Opção inválida!', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
                 aguardar_volta()
                 
             elif campo == '5':
                 break
                 
             else:
-                print('Opção inválida! digite uma opção disponível.')
+                c.print(Panel('Opção inválida! digite uma opção disponível.', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
                 aguardar_volta()
                 
         except ValueError:
@@ -621,21 +699,27 @@ def menu_principal():
         opçao1 = input('>>> ')
 
         if opçao1 == '1':
-            with c.status('carregando', spinner = 'hearts'):  
-                time.sleep(2)
+            with c.status("[red]C[/red][magenta]a[/magenta][yellow]r[/yellow][green]r[/green]"
+    "[cyan]e[/cyan][blue]g[/blue][red]a[/red][magenta]n[/magenta][yellow]d[/yellow][green]o[/green]", spinner = 'hearts'):  
+                    time.sleep(2)
             if cadastro_de_usuario():
                 menu_logado()
                      
         elif opçao1 == '2':
-            with c.status('carregando', spinner = 'hearts'):  
-                time.sleep(2)
+            with c.status("[red]C[/red][magenta]a[/magenta][yellow]r[/yellow][green]r[/green]"
+    "[cyan]e[/cyan][blue]g[/blue][red]a[/red][magenta]n[/magenta][yellow]d[/yellow][green]o[/green]", spinner = 'hearts'):  
+                    time.sleep(2)
             if fazer_login():
+                with c.status("[red]C[/red][magenta]a[/magenta][yellow]r[/yellow][green]r[/green]"
+    "[cyan]e[/cyan][blue]g[/blue][red]a[/red][magenta]n[/magenta][yellow]d[/yellow][green]o[/green]", spinner = 'hearts'):  
+                    time.sleep(2)
                 menu_logado()
                 
         elif opçao1 == '3':
-            with c.status('saindo', spinner = 'point'):  
-                time.sleep(2)
-            print('até logo! 👋')
+            with c.status("[red]S[/red][magenta]a[/magenta][yellow]i[/yellow]"
+    "[green]n[/green][cyan]d[/cyan][blue]o[/blue]", spinner = 'hearts'):  
+                    time.sleep(2)
+            c.print(Panel('até logo! 👋', expand = False, border_style = 'cyan'))
             break
 
         else:
@@ -819,6 +903,11 @@ def calcular_taxametabolicabasal():
         calculartmb_visualizartmb = input('>>> ').strip()
 
         if calculartmb_visualizartmb == '1':
+
+            with c.status("[red]C[/red][magenta]a[/magenta][yellow]l[/yellow][green]c[/green]"
+                "[cyan]u[/cyan][blue]l[/blue][red]a[/red][magenta]n[/magenta]"
+                "[yellow]d[/yellow][green]o[/green]", spinner="hearts"):
+                time.sleep(2)
 
             dados = user['dados']
             altura = dados['altura']
@@ -1064,14 +1153,15 @@ def registrar_calorias():
     global usuarios, usuario_logado
 
     if usuario_logado is None:
-        print('|Faça login primeiro!|')
+        c.print(Panel('Faça login primeiro!', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
         aguardar_volta()  
         return
     
     user = usuarios[usuario_logado]
 
     if 'TMB' not in user or not user.get('dados'):
-        print('\n|Você precisa calcular sua taxa metabólica basal primeiro!|')
+        c.print(Panel('Você precisa calcular sua taxa metabólica basal primeiro!', expand = False, border_style = 'red', title = '❗AVISO❗', title_align = 'center'))
+        aguardar_volta()
         if not calcular_taxametabolicabasal():  
             return  
     
@@ -1088,112 +1178,188 @@ def registrar_calorias():
     if 'calorias_hoje' not in user:
         user['calorias_hoje'] = 0
 
-    print('\n-----REGISTRO DE CALORIAS-----')
-    print(f'Data: {data_atual}')
-
     while True:
 
         try:
-            
-            print('\n1. Adicionar calorias ao seu dia')
-            print('2. Finalizar o dia')
-            print('3. Ver histórico')
-            print('4. Voltar')
+            c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
+            print(' ')
+            registrodecal_text = Text()
+            registrodecal_text.append('\n')
+            registrodecal_text.append('REGISTRO DE CALORIAS\n', style = 'blue')
+            registrodecal_text.append('\n')
+            registrodecal_text.append(f'Data: {data_atual}')
+            registrodecal_text.append('\n')
 
-            opcao = input('Digite uma opção (1-4): ').strip()
+            registrodecal_text.append('\n1. ', style = 'red')
+            registrodecal_text.append('Adicionar calorias ao seu dia\n')
+
+            registrodecal_text.append('2. ', style = 'red')
+            registrodecal_text.append('Finalizar o dia\n')
+
+            registrodecal_text.append('3. ', style = 'red')
+            registrodecal_text.append('Ver histórico\n')
+
+            registrodecal_text.append('4. ', style = 'red')
+            registrodecal_text.append('Voltar')
+
+            pregistrodecal = Panel(registrodecal_text, border_style="cyan", expand = False,title="[bold cyan]🍽[/bold cyan]",
+    title_align="center")
+            c.print(pregistrodecal)
+
+            c.print(Panel('Digite uma opção (1-4):', expand = False, border_style = 'yellow'))
+            opcao = input('>>> ').strip()
 
             if opcao == '1':
-                print(f'\nTotal de calorias hoje: {user["calorias_hoje"]}/{TMB:.0f}')
-                cal = input('\nQuantas calorias você consumiu em sua última refeição? ')
+                c.print(Panel(f'Total de calorias hoje: {user["calorias_hoje"]}/{TMB:.0f}', expand = False, border_style = 'cyan'))
+                c.print(Panel('Quantas calorias você consumiu em sua última refeição?', expand = False, border_style = 'yellow'))
+                cal = input('>>> ')
                 cal = int(cal)
 
                 if cal <= 0:
-                    print('\nOps, este não é um valor válido. Caso queira registrar suas calorias, digite um valor válido.')
+                    c.print(Panel('Ops, este não é um valor válido. Caso queira registrar suas calorias, digite um valor válido.', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
                     aguardar_volta()
                     continue
 
                 user['calorias_hoje'] += cal  #aqui, as calorias são acumuladas.
                 salvar_dadosjson()
-                print(f'\nVocê consumiu {cal} calorias.')
-                print(f'Total hoje: {user["calorias_hoje"]}/{TMB:.0f}')
+                feedbackcal_text = Text()
+                feedbackcal_text.append(f'Você consumiu {cal} calorias.')
+                feedbackcal_text.append(f'\nTotal hoje: {user["calorias_hoje"]}/{TMB:.0f}')
+                pfeedbackcal = Panel(feedbackcal_text, expand = False, border_style = 'cyan', title = 'FEEDBACK', title_align = 'center')
+                c.print(pfeedbackcal)
                 aguardar_volta()
 
             elif opcao == '2':
-                    es = input('\nDeseja finalizar o seu dia ? Não poderá mais adicionar calorias ao dia de hoje. (s/n):  ').strip().lower()
+                    c.print(Panel('Deseja finalizar o seu dia ? Não poderá mais adicionar calorias ao dia de hoje. (s/n):', expand = False, border_style = 'yellow'))
+                    es = input('>>> ').strip().lower()
 
                     if es == 's':
                         if data_atual not in user['historico_dias']:
                             user['historico_dias'][data_atual] = user['calorias_hoje']
                             salvar_dadosjson()
-                            print(f'\nDia finalizado com sucesso! Total salvo: {user["calorias_hoje"]} calorias')
+                            c.print(Panel(f'Dia finalizado com sucesso! Total salvo: {user["calorias_hoje"]} calorias', expand = False, border_style = 'cyan'))
                             user['calorias_hoje'] = 0  #zerando a contagem para o próximo dia
                             
                             diferenca = user['historico_dias'][data_atual] - TMB  # Usamos o valor salvo no histórico
                             
                             if diferenca > 0:
-                                print(f'\nVocê está {diferenca:.0f} calorias acima da sua TMB.')
+                                c.print(Panel(f'Você está {diferenca:.0f} calorias acima da sua TMB.', expand = False, title = 'INFO', title_align = 'center', border_style = 'cyan'))
 
                             elif diferenca < 0:
-                                print(f'\nVocê está {abs(diferenca):.0f} calorias abaixo da sua TMB.')
+                                c.print(Panel(f'Você está {abs(diferenca):.0f} calorias abaixo da sua TMB.', expand = False, title = 'INFO', title_align = 'center', border_style = 'cyan'))
 
                             else:
-                                print('\nVocê consumiu exatamente sua TMB!')
+                                c.print(Panel('Você consumiu exatamente sua TMB!', expand = False, title = 'INFO', title_align = 'center', border_style = 'cyan'))
                             
                             #dicas personalizadas de acordo com o objetivo do usuário.
-                            print('\n--- ANÁLISE DO SEU OBJETIVO ---')
+                        
+                            print('ANÁLISE DO SEU OBJETIVO')
                             
                             if objetivo == '1':  #ganho de massa
                                 if diferenca > 0:
-                                    print('\nÓtimo! Superávit calórico ajuda no ganho de massa. MANTÉM! 😎')
-
+                                    analiseobj1_text = Text()
+                                    analiseobj1_text.append('\n')
+                                    analiseobj1_text.append('Análise do seu objetivo:', style = 'blue')
+                                    analiseobj1_text.append('\n')
+                                    analiseobj1_text.append('\nÓtimo! Superávit calórico ajuda no ganho de massa. MANTÉM! 😎')
+                                    analiseobj1_text.append('\n💪 Alimente-se bem: priorize proteínas (frango, ovos, peixe), carboidratos complexos (arroz, batata-doce) e gorduras boas (azeite, castanhas)')
+                                    analiseobj1_text.append('\n🛌 Descanse de verdade: dormir 7–9 horas por noite e ter dias de descanso são tão importantes quanto o treino e alimentação.')
+                                    panaliseobj1 = Panel(analiseobj1_text, expand = False, border_style = 'cyan', title = '🤓', title_align = 'center')
+                                    c.print(panaliseobj1)
+                                    
                                 else:
-                                    print('\nAtenção! Para ganhar massa, você precisa consumir mais que sua TMB.')
+                                    analiseobj12_text = Text()
+                                    analiseobj12_text.append('\n')
+                                    analiseobj12_text.append('Análise do seu objetivo:', style = 'blue')
+                                    analiseobj12_text.append('\n')
+                                    analiseobj12_text.append('Atenção! Para ganhar massa, você precisa consumir mais que sua TMB.')
+                                    analiseobj12_text.append('\n📅 Seja consistente: resultados vêm com treino e alimentação regulares, mantenha a disciplina.')
+                                    panaliseobj12 = Panel(analiseobj12_text, expand = False, border_style = 'cyan', title = '🤓', title_align = 'center')
+                                    c.print(panaliseobj12)
+                                    
                                     
                             elif objetivo == '2':  #perda de peso
                                 if diferenca < 0:
-                                    print('\nPerfeito! Déficit calórico é essencial para perda de peso. Continua assim! 👊') 
+                                    analiseobj2_text = Text()
+                                    analiseobj2_text.append('\n')
+                                    analiseobj2_text.append('Análise do seu objetivo:', style = 'blue')
+                                    analiseobj2_text.append('\n')
+                                    analiseobj2_text.append('Perfeito! Déficit calórico é essencial para perda de peso. Continua assim! 👊')
+                                    analiseobj2_text.append('\n🥗 Prefira alimentos naturais: invista em frutas, verduras, proteínas magras e evite ultraprocessados.')
+                                    analiseobj2_text.append('\n🚶 Mexa-se regularmente: além da dieta, exercícios ajudam a acelerar o metabolismo e manter a massa magra.')
+                                    panaliseobj2 = Panel(analiseobj2_text, expand = False, border_style = 'cyan', title = '🤓', title_align = 'center')
+                                    c.print(panaliseobj2)
 
                                 else:
-                                    print('\nCuidado! Para perder peso, você precisa consumir menos que sua TMB.')
-                                    
+                                    analiseobj22_text = Text()
+                                    analiseobj22_text.append('\n')
+                                    analiseobj22_text.append('Análise do seu objetivo:', style = 'blue')
+                                    analiseobj22_text.append('\n')
+                                    analiseobj22_text.append('Cuidado! Para perder peso, você precisa consumir menos que sua TMB.')
+                                    analiseobj22_text.append('\n🧐 Reavalie a alimentação: às vezes, pequenas “fugas” na dieta ou subestimativa das calorias podem impedir o progresso.')
+                                    analiseobj22_text.append('\n⏳ Tenha paciência: perda de peso nem sempre é linear, o corpo pode demorar para responder — persistência é chave.')
+                                    panaliseobj22 = Panel(analiseobj22_text, expand = False, border_style = 'cyan', title = '🤓', title_align = 'center')
+                                    c.print(panaliseobj22)
+
+
                             else:  
                                 if abs(diferenca) < (TMB * 0.1):  
-                                    print('\nExcelente! Você está mantendo um bom equilíbrio. ✍')
+                                    analiseobj3_text = Text()
+                                    analiseobj3_text.append('\n')
+                                    analiseobj3_text.append('Análise do seu objetivo:', style = 'blue')
+                                    analiseobj3_text.append('\n')
+                                    analiseobj3_text.append('Excelente! Você está mantendo um bom equilíbrio. ✍')
+                                    analiseobj3_text.append('\n🔄 Mantenha a rotina saudável: hábitos consistentes geram resultados duradouros, então não deixe a disciplina cair.')
+                                    panaliseobj3 = Panel(analiseobj3_text, expand = False, border_style = 'cyan', title = '🤓', title_align = 'center')
+                                    c.print(panaliseobj3)
 
                                 else:
-                                    print('\nPara manutenção, tente ficar próximo da sua TMB.')
+                                    analiseobj32_text = Text()
+                                    analiseobj32_text.append('\n')
+                                    analiseobj32_text.append('Análise do seu objetivo:', style = 'blue')
+                                    analiseobj32_text.append('\n')
+                                    analiseobj32_text.append('Para manutenção de sua sáude, tente ficar próximo da sua TMB.')
+                                    analiseobj32_text.append('\n📅 Faça exames periódicos: prevenção é sempre o melhor remédio, mantenha suas consultas em dia.')
+                                    analiseobj32_text.append('\n🚭 Evite hábitos nocivos: reduza ou elimine álcool, cigarro e outras substâncias que prejudicam a saúde.')
+                                    panaliseobj32 = Panel(analiseobj32_text, expand = False, border_style = 'cyan', title = '🤓', title_align = 'center')
+                                    c.print(panaliseobj32)
 
                         else:
-                            print('\nVocê já finalizou o dia hoje!')
+                            c.print(Panel('Você já finalizou o dia hoje!', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
                         aguardar_volta()
 
                     elif es == 'n':
                         aguardar_volta()
 
                     else:
-                        print('Digite (s) ou (n).')
+                        c.print(Panel('Digite (s) ou (n).', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
+                        aguardar_volta()
                         continue
 
             elif opcao == '3':
-                print('\n📅 HISTÓRICO DE CONSUMO:')
+                c.print(Panel('📅 HISTÓRICO DE CONSUMO:', expand = False, border_style = 'cyan'))
 
                 if not user['historico_dias']:
-                    print('Nenhum registro encontrado.')
+                    c.print(Panel('Nenhum registro encontrado.', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
 
                 else:
                     for data, total in user['historico_dias'].items():
-                        print(f'{data}: {total} calorias')
+                        c.print(Panel(f'{data}: {total} calorias', expand = False, border_style = 'cyan'))
 
                 aguardar_volta()
             elif opcao == '4':
+                with c.status("[red]S[/red][magenta]a[/magenta][yellow]i[/yellow]"
+                    "[green]n[/green][cyan]d[/cyan][blue]o[/blue]", spinner = 'hearts'):  
+                    time.sleep(2)
                 break
 
             else:
-                print('|Opção inválida!|')
+                c.print(Panel('Opção inválida!', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
                 aguardar_volta()
 
         except:
-            print('\nDigite apenas números.')
+            c.print(Panel('Digite apenas números.', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
+            aguardar_volta()
         
 
 def menu_logado():
@@ -1278,7 +1444,8 @@ def menu_logado():
         opcao = input('>>> ').strip()
         
         if opcao == '1':
-            with c.status('carregando', spinner = 'hearts'):  
+            with c.status("[red]C[/red][magenta]a[/magenta][yellow]r[/yellow][green]r[/green]"
+                "[cyan]e[/cyan][blue]g[/blue][red]a[/red][magenta]n[/magenta][yellow]d[/yellow][green]o[/green]", spinner = 'hearts'):  
                 time.sleep(2)
             c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
             print(' ')
@@ -1315,33 +1482,39 @@ def menu_logado():
             aguardar_volta()
 
         elif opcao == '2':
-            with c.status('carregando', spinner = 'hearts'):  
+            with c.status("[red]C[/red][magenta]a[/magenta][yellow]r[/yellow][green]r[/green]"
+                "[cyan]e[/cyan][blue]g[/blue][red]a[/red][magenta]n[/magenta][yellow]d[/yellow][green]o[/green]", spinner = 'hearts'):  
                 time.sleep(2)
             calcular_imc()
 
         elif opcao == '3':
-            with c.status('carregando', spinner = 'hearts'):  
+            with c.status("[red]C[/red][magenta]a[/magenta][yellow]r[/yellow][green]r[/green]"
+                "[cyan]e[/cyan][blue]g[/blue][red]a[/red][magenta]n[/magenta][yellow]d[/yellow][green]o[/green]", spinner = 'hearts'):  
                 time.sleep(2)
             calcular_taxametabolicabasal()
 
         elif opcao == '4':
-            with c.status('carregando', spinner = 'hearts'):  
+            with c.status("[red]C[/red][magenta]a[/magenta][yellow]r[/yellow][green]r[/green]"
+                "[cyan]e[/cyan][blue]g[/blue][red]a[/red][magenta]n[/magenta][yellow]d[/yellow][green]o[/green]", spinner = 'hearts'):  
                 time.sleep(2)
             registrar_calorias()
 
         elif opcao == '5':
-            with c.status('carregando', spinner = 'hearts'):  
+            with c.status("[red]C[/red][magenta]a[/magenta][yellow]r[/yellow][green]r[/green]"
+                "[cyan]e[/cyan][blue]g[/blue][red]a[/red][magenta]n[/magenta][yellow]d[/yellow][green]o[/green]", spinner = 'hearts'):  
                 time.sleep(2)
             atualizar_usuario()
 
         elif opcao == '6':
-            with c.status('carregando', spinner = 'hearts'):  
+            with c.status("[red]C[/red][magenta]a[/magenta][yellow]r[/yellow][green]r[/green]"
+                 "[cyan]e[/cyan][blue]g[/blue][red]a[/red][magenta]n[/magenta][yellow]d[/yellow][green]o[/green]", spinner = 'hearts'):  
                 time.sleep(2)
             print('\nAtualizando dados...')
             atualizar_dados()
 
         elif opcao == '7':
-            with c.status('carregando', spinner = 'hearts'):  
+            with c.status("[red]C[/red][magenta]a[/magenta][yellow]r[/yellow][green]r[/green]"
+                "[cyan]e[/cyan][blue]g[/blue][red]a[/red][magenta]n[/magenta][yellow]d[/yellow][green]o[/green]", spinner = 'hearts'):  
                 time.sleep(2)
             usuario_logado = None
             print('Deslogado com sucesso!')
@@ -1349,7 +1522,8 @@ def menu_logado():
             return
         
         elif opcao == '8':
-            with c.status('carregando', spinner = 'hearts'):  
+            with c.status("[red]C[/red][magenta]a[/magenta][yellow]r[/yellow][green]r[/green]"
+                "[cyan]e[/cyan][blue]g[/blue][red]a[/red][magenta]n[/magenta][yellow]d[/yellow][green]o[/green]", spinner = 'hearts'):  
                 time.sleep(2)
             if deletar_usuario():
                 aguardar_volta()
