@@ -6,8 +6,10 @@ import time
 from rich.console import Console
 from rich.panel import Panel
 from rich.text import Text
-from rich.layout import Layout
 import random
+from prompt_toolkit import prompt
+from rich.align import Align            
+from rich.columns import Columns
 
 c = Console()
 
@@ -27,7 +29,6 @@ def aguardar_volta():
     """Pausa a execução do programa até que o usuário tecle "enter".""" 
     input('\nPressione "Enter" para voltar...')
     
-    
 def cadastro_de_usuario(): 
     """Cadastra o usuário e salva seus dados em um dicionário,
        em que a chave é o email.
@@ -41,7 +42,7 @@ def cadastro_de_usuario():
     c.print(textcadastro)
 
     while True:
-        c.print(Panel('Digite o seu [green][b][u]email[/u][/b][/]: ', expand = False, border_style = 'yellow' ))
+        c.print(Panel('Digite o seu [green][b][u]email[/u][/b][/]: ', expand = False, border_style = 'yellow'))
         email = input('>>> ').strip().lower()
         
         if email in usuarios:
@@ -76,7 +77,7 @@ def cadastro_de_usuario():
     
     while True:
         c.print(Panel('Digite sua [green][u][b]senha[/u][/b][/](mínimo 6 caracteres): ', expand = False, border_style = 'yellow'))
-        senha = input('>>> ')
+        senha = prompt('>>> ', is_password = True)
 
         if len(senha) < 6:
             errorsenha_text = Text()
@@ -87,7 +88,7 @@ def cadastro_de_usuario():
             continue 
             
         c.print(Panel('Confirme sua [green][u][b]senha[/b][/u][/]: ', expand = False, border_style = 'yellow'))
-        confirmaçao_de_senha = input('>>> ')
+        confirmaçao_de_senha = prompt('>>> ', is_password = True)
 
         if senha != confirmaçao_de_senha:
             errorsenha_text2 = Text()
@@ -207,7 +208,6 @@ def escolher_objetivo():
                 title_align="center")
             c.print(textoescolha3)
             
-
         else:
             textoescolhaobj_text4 = Text()
             textoescolhaobj_text4.append('É isso ai! Você optou por manter-se saudável, conte comigo pra te auxiliar! ✋')
@@ -267,12 +267,10 @@ def escolher_objetivo():
                         sexo = 'm'
                         sexo_biologico = 'm'
                         
-
                     elif sexo_escolha == '2':
                         sexo = 'f'
                         sexo_biologico = 'f'
                         
-                    
                     elif sexo_escolha in ['3', '4']:
                         while True:
                             textoterapiahormonal = Text()
@@ -372,7 +370,6 @@ def escolher_objetivo():
             c.print(Panel('Valores inválidos! Digite números válidos.', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
             aguardar_volta()
 
-
 def fazer_login(): #criando a função de login.
     """
     Função responsável pelo login do usuário,
@@ -388,7 +385,7 @@ def fazer_login(): #criando a função de login.
     c.print(textlogin)
 
     while True:
-        c.print(Panel('Digite o seu email cadastrado: ',expand = False, border_style = 'yellow' ))
+        c.print(Panel('Digite o seu [u][b][green]email[/][/b][/] cadastrado: ',expand = False, border_style = 'yellow' ))
         email = input('>>> ').lower().strip()
         
         if email not in usuarios:
@@ -398,8 +395,8 @@ def fazer_login(): #criando a função de login.
         break
 
     while True:
-        c.print(Panel('Digite sua senha: ',expand = False, border_style = 'yellow'))
-        senha = input('>>> ').strip()
+        c.print(Panel('Digite sua [u][b][green]senha:[/][/b][/] ',expand = False, border_style = 'yellow'))
+        senha = prompt('>>> ', is_password = True).strip()
 
         if usuarios[email]["senha"] != senha:
             c.print(Panel('Senha incorreta.', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
@@ -408,7 +405,8 @@ def fazer_login(): #criando a função de login.
     
         else:
             usuario_logado = email 
-            print(f'Bem-vindo(a), {usuarios[email]["nome"]}!')
+            c.print(Panel(f'Bem-vindo(a), {usuarios[email]["nome"]}!', expand = False, border_style = 'cyan', style = 'cyan'))
+            print(' ')
             return True
 
 def atualizar_usuario(): 
@@ -559,12 +557,12 @@ def atualizar_dados():
             patualizarusuario = Panel(atualizarusuario_text, expand = False, border_style = 'cyan', title = '🔹', title_align = 'center')
             c.print(patualizarusuario)
             
-            
             c.print(Panel('Qual dado deseja alterar? (1-5):', expand = False, border_style = 'yellow'))
             campo = input('>>> ').strip()
             
             if campo == '1':
-                nova_idade = int(input('\nNova idade: '))
+                c.print(Panel('Nova idade:'))
+                nova_idade = int(input('>>> '))
                 if 0 < nova_idade <= 100:
                     dados['idade'] = nova_idade
                     salvar_dadosjson()
@@ -631,6 +629,9 @@ def atualizar_dados():
                 aguardar_volta()
                 
             elif campo == '5':
+                with c.status("[red]S[/red][magenta]a[/magenta][yellow]i[/yellow]"
+                    "[green]n[/green][cyan]d[/cyan][blue]o[/blue]", spinner = 'hearts'):  
+                    time.sleep(2)
                 break
                 
             else:
@@ -638,7 +639,7 @@ def atualizar_dados():
                 aguardar_volta()
                 
         except ValueError:
-            print('\n|Valor inválido! Digite números válidos.|')
+            c.print(Panel('Valor inválido! Digite números válidos.', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
             aguardar_volta()
 
 def deletar_usuario():
@@ -649,18 +650,30 @@ def deletar_usuario():
     global usuario_logado,usuarios
 
     if usuario_logado is None:
-        print('|Faça login primeiro.|')
+        c.print(Panel('Faça login primeiro.', expand = False, border_style = 'ERRO', title = 'ERRO', title_align = 'center'))
         return
-    confirmaçao = input('Tem certeza que deseja deletar sua conta? 😕 (s/n): ').lower()
+    
+    while True:
 
-    if confirmaçao == 's':
-        del usuarios[usuario_logado]
-        salvar_dadosjson()
-        usuario_logado = None
-        print('Conta deletada com sucesso. Até logo...')
-        return True
-    return False
+        c.print(Panel('Tem certeza que deseja deletar sua conta? 😕 (s/n):', expand = False, border_style = 'yellow'))
+        confirmaçao = input('>>> ').lower()
 
+        if confirmaçao == 's':
+            del usuarios[usuario_logado]
+            salvar_dadosjson()
+            usuario_logado = None
+            c.print(Panel('Conta [u][b][red]deletada[/][/b][/u] com sucesso. Até logo...', expand = False, border_style = 'cyan'))
+            return True
+        
+        elif confirmaçao == 'n':
+            c.print(Panel('Que bom! Creio que ainda podemos te auxiliar em muitas coisas. 😉✨', expand = False, border_style = 'cyan'))
+            aguardar_volta()
+            return False
+
+        else:
+            c.print(Panel('Digite "s" ou "n".', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
+            aguardar_volta()
+        
 carregar_dadosjson()
 
 def menu_principal():
@@ -772,7 +785,6 @@ def calcular_imc():
             calcularimc1_text = Text()
             calcularimc1_text.append(f'SEU IMC: {imc:.2f}')
             
-            
             if imc < 18.5:
                 status = 'Abaixo do peso'
             elif 18.5 <= imc < 25:
@@ -787,7 +799,6 @@ def calcular_imc():
                 time.sleep(2)
             c.print(pcalcularimc1)
 
-            
             objetivo = user['objetivo']
             if objetivo == '1':
                     feedbackobj1_text = Text()
@@ -816,7 +827,7 @@ def calcular_imc():
                     c.print(pfeedbackobj3)
     
             aguardar_volta()
-            break
+            continue
     
         elif calcularimc_visualizarimc == '2':
 
@@ -867,9 +878,11 @@ def calcular_imc():
                     break
                 
         elif calcularimc_visualizarimc == '3':
+            with c.status("[red]S[/red][magenta]a[/magenta][yellow]i[/yellow]"
+                "[green]n[/green][cyan]d[/cyan][blue]o[/blue]", spinner = 'hearts'):  
+                time.sleep(2)
             break
         
-
 def calcular_taxametabolicabasal():
     """
     Calcula a tmb (Taxa metabólica basal) do usuário,
@@ -879,14 +892,14 @@ def calcular_taxametabolicabasal():
     global usuarios, usuario_logado 
 
     if usuario_logado is None:
-        print('|Faça login primeiro!|')
+        c.print(Panel('Faça login primeiro!', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
         aguardar_volta()  
         return
 
     user = usuarios[usuario_logado]
 
     if not user.get('dados'):
-        print('|Complete seus dados primeiro!|')
+        c.print(Panel('Complete seus dados primeiro!', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
         escolher_objetivo()
         return
 
@@ -932,7 +945,6 @@ def calcular_taxametabolicabasal():
                         usuarios[usuario_logado]['TMB'] = TMB
                         salvar_dadosjson()
 
-                        
                         c.print(Panel(f'Sua TMB é :({TMB:.2f})',expand = False, border_style = 'cyan'))
                         retornotmb1_text = Text()
                         retornotmb1_text.append('O cálculo foi feito com base no seu sexo de identidade, pois você informou que está em transição hormonal há mais de 12 meses.')
@@ -940,7 +952,7 @@ def calcular_taxametabolicabasal():
                         pretornotmb1 = Panel(retornotmb1_text, expand = False, border_style = 'cyan', title = '[blue]INFO[/]')
                         c.print(pretornotmb1)
                         aguardar_volta()
-                        return True
+                        continue
 
                     elif dados.get('tempo_transicao', 0) < 12:
 
@@ -954,6 +966,7 @@ def calcular_taxametabolicabasal():
                         pretornotmb2 = Panel(retornotmb2_text, expand = False, border_style = 'cyan', title = '[blue]INFO[/]')
                         c.print(pretornotmb2)
                         usuarios[usuario_logado]['TMB'] = TMB
+                        salvar_dadosjson()
                         aguardar_volta()
                         continue
 
@@ -977,7 +990,7 @@ def calcular_taxametabolicabasal():
                 pretornotmb3 = Panel(retornotmb3_text, expand = False, border_style = 'cyan', title = '[blue]INFO[/]')
                 c.print(pretornotmb3)
                 aguardar_volta()
-                return True
+                continue
         
             else:
 
@@ -994,7 +1007,7 @@ def calcular_taxametabolicabasal():
                 c.print(Panel(f'Sua TMB é :({TMB:.2f})', expand = False, border_style = 'cyan'))
                 c.print(Panel('O cálculo foi feito com base no sexo informado no seu cadastro.', expand = False, border_style = 'cyan', title = '[blue]INFO[/]'))
                 aguardar_volta()
-                return True
+                continue
 
         elif calculartmb_visualizartmb == '2':
 
@@ -1134,14 +1147,16 @@ def calcular_taxametabolicabasal():
                 break
 
         elif calculartmb_visualizartmb == '3':
-            return False
+            with c.status("[red]S[/red][magenta]a[/magenta][yellow]i[/yellow]"
+                "[green]n[/green][cyan]d[/cyan][blue]o[/blue]", spinner = 'hearts'):  
+                time.sleep(2)
+            break
 
         else:
             c.print(Panel('Opção inválida! Digite 1, 2 ou 3.', expand = False, border_style = 'red', title = '[b]ERRO[/b]', title_align = 'center'))
             aguardar_volta()
             continue
         
-
 def registrar_calorias():
     """
     Registra as calorias consumidas pelo usuário durante o dia,
@@ -1272,19 +1287,18 @@ def registrar_calorias():
                                     analiseobj12_text.append('\n')
                                     analiseobj12_text.append('Análise do seu objetivo:', style = 'blue')
                                     analiseobj12_text.append('\n')
-                                    analiseobj12_text.append('Atenção! Para ganhar massa, você precisa consumir mais que sua TMB.')
+                                    analiseobj12_text.append('\nAtenção! Para ganhar massa, você precisa consumir mais que sua TMB.')
                                     analiseobj12_text.append('\n📅 Seja consistente: resultados vêm com treino e alimentação regulares, mantenha a disciplina.')
                                     panaliseobj12 = Panel(analiseobj12_text, expand = False, border_style = 'cyan', title = '🤓', title_align = 'center')
                                     c.print(panaliseobj12)
-                                    
-                                    
+                                              
                             elif objetivo == '2':  #perda de peso
                                 if diferenca < 0:
                                     analiseobj2_text = Text()
                                     analiseobj2_text.append('\n')
                                     analiseobj2_text.append('Análise do seu objetivo:', style = 'blue')
                                     analiseobj2_text.append('\n')
-                                    analiseobj2_text.append('Perfeito! Déficit calórico é essencial para perda de peso. Continua assim! 👊')
+                                    analiseobj2_text.append('\nPerfeito! Déficit calórico é essencial para perda de peso. Continua assim! 👊')
                                     analiseobj2_text.append('\n🥗 Prefira alimentos naturais: invista em frutas, verduras, proteínas magras e evite ultraprocessados.')
                                     analiseobj2_text.append('\n🚶 Mexa-se regularmente: além da dieta, exercícios ajudam a acelerar o metabolismo e manter a massa magra.')
                                     panaliseobj2 = Panel(analiseobj2_text, expand = False, border_style = 'cyan', title = '🤓', title_align = 'center')
@@ -1295,12 +1309,11 @@ def registrar_calorias():
                                     analiseobj22_text.append('\n')
                                     analiseobj22_text.append('Análise do seu objetivo:', style = 'blue')
                                     analiseobj22_text.append('\n')
-                                    analiseobj22_text.append('Cuidado! Para perder peso, você precisa consumir menos que sua TMB.')
+                                    analiseobj22_text.append('\nCuidado! Para perder peso, você precisa consumir menos que sua TMB.')
                                     analiseobj22_text.append('\n🧐 Reavalie a alimentação: às vezes, pequenas “fugas” na dieta ou subestimativa das calorias podem impedir o progresso.')
                                     analiseobj22_text.append('\n⏳ Tenha paciência: perda de peso nem sempre é linear, o corpo pode demorar para responder — persistência é chave.')
                                     panaliseobj22 = Panel(analiseobj22_text, expand = False, border_style = 'cyan', title = '🤓', title_align = 'center')
                                     c.print(panaliseobj22)
-
 
                             else:  
                                 if abs(diferenca) < (TMB * 0.1):  
@@ -1308,7 +1321,7 @@ def registrar_calorias():
                                     analiseobj3_text.append('\n')
                                     analiseobj3_text.append('Análise do seu objetivo:', style = 'blue')
                                     analiseobj3_text.append('\n')
-                                    analiseobj3_text.append('Excelente! Você está mantendo um bom equilíbrio. ✍')
+                                    analiseobj3_text.append('\nExcelente! Você está mantendo um bom equilíbrio. ✍')
                                     analiseobj3_text.append('\n🔄 Mantenha a rotina saudável: hábitos consistentes geram resultados duradouros, então não deixe a disciplina cair.')
                                     panaliseobj3 = Panel(analiseobj3_text, expand = False, border_style = 'cyan', title = '🤓', title_align = 'center')
                                     c.print(panaliseobj3)
@@ -1318,7 +1331,7 @@ def registrar_calorias():
                                     analiseobj32_text.append('\n')
                                     analiseobj32_text.append('Análise do seu objetivo:', style = 'blue')
                                     analiseobj32_text.append('\n')
-                                    analiseobj32_text.append('Para manutenção de sua sáude, tente ficar próximo da sua TMB.')
+                                    analiseobj32_text.append('\nPara manutenção de sua sáude, tente ficar próximo da sua TMB.')
                                     analiseobj32_text.append('\n📅 Faça exames periódicos: prevenção é sempre o melhor remédio, mantenha suas consultas em dia.')
                                     analiseobj32_text.append('\n🚭 Evite hábitos nocivos: reduza ou elimine álcool, cigarro e outras substâncias que prejudicam a saúde.')
                                     panaliseobj32 = Panel(analiseobj32_text, expand = False, border_style = 'cyan', title = '🤓', title_align = 'center')
@@ -1361,7 +1374,6 @@ def registrar_calorias():
             c.print(Panel('Digite apenas números.', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
             aguardar_volta()
         
-
 def menu_logado():
     """
     Menu onde o usuário tem acesso as funcionalidades do programa,
@@ -1370,76 +1382,54 @@ def menu_logado():
     global usuario_logado, usuarios 
 
     while True:
+        
         c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
         print(' ')
-        layout = Layout()
-        layout.split(
-            Layout(name="header", size=3),
-            Layout(name="body", ratio=1),
-            Layout(name="footer", size=3),)
 
-        layout["body"].split_row(
-                Layout(name="opcoes_1_4"),
-                Layout(name="opcoes_5_8"),
-                Layout(name="inspiracao"))
-        
         nome = usuarios[usuario_logado]["nome"]
-        texto_header = Text(f"👤 Logado como: {nome}", style="red")
-        painel_header = Panel(texto_header, style="red", title="Menu Principal")
-        layout["header"].update(painel_header)
 
-        parte1_1menu = Text()
-        parte1_1menu.append('\n')
-        parte1_1menu.append('Escolha uma opção dentre as disponíveis.\n')
-        parte1_1menu.append("\n[1] Ver perfil completo", style="cyan")
-        parte1_1menu.append("\n[2] Calcular IMC\n", style="cyan")
-        parte1_1menu.append("[3] Calcular TMB\n", style="cyan")
-        parte1_1menu.append("[4] Registro de calorias\n", style="cyan")
-        painel_parte1_1menu = Panel(parte1_1menu, title="Vital", border_style="cyan")
-        layout["opcoes_1_4"].update(painel_parte1_1menu)
-
-        parte2_2menu = Text()
-        parte2_2menu.append('\n')
-        parte2_2menu.append('No VitalTrack, o foco é você.\n')
-        parte2_2menu.append("\n[5] Atualizar perfil", style="cyan")
-        parte2_2menu.append("\n[6] Atualizar objetivo/dados\n", style="cyan")
-        parte2_2menu.append("[7] Deslogar\n", style="cyan")
-        parte2_2menu.append("[8] Deletar conta\n", style="red")
-        painel_parte2_2menu = Panel(parte2_2menu, title="Track", border_style="cyan")
-        layout["opcoes_5_8"].update(painel_parte2_2menu)
-
-        frases = [
-            "\n💧 Não esqueça de se hidratar!",
-            "\n🚀 O sucesso é uma jornada, não um destino.",
-            "\n💡 Você é capaz de grandes coisas!",
-            "\n🔥 Um passo por dia já é progresso.",
-            "\n🌱 Grandes mudanças começam com pequenas atitudes.",
-            "\n🏃‍♂️ Mexa-se pelo seu bem-estar!",
-            "\n🧠 Mente sã, corpo são.",
-            "\n⏳ Cada segundo investido vale a pena."
+        mensagens = [
+        "💧 Não esqueça de se hidratar!",
+        "🚀 O sucesso é uma jornada, não um destino.",
+        "💡 Você é capaz de grandes coisas!",
+        "🔥 Um passo por dia já é progresso.",
+        "🌱 Grandes mudanças começam com pequenas atitudes.",
+        "🏃 Mexa-se pelo seu bem-estar!",
+        "🧠 Mente sã, corpo são.",
+        "⏳ Cada segundo investido vale a pena."
         ]
 
-        mensagem_aleatoria = random.choice(frases)
+        mensagem = random.choice(mensagens)
+        header = Panel(f"👤 Logado como: {nome}", width=80, title="Menu Principal", style="red")
 
-        mensagens_inspiradoras = Text(
-            f"\n{mensagem_aleatoria}",
-            style="magenta",
-            justify="center"
-        )
+        parte1 = Text()
+        parte1.append('\n')
+        parte1.append('Escolha uma opção:')
+        parte1.append('\n')
+        parte1.append("\n[1] Ver perfil completo\n", style="cyan")
+        parte1.append("[2] Calcular IMC\n", style="cyan")
+        parte1.append("[3] Calcular TMB\n", style="cyan")
+        parte1.append("[4] Registro de calorias", style="cyan")
+        painel1 = Panel(parte1, title="Vital", border_style="cyan", width=38)
 
-        painel_inspiracao = Panel(
-        mensagens_inspiradoras,
-        title="Seja bem vindo(a)!",
-        border_style="magenta"
-        )
+        parte2 = Text()
+        parte2.append('\n')
+        parte2.append('No VitalTrack, o foco é você.')
+        parte2.append('\n')
+        parte2.append("\n[5] Atualizar perfil\n", style="cyan")
+        parte2.append("[6] Atualizar objetivo/dados\n", style="cyan")
+        parte2.append("[7] Deslogar\n", style="cyan")
+        parte2.append("[8] Deletar conta", style="red")
+        painel2 = Panel(parte2, title="Track", border_style="cyan", width=38)
 
-        painel_inspiracao = Panel(mensagens_inspiradoras, title="Seja bem vindo(a)!", border_style="magenta")
-        layout["inspiracao"].update(painel_inspiracao)
+        inspiracao = Panel(Text(mensagem, justify="center", style="magenta"), title="Seja bem vindo(a)!", border_style="magenta", width=80)
 
-        painel_footer = Panel(Text("Digite a opção desejada.", justify="center", style="yellow"), style="grey37")
-        layout["footer"].update(painel_footer)
+        footer = Panel(Text("Digite a opção desejada.", justify="center", style="yellow"), width=80, style="grey37")
 
-        c.print(layout)
+        c.print(Align.center(header))
+        c.print(Align.center(Columns([painel1, painel2], expand=False)))
+        c.print(Align.center(inspiracao))
+        c.print(Align.center(footer))
         
         opcao = input('>>> ').strip()
         
@@ -1477,9 +1467,11 @@ def menu_logado():
                 else:
                     sexo_exibicao = 'Não informado'
             verpefil_text.append(f'\nSexo: {sexo_exibicao}')        
-            c.print(pverperfil)
-                
+            c.print(pverperfil)    
             aguardar_volta()
+            with c.status("[red]S[/red][magenta]a[/magenta][yellow]i[/yellow]"
+                "[green]n[/green][cyan]d[/cyan][blue]o[/blue]", spinner = 'hearts'):  
+                time.sleep(2)
 
         elif opcao == '2':
             with c.status("[red]C[/red][magenta]a[/magenta][yellow]r[/yellow][green]r[/green]"
@@ -1516,11 +1508,27 @@ def menu_logado():
             with c.status("[red]C[/red][magenta]a[/magenta][yellow]r[/yellow][green]r[/green]"
                 "[cyan]e[/cyan][blue]g[/blue][red]a[/red][magenta]n[/magenta][yellow]d[/yellow][green]o[/green]", spinner = 'hearts'):  
                 time.sleep(2)
-            usuario_logado = None
-            print('Deslogado com sucesso!')
-            aguardar_volta()
-            return
-        
+
+            while True:
+
+                c.print(Panel('Deseja mesmo deslogar? (s/n)', expand = False, border_style = 'yellow'))
+                deslog = input('>>> ').strip()
+
+                if deslog == 's':
+                    usuario_logado = None
+                    c.print(Panel('[b][u][red]Deslogado[/][/u][/b] com sucesso!', expand = False, border_style = 'cyan', style = 'cyan'))
+                    aguardar_volta()
+                    return
+                
+                elif deslog == 'n':
+                    c.print(Panel('Você permanece [green][u][b]logado.[/b][/u][/]', expand = False, border_style = 'cyan', style = 'cyan')) 
+                    aguardar_volta()
+                    break
+                
+                else:
+                    c.print(Panel('Digite "s" ou "n".', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
+                    aguardar_volta()
+                   
         elif opcao == '8':
             with c.status("[red]C[/red][magenta]a[/magenta][yellow]r[/yellow][green]r[/green]"
                 "[cyan]e[/cyan][blue]g[/blue][red]a[/red][magenta]n[/magenta][yellow]d[/yellow][green]o[/green]", spinner = 'hearts'):  
