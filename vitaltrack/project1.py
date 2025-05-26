@@ -14,10 +14,12 @@ from rich.columns import Columns
 c = Console()
 
 def salvar_dadosjson():
+    """Salva os dados em um arquivo .json"""
     with open('usuarios.json', 'w') as arquivo:
         json.dump(usuarios, arquivo, indent=4)
 
 def carregar_dadosjson():
+    """Carrega os dados salvos no arquivo .json"""
     global usuarios
     try:
         with open('usuarios.json', 'r') as arquivo:
@@ -333,7 +335,13 @@ def escolher_objetivo():
                             "[green]s[/green][cyan]e[/cyan][blue]u[/blue][red]s[/red] "
                             "[magenta]d[/magenta][yellow]a[/yellow][green]d[/green][cyan]o[/cyan][blue]s[/blue]", spinner = 'hearts'):  
                             time.sleep(2)
-                        
+                        print(' ')
+                        c.print(Panel('[green]Usuário cadastrado com sucesso![/]', expand = False, border_style = 'green'))
+                        print(' ')
+                        with c.status("[red]C[/red][magenta]a[/magenta][yellow]r[/yellow][green]r[/green]"
+                            "[cyan]e[/cyan][blue]g[/blue][red]a[/red][magenta]n[/magenta][yellow]d[/yellow][green]o[/green]", spinner = 'hearts'):  
+                            time.sleep(2)
+
                         if idade <= 0 or peso <= 0 or altura <= 0:
                             c.print(Panel('Valores inválidos! Digite números positivos.', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
                             aguardar_volta()
@@ -405,6 +413,10 @@ def fazer_login(): #criando a função de login.
     
         else:
             usuario_logado = email 
+            with c.status("[red]V[/red][magenta]a[/magenta][yellow]l[/yellow][green]i[/green]"
+              "[cyan]d[/cyan][blue]a[/blue][red]n[/red][magenta]d[/magenta][yellow]o[/yellow]", spinner='hearts'):
+                time.sleep(2)
+            print(' ')
             c.print(Panel(f'Bem-vindo(a), {usuarios[email]["nome"]}!', expand = False, border_style = 'cyan', style = 'cyan'))
             print(' ')
             return True
@@ -508,6 +520,10 @@ def atualizar_usuario():
             c.print(Panel('Opção inválida. Digite uma opção disponível (1-4)', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
 
 def atualizar_dados():
+    """
+    Atualiza os dados físicos do usuário,
+    usuário decide o que deseja atualizar.
+    """
     global usuario_logado, usuarios
 
     if usuario_logado is None:
@@ -561,7 +577,7 @@ def atualizar_dados():
             campo = input('>>> ').strip()
             
             if campo == '1':
-                c.print(Panel('Nova idade:'))
+                c.print(Panel('Nova idade:', expand = False, border_style = 'yellow'))
                 nova_idade = int(input('>>> '))
                 if 0 < nova_idade <= 100:
                     dados['idade'] = nova_idade
@@ -571,7 +587,7 @@ def atualizar_dados():
 
                 else:
                     c.print(Panel('Idade deve ser entre 1 e 100 anos', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
-                aguardar_volta()
+                    aguardar_volta()
                 
             elif campo == '2':
                 c.print(Panel('Novo peso, em quilogramas:', expand = False, border_style = 'yellow'))
@@ -584,7 +600,7 @@ def atualizar_dados():
 
                 else:
                     c.print(Panel('Peso deve ser entre 0.1 e 350 kg', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
-                aguardar_volta()
+                    aguardar_volta()
                 
             elif campo == '3':
                 c.print(Panel('Nova altura, em metros:', expand = False, border_style = 'yellow'))
@@ -597,7 +613,7 @@ def atualizar_dados():
 
                 else:
                     c.print(Panel('Altura deve ser entre 0.1 e 2.5 metros', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
-                aguardar_volta()
+                    aguardar_volta()
                 
             elif campo == '4':
                 mudandoobj_text = Text()
@@ -608,13 +624,13 @@ def atualizar_dados():
                 mudandoobj_text.append('\n1. ', style = 'red')
                 mudandoobj_text.append('Ganho de massa')
 
-                mudandoobj_text.append('\n2 ', style = 'red')
+                mudandoobj_text.append('\n2. ', style = 'red')
                 mudandoobj_text.append('Perda de peso')
 
-                mudandoobj_text.append('\n3 ', style = 'red')
+                mudandoobj_text.append('\n3. ', style = 'red')
                 mudandoobj_text.append('Manutenção da saúde')
 
-                pmudandoobjt = Panel(mudandoobj_text, expand = False, border_style = 'cyan', title = 'novo objetivo', title_align = 'center')
+                pmudandoobjt = Panel(mudandoobj_text, expand = False, border_style = 'cyan', title = 'Novo objetivo', title_align = 'center')
                 c.print(pmudandoobjt)
                 
                 c.print(Panel('Novo objetivo (1-3):', expand = False, border_style = 'yellow'))
@@ -773,7 +789,7 @@ def calcular_imc():
         imc_text = Text('CALCULADORA DE IMC (ÍNDICE DE MASSA CORPORAL)', justify = 'center')
         p_imctext = Panel(imc_text, title="[i][cyan]IMC[/cyan][/i]",title_align="center",border_style="cyan",expand=True)
         c.print(p_imctext)
-        c.print(Panel('Deseja calcular o seu IMC (1), calcular outro qualquer (2), ou voltar (3)?', expand = False, border_style = 'yellow'))
+        c.print(Panel('Deseja calcular o [u]seu IMC[/u] (1), calcular [u]outro qualquer[/u] (2), ou voltar (3)?', expand = False, border_style = 'yellow'))
         calcularimc_visualizarimc = input('>>> ')
 
         if calcularimc_visualizarimc not in ['1','2','3']:
@@ -795,7 +811,9 @@ def calcular_imc():
                 status = 'Obesidade'
             calcularimc1_text.append(f'\nStatus: {status}')
             pcalcularimc1 = Panel(calcularimc1_text, expand = False, border_style = 'cyan')
-            with c.status('calculando', spinner = 'hearts'):  
+            with c.status("[red]C[/red][magenta]a[/magenta][yellow]l[/yellow][green]c[/green]"
+                "[cyan]u[/cyan][blue]l[/blue][red]a[/red][magenta]n[/magenta]"
+                "[yellow]d[/yellow][green]o[/green]", spinner="hearts"):
                 time.sleep(2)
             c.print(pcalcularimc1)
 
@@ -834,7 +852,7 @@ def calcular_imc():
             while True:
                     
                     try:
-                        c.print(Panel('Digite o seu peso em kg:', expand = False, border_style = 'yellow'))
+                        c.print(Panel('Digite o seu [green][u]peso[/u][/] em kg:', expand = False, border_style = 'yellow'))
                         pesoimc = float(input('>>> '))
                         if pesoimc > 350 or pesoimc <= 0:
                             c.print(Panel('Digite um peso válido.', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
@@ -849,7 +867,7 @@ def calcular_imc():
             while True:
                     
                     try:
-                        c.print(Panel('Digite a sua altura em m:', expand = False, border_style = 'yellow'))
+                        c.print(Panel('Digite a sua [green][u]altura[/u][/] em m:', expand = False, border_style = 'yellow'))
                         alturaimc = float(input('>>> '))
                         if alturaimc > 2.2 or alturaimc <= 0:
                             c.print(Panel('Digite uma altura válida', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
@@ -861,7 +879,9 @@ def calcular_imc():
                         continue
                     
                     imc = (pesoimc/alturaimc**2)
-                    with c.status('calculando', spinner = 'hearts'):  
+                    with c.status("[red]C[/red][magenta]a[/magenta][yellow]l[/yellow][green]c[/green]"
+                        "[cyan]u[/cyan][blue]l[/blue][red]a[/red][magenta]n[/magenta]"
+                        "[yellow]d[/yellow][green]o[/green]", spinner="hearts"):
                         time.sleep(2)
                     c.print(Panel(f'O IMC é {imc:.2f}', expand = False, border_style = 'cyan'))
 
@@ -912,7 +932,7 @@ def calcular_taxametabolicabasal():
 
         c.print(Panel('[violet]Informação:[/] Taxa Metabólica Basal (TMB) é a quantidade [red]mínima[/] de calorias que seu corpo precisa para manter funções vitais (como [chartreuse2]respiração[/], [chartreuse2]circulação[/] e [chartreuse2]temperatura[/]) em repouso completo.', expand = False, border_style = 'cyan'))
 
-        c.print(Panel('Deseja calcular sua taxa metabólica basal (1), calcular outra qualquer (2), ou voltar (3)?', expand = False, border_style = 'yellow'))
+        c.print(Panel('Deseja calcular [u]sua taxa metabólica basal[/u] (1), calcular [u]outra qualquer[/u] (2), ou voltar (3)?', expand = False, border_style = 'yellow'))
         calculartmb_visualizartmb = input('>>> ').strip()
 
         if calculartmb_visualizartmb == '1':
@@ -1014,138 +1034,167 @@ def calcular_taxametabolicabasal():
             while True:
 
                 try:
-                    c.print(Panel('Digite o [chartreuse2]peso[/] em quilogramas:', expand = False, border_style = 'yellow'))
+                    c.print(Panel('Digite o [u][green]peso[/][/u] em quilogramas:', expand = False, border_style = 'yellow'))
                     pesoex = float(input('>>> '))
-                    if pesoex > 350:
+                    if pesoex > 350 or pesoex <= 0:
                         c.print(Panel('Digite um peso válido.',expand = False, border_style = 'red', title = '[b]ERRO[/b]', title_align = 'center'))
                         aguardar_volta()
                         continue
-                    
-                    c.print(Panel('Digite a altura em centímetros:', expand = False, border_style = 'yellow'))
-                    alturaex = float(input('>>> '))
-                    if alturaex > 220:
-                        c.print(Panel('Digite uma altura válida, em centímetros.', expand = False, border_style = 'red', title = '[b]ERRO[/b]', title_align = 'center'))
-                        aguardar_volta()
-                        continue
-                    
-                    c.print(Panel('Digite a idade:', expand = False, border_style = 'yellow'))
-                    idadeex = int(input('>>> '))
-                    if idadeex > 100:
-                        c.print(Panel('Digite uma idade válida.', expand = False, border_style = 'red', title = '[b]ERRO[/b]', title_align = 'center'))
-                        aguardar_volta()
-                        continue
-                    
-                    textoidentidade_text = Text()
-                    textoidentidade_text.append('\n')
-                    textoidentidade_text.append('Qual é a sua identidade de gênero?\n')
-                    textoidentidade_text.append('\n')
-
-                    textoidentidade_text.append('1. ', style = 'red')
-                    textoidentidade_text.append('Homem Cis ')
-
-                    textoidentidade_text.append('2. ', style = 'red')
-                    textoidentidade_text.append('Mulher Cis ')
-
-                    textoidentidade_text.append('3. ', style = 'red')
-                    textoidentidade_text.append('Homem Trans ')
-
-                    textoidentidade_text.append('4. ', style = 'red')
-                    textoidentidade_text.append('Mulher Trans ')
-
-                    painelidentidade = Panel(textoidentidade_text, border_style="cyan", expand = False,title="[bold cyan]Sua identidade[/bold cyan]",title_align="center")
-                    c.print(painelidentidade)
-                    
-                    c.print(Panel('Digite [green][u][b]sua[/b][/u][/] opção: ', expand = False, border_style = 'yellow'))
-                    sexo_opcao = input('>>> ').strip()
-        
-                    if sexo_opcao not in ['1', '2', '3', '4']:
-                        c.print(Panel('Opção inválida! Escolha 1-4', expand = False, border_style = 'red', title = '[b]ERRO[/b]', title_align = 'center'))
-                        aguardar_volta()
-                        continue
-                    
-                    em_transicao = False
-                    tempo_transicao = 0
-                    
-                    if sexo_opcao in ['3', '4']:
-                        c.print(Panel('Você já fez uso de terapia hormonal? (s/n):', expand = False, border_style = 'yellow'))
-                        resposta = input('>>> ').lower().strip()
-                        if resposta not in ['s','n']:
-                            c.print(Panel('Digite (s) ou (n).', expand = False, border_style = 'red', title = '[b]ERRO[/b]', title_align = 'center'))
-                            aguardar_volta()
-                            continue 
-                        em_transicao = resposta == 's'
-                    
-                        if em_transicao:
-
-                            while True:
-
-                                try:
-                                    c.print(Panel('Há quantos meses você faz uso?', expand = False, border_style = 'yellow'))
-                                    tempo_transicao = int(input('>>> '))
-                                    if tempo_transicao < 0:
-                                        c.print(Panel('Digite um valor válido.', expand = False, border_style = 'red', title = '[b]ERRO[/b]', title_align = 'center'))
-                                        aguardar_volta()
-                                        continue
-                                    break
-
-                                except ValueError:
-                                    c.print(Panel('Digite um número válido.', expand = False, border_style = 'red', title = '[b]ERRO[/b]', title_align = 'center'))
-                    
-                    tmb_m = (10 * pesoex) + (6.25 * alturaex) - (5 * idadeex) + 5
-                    tmb_f = (10 * pesoex) + (6.25 * alturaex) - (5 * idadeex) - 161
-                
-                    if sexo_opcao == '1':  
-
-                        TMB = tmb_m
-                        c.print(Panel(f'Sua TMB é: {TMB:.2f}', expand = False, border_style = 'cyan'))
-                        
-                    elif sexo_opcao == '2':  
-
-                        TMB = tmb_f
-                        c.print(Panel(f'Sua TMB é: {TMB:.2f}', expand = False, border_style = 'cyan'))
-                        
-                    elif sexo_opcao == '3':  
-
-                        if em_transicao and tempo_transicao >= 12:
-                            TMB = tmb_m  
-                            c.print(Panel(f'\nSua TMB é: {TMB:.2f}', expand = False, border_style = 'cyan'))
-                            c.print(Panel('✅ Cálculo feito com base no seu sexo atual, conforme sua identidade de gênero.', expand = False, border_style = 'cyan', title = '[blue]INFO[/]', title_align = 'center'))
-
-                        elif em_transicao:
-                            TMB = (tmb_m + tmb_f) / 2  
-                            c.print(Panel(f'Sua TMB é: {TMB:.2f}', expand = False, border_style = 'cyan'))
-                            c.print(Panel('Como sua transição é recente, usamos uma média para tornar o cálculo mais preciso.', expand = False, border_style = 'cyan', title = '[blue]INFO[/]', title_align = 'center'))
-
-                        else:
-                            TMB = tmb_f  
-                            c.print(Panel(f'Sua TMB é: {TMB:.2f}', expand = False, border_style = 'cyan'))
-                            c.print(Panel('Como não há uso de hormônios, o cálculo foi feito com base no sexo biológico.', expand = False, border_style = 'cyan', title = '[blue]INFO[/]', title_align = 'center'))
-                            
-                    elif sexo_opcao == '4':  
-
-                        if em_transicao and tempo_transicao >= 12:
-                            TMB = tmb_f  
-                            c.print(Panel(f'Sua TMB é: {TMB:.2f}', expand = False, border_style = 'cyan'))
-                            c.print(Panel('✅ Cálculo feito com base no seu sexo atual, conforme sua identidade de gênero.', expand = False, border_style = 'cyan', title = '[blue]INFO[/]', title_align = 'center'))
-
-                        elif em_transicao:
-                            TMB = (tmb_m + tmb_f) / 2  
-                            c.print(Panel(f'Sua TMB é: {TMB:.2f}', expand = False, border_style = 'cyan'))
-                            c.print(Panel('Como sua transição é recente, usamos uma média para tornar o cálculo mais preciso.', expand = False, border_style = 'cyan', title = '[blue]INFO[/]', title_align = 'center'))
-
-                        else:
-                            TMB = tmb_m  
-                            c.print(Panel(f'Sua TMB é: {TMB:.2f}', expand = False, border_style = 'cyan'))
-                            c.print(Panel('Como não há uso de hormônios, o cálculo foi feito com base no sexo biológico.', expand = False, border_style = 'cyan', title = '[blue]INFO[/]', title_align = 'center'))
-                    
-                    aguardar_volta()
-                    return True
-                    
                 except ValueError:
-                    c.print(Panel('Valor inválido! Digite números válidos.', expand = False, border_style = 'red', title = '[b]ERRO[/b]', title_align = 'center'))
-                    aguardar_volta()
+                        c.print(Panel('Digite apenas números', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
+                        aguardar_volta()
+                        continue
                 break
+            
+            while True:
+                    
+                    try:
+                        c.print(Panel('Digite a [green][u]altura[/u][/] em centímetros:', expand = False, border_style = 'yellow'))
+                        alturaex = float(input('>>> '))
+                        if alturaex > 220 or alturaex <= 100:
+                            c.print(Panel('Digite uma altura válida, em centímetros.', expand = False, border_style = 'red', title = '[b]ERRO[/b]', title_align = 'center'))
+                            aguardar_volta()
+                            continue
+                    except ValueError:
+                        c.print(Panel('Digite apenas números', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
+                        aguardar_volta()
+                        continue
+                    break
+                    
+            while True:
 
+                    try:            
+                        c.print(Panel('Digite a [green][u]idade:[/u][/]', expand = False, border_style = 'yellow'))
+                        idadeex = int(input('>>> '))
+                        if idadeex > 100 or idadeex <= 0:
+                            c.print(Panel('Digite uma idade válida.', expand = False, border_style = 'red', title = '[b]ERRO[/b]', title_align = 'center'))
+                            aguardar_volta()
+                            continue
+                    except ValueError:
+                        c.print(Panel('Digite apenas números', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
+                        aguardar_volta()
+                        continue
+                    break
+
+            while True:
+                    try: 
+                        textoidentidade_text = Text()
+                        textoidentidade_text.append('\n')
+                        textoidentidade_text.append('Qual é a sua identidade de gênero?\n')
+                        textoidentidade_text.append('\n')
+
+                        textoidentidade_text.append('1. ', style = 'red')
+                        textoidentidade_text.append('Homem Cis ')
+
+                        textoidentidade_text.append('2. ', style = 'red')
+                        textoidentidade_text.append('Mulher Cis ')
+
+                        textoidentidade_text.append('3. ', style = 'red')
+                        textoidentidade_text.append('Homem Trans ')
+
+                        textoidentidade_text.append('4. ', style = 'red')
+                        textoidentidade_text.append('Mulher Trans ')
+
+                        painelidentidade = Panel(textoidentidade_text, border_style="cyan", expand = False,title="[bold cyan]Sua identidade[/bold cyan]",title_align="center")
+                        c.print(painelidentidade)
+                        
+                        c.print(Panel('Digite [green][u][b]sua[/b][/u][/] opção: ', expand = False, border_style = 'yellow'))
+                        sexo_opcao = input('>>> ').strip()
+            
+                        if sexo_opcao not in ['1', '2', '3', '4']:
+                            c.print(Panel('Opção inválida! Escolha 1-4', expand = False, border_style = 'red', title = '[b]ERRO[/b]', title_align = 'center'))
+                            aguardar_volta()
+                            continue
+                    except ValueError:
+                        c.print(Panel('Digite apenas números', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
+                        aguardar_volta()
+                        continue
+                    break
+            
+            while True:
+                    try:
+                    
+                        em_transicao = False
+                        tempo_transicao = 0
+                        
+                        if sexo_opcao in ['3', '4']:
+                            c.print(Panel('Você já fez uso de terapia hormonal? (s/n):', expand = False, border_style = 'yellow'))
+                            resposta = input('>>> ').lower().strip()
+                            if resposta not in ['s','n']:
+                                c.print(Panel('Digite (s) ou (n).', expand = False, border_style = 'red', title = '[b]ERRO[/b]', title_align = 'center'))
+                                aguardar_volta()
+                                continue 
+                    except ValueError:
+                        c.print(Panel('Digite apenas números', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
+                        aguardar_volta()
+                        continue
+                    break
+            
+            while True:
+                try:
+                    em_transicao = resposta == 's'    
+                    if em_transicao:
+                        c.print(Panel('Há quantos meses você faz uso?', expand = False, border_style = 'yellow'))
+                        tempo_transicao = int(input('>>> '))
+                        if tempo_transicao <= 0:
+                            c.print(Panel('Digite um valor válido.', expand = False, border_style = 'red', title = '[b]ERRO[/b]', title_align = 'center'))
+                            aguardar_volta()
+                            continue
+                except ValueError:
+                        c.print(Panel('Digite um número válido.', expand = False, border_style = 'red', title = '[b]ERRO[/b]', title_align = 'center'))
+                        aguardar_volta()
+                        continue
+                
+                tmb_m = (10 * pesoex) + (6.25 * alturaex) - (5 * idadeex) + 5
+                tmb_f = (10 * pesoex) + (6.25 * alturaex) - (5 * idadeex) - 161
+            
+                if sexo_opcao == '1':  
+
+                    TMB = tmb_m
+                    c.print(Panel(f'Sua TMB é: {TMB:.2f}', expand = False, border_style = 'cyan'))
+                    
+                elif sexo_opcao == '2':  
+
+                    TMB = tmb_f
+                    c.print(Panel(f'Sua TMB é: {TMB:.2f}', expand = False, border_style = 'cyan'))
+                    
+                elif sexo_opcao == '3':  
+
+                    if em_transicao and tempo_transicao >= 12:
+                        TMB = tmb_m  
+                        c.print(Panel(f'\nSua TMB é: {TMB:.2f}', expand = False, border_style = 'cyan'))
+                        c.print(Panel('✅ Cálculo feito com base no seu sexo atual, conforme sua identidade de gênero.', expand = False, border_style = 'cyan', title = '[blue]INFO[/]', title_align = 'center'))
+
+                    elif em_transicao:
+                        TMB = (tmb_m + tmb_f) / 2  
+                        c.print(Panel(f'Sua TMB é: {TMB:.2f}', expand = False, border_style = 'cyan'))
+                        c.print(Panel('Como sua transição é recente, usamos uma média para tornar o cálculo mais preciso.', expand = False, border_style = 'cyan', title = '[blue]INFO[/]', title_align = 'center'))
+
+                    else:
+                        TMB = tmb_f  
+                        c.print(Panel(f'Sua TMB é: {TMB:.2f}', expand = False, border_style = 'cyan'))
+                        c.print(Panel('Como não há uso de hormônios, o cálculo foi feito com base no sexo biológico.', expand = False, border_style = 'cyan', title = '[blue]INFO[/]', title_align = 'center'))
+                        
+                elif sexo_opcao == '4':  
+
+                    if em_transicao and tempo_transicao >= 12:
+                        TMB = tmb_f  
+                        c.print(Panel(f'Sua TMB é: {TMB:.2f}', expand = False, border_style = 'cyan'))
+                        c.print(Panel('✅ Cálculo feito com base no seu sexo atual, conforme sua identidade de gênero.', expand = False, border_style = 'cyan', title = '[blue]INFO[/]', title_align = 'center'))
+
+                    elif em_transicao:
+                        TMB = (tmb_m + tmb_f) / 2  
+                        c.print(Panel(f'Sua TMB é: {TMB:.2f}', expand = False, border_style = 'cyan'))
+                        c.print(Panel('Como sua transição é recente, usamos uma média para tornar o cálculo mais preciso.', expand = False, border_style = 'cyan', title = '[blue]INFO[/]', title_align = 'center'))
+
+                    else:
+                        TMB = tmb_m  
+                        c.print(Panel(f'Sua TMB é: {TMB:.2f}', expand = False, border_style = 'cyan'))
+                        c.print(Panel('Como não há uso de hormônios, o cálculo foi feito com base no sexo biológico.', expand = False, border_style = 'cyan', title = '[blue]INFO[/]', title_align = 'center'))
+                
+                aguardar_volta()
+                return True
+                    
         elif calculartmb_visualizartmb == '3':
             with c.status("[red]S[/red][magenta]a[/magenta][yellow]i[/yellow]"
                 "[green]n[/green][cyan]d[/cyan][blue]o[/blue]", spinner = 'hearts'):  
