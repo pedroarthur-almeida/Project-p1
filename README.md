@@ -24,23 +24,29 @@
 
 # Instalação
 1. Clone o repositório:
-'''https://github.com/pedroarthur-almeida/projetop1.git'''
-
+```
+git clone https://github.com/pedroarthur-almeida/projetop1.git
+```
 2. Instale as dependências:
-'''pip install -r requirements.txt'''
-
+```
+pip install -r requirements.txt
+```
 3. Execute:
-'''python project1.py'''
+```
+python project1.py
+```
 
 # Crie um ambiente virtual (recomendado):
 - No Windows:
-'''python -m venv venv
-venv\Scripts\activate'''
-
+```
+python -m venv venv
+venv\Scripts\activate
+```
 - No Mac/Linux:
-'''python -m venv venv
-source venv/bin/activate'''
-
+```
+python -m venv venv
+source venv/bin/activate
+```
 # Destaques e diferenciais do VitalTrack:
 - Inclusivo: Cálculos adaptados para pessoas trans em terapia hormonal.
 - Offline: Dados salvos localmente em usuarios.json.
