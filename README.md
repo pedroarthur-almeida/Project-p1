@@ -69,9 +69,11 @@ source venv/bin/activate
 
 ![Escolha de objetivo](imgs/escolhadeobj.png)
 
-## 🚧 Desenvolvimento Ativo
+<div style="border: 2px solid #FFA500; padding: 10px; border-radius: 5px; background-color: #FFF8DC;">
+  <h3>🚧 <strong>DESENVOLVIMENTO ATIVO</strong></h3>
+  <p>Este projeto está em desenvolvimento contínuo. Novidades em breve!</p>
+</div>
 
-Este projeto está em desenvolvimento ativo. Novos recursos e melhorias estão a caminho.
 
 
 
