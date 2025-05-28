@@ -65,6 +65,10 @@ source venv/bin/activate
 
 ![Interações](imgs/inclusao.png)
 
+- Escolha de objetivo
+
+![Escolha de objetivo](imgs/escolhadeobj.png)
+
 
 
 
