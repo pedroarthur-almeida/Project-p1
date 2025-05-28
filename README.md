@@ -57,6 +57,10 @@ source venv/bin/activate
 
 ![Menu logado](imgs/menulogado.png)
 
+- Menu inicial
+
+![Menu inicial](imgs/menuinicial.png)
+
 
 
 
