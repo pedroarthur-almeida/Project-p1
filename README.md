@@ -70,9 +70,8 @@ source venv/bin/activate
 ![Escolha de objetivo](imgs/escolhadeobj.png)
 
 ---
-> # 🚧 Desenvolvimento ativo
->
-> Este projeto está em desenvolvimento ativo e sujeito a mudanças.
+# 🚧 Desenvolvimento ativo
+- Este projeto está em desenvolvimento ativo e sujeito a mudanças.
 ---
 
 
