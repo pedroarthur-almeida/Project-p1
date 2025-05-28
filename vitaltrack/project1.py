@@ -35,7 +35,7 @@ def cadastro_de_usuario():
     """Cadastra o usuário e salva seus dados em um dicionário,
        em que a chave é o email.
     """
-    
+    c.clear()
     global usuarios,usuario_logado 
     c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
     print(' ')
@@ -138,7 +138,7 @@ def escolher_objetivo():
     Usuário escolhe seu objetivo e fornece seus dados,
     armazena os dados do usuário em um outro dicionário "dados".
     """
-    
+    c.clear()
     global usuario_logado, usuarios
 
     while True:
@@ -384,7 +384,7 @@ def fazer_login(): #criando a função de login.
     O usuário digita seu email e sua senha,
     caso estejam corretos, libera o acesso ao "menu logado".
     """
-    
+    c.clear()
     global usuario_logado, usuarios
     c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
     print(' ') 
@@ -428,6 +428,7 @@ def atualizar_usuario():
     é permitido atualizar email, nome ou senha,
     os novos dados são salvos após mudanças.
     """
+    c.clear()
     global usuario_logado, usuarios
     if usuario_logado is None: 
         c.print(Panel('Faça login primeiro!',expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
@@ -467,6 +468,7 @@ def atualizar_usuario():
                 salvar_dadosjson()
                 c.print(Panel('Nome atualizado com sucesso!', expand = False, border_style = 'cyan'))
                 aguardar_volta()
+                c.clear()
 
         elif opçao3 == '2':
             c.print(Panel('Digite uma nova senha (mínimo 6 caracteres):', expand = False, border_style = 'yellow'))
@@ -476,10 +478,12 @@ def atualizar_usuario():
                 salvar_dadosjson()
                 c.print(Panel('Senha atualizada com sucesso!', expand = False, border_style = 'cyan'))
                 aguardar_volta()
+                c.clear()
 
             else:
                 c.print(Panel('Senha muito curta.', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
-                aguardar_volta() 
+                aguardar_volta()
+                c.clear() 
 
         elif opçao3 == '3':
             c.print(Panel(f'Digite seu novo email (atual: {usuario_logado}):', expand = False, border_style = 'yellow'))
@@ -489,15 +493,18 @@ def atualizar_usuario():
 
             if novo_email == usuario_logado:
                 c.print(Panel('O novo email é igual ao atual.', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
-                aguardar_volta()   
+                aguardar_volta()
+                c.clear()   
 
             elif '@' not in novo_email or '.com' not in novo_email:
                 c.print(Panel("Formato inválido (use '@' e '.com').", expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
                 aguardar_volta()
+                c.clear()
 
             elif novo_email in usuarios:
                 c.print(Panel('Email já cadastrado.', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center')) 
                 aguardar_volta()
+                c.clear()
 
             else:
                 
@@ -506,7 +513,8 @@ def atualizar_usuario():
                 usuario_logado = novo_email
                 salvar_dadosjson()
                 c.print(Panel("Email atualizado com sucesso!", expand = False, border_style = 'cyan'))
-                aguardar_volta() 
+                aguardar_volta()
+                c.clear() 
 
         elif opçao3 == '4':
             with c.status("[red]G[/red][magenta]u[/magenta][yellow]a[/yellow][green]r[/green]"
@@ -514,16 +522,20 @@ def atualizar_usuario():
                 "[green]o[/green][cyan]s[/cyan] "
                 "[blue]d[/blue][red]a[/red][magenta]d[/magenta][yellow]o[/yellow][green]s[/green]", spinner = 'hearts'):  
                 time.sleep(2)
+                c.clear()
             break
 
         else:
             c.print(Panel('Opção inválida. Digite uma opção disponível (1-4)', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
+            aguardar_volta()
+            c.clear()
 
 def atualizar_dados():
     """
     Atualiza os dados físicos do usuário,
     usuário decide o que deseja atualizar.
     """
+    c.clear()
     global usuario_logado, usuarios
 
     if usuario_logado is None:
@@ -584,10 +596,12 @@ def atualizar_dados():
                     salvar_dadosjson()
                     c.print(Panel('Idade atualizada com sucesso!', expand = False, border_style = 'cyan'))
                     aguardar_volta()
+                    c.clear()
 
                 else:
                     c.print(Panel('Idade deve ser entre 1 e 100 anos', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
                     aguardar_volta()
+                    c.clear()
                 
             elif campo == '2':
                 c.print(Panel('Novo peso, em quilogramas:', expand = False, border_style = 'yellow'))
@@ -597,10 +611,12 @@ def atualizar_dados():
                     salvar_dadosjson()
                     c.print(Panel('Peso atualizado com sucesso!', expand = False, border_style = 'cyan'))
                     aguardar_volta()
+                    c.clear()
 
                 else:
                     c.print(Panel('Peso deve ser entre 0.1 e 350 kg', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
                     aguardar_volta()
+                    c.clear()
                 
             elif campo == '3':
                 c.print(Panel('Nova altura, em metros:', expand = False, border_style = 'yellow'))
@@ -610,10 +626,12 @@ def atualizar_dados():
                     salvar_dadosjson()
                     c.print(Panel('Altura atualizada com sucesso!', expand = False, border_style = 'cyan'))
                     aguardar_volta()
+                    c.clear()
 
                 else:
                     c.print(Panel('Altura deve ser entre 0.1 e 2.5 metros', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
                     aguardar_volta()
+                    c.clear()
                 
             elif campo == '4':
                 mudandoobj_text = Text()
@@ -639,24 +657,30 @@ def atualizar_dados():
                     user['objetivo'] = novo_objetivo
                     salvar_dadosjson()
                     c.print(Panel(f'Objetivo atualizado para: {objetivos[novo_objetivo]}', expand = False, border_style = 'cyan'))
+                    aguardar_volta()
+                    c.clear()
 
                 else:
                     c.print(Panel('Opção inválida!', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
                 aguardar_volta()
+                c.clear()
                 
             elif campo == '5':
                 with c.status("[red]S[/red][magenta]a[/magenta][yellow]i[/yellow]"
                     "[green]n[/green][cyan]d[/cyan][blue]o[/blue]", spinner = 'hearts'):  
                     time.sleep(2)
+                    c.clear()
                 break
                 
             else:
                 c.print(Panel('Opção inválida! digite uma opção disponível.', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
                 aguardar_volta()
+                c.clear()
                 
         except ValueError:
             c.print(Panel('Valor inválido! Digite números válidos.', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
             aguardar_volta()
+            c.clear()
 
 def deletar_usuario():
     """
@@ -684,11 +708,13 @@ def deletar_usuario():
         elif confirmaçao == 'n':
             c.print(Panel('Que bom! Creio que ainda podemos te auxiliar em muitas coisas. 😉✨', expand = False, border_style = 'cyan'))
             aguardar_volta()
+            c.clear()
             return False
 
         else:
             c.print(Panel('Digite "s" ou "n".', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
             aguardar_volta()
+            c.clear()
         
 carregar_dadosjson()
 
@@ -698,6 +724,7 @@ def menu_principal():
     é exibido logo após iniciar o programa,
     abre ao usuário as opções de cadastro e login.
     """
+    c.clear()
     global usuario_logado 
  
     while True:
@@ -766,7 +793,7 @@ def calcular_imc():
     ou pode optar por calcular outro IMC qualquer,
     a função retorna o status após calcular o valor do imc, em ambos os casos.
     """
-    
+    c.clear()
     global usuarios,usuario_logado
 
     if usuario_logado is None:
@@ -784,6 +811,7 @@ def calcular_imc():
     imc = dados['peso'] / (dados['altura'] ** 2)
 
     while True:
+        c.clear()
         c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
         print(' ')
         imc_text = Text('CALCULADORA DE IMC (ÍNDICE DE MASSA CORPORAL)', justify = 'center')
@@ -895,12 +923,14 @@ def calcular_imc():
                         status = 'Obesidade'
                     c.print(Panel(f'Status: {status}', expand = False, border_style = 'cyan'))
                     aguardar_volta()
+                    c.clear()
                     break
                 
         elif calcularimc_visualizarimc == '3':
             with c.status("[red]S[/red][magenta]a[/magenta][yellow]i[/yellow]"
                 "[green]n[/green][cyan]d[/cyan][blue]o[/blue]", spinner = 'hearts'):  
                 time.sleep(2)
+                c.clear()
             break
         
 def calcular_taxametabolicabasal():
@@ -908,7 +938,7 @@ def calcular_taxametabolicabasal():
     Calcula a tmb (Taxa metabólica basal) do usuário,
     o usuário pode escolher entre calcular sua TBM (com seus dados salvos),
     ou pode optar por calcular outra qualquer"""
-    
+    c.clear()
     global usuarios, usuario_logado 
 
     if usuario_logado is None:
@@ -924,6 +954,7 @@ def calcular_taxametabolicabasal():
         return
 
     while True:
+        c.clear()
         c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
         print(' ')
         tmb_text = Text('TAXA METABÓLICA BASAL (TMB)', justify = 'center')
@@ -1032,17 +1063,19 @@ def calcular_taxametabolicabasal():
         elif calculartmb_visualizartmb == '2':
 
             while True:
-
+                c.clear()
                 try:
                     c.print(Panel('Digite o [u][green]peso[/][/u] em quilogramas:', expand = False, border_style = 'yellow'))
                     pesoex = float(input('>>> '))
                     if pesoex > 350 or pesoex <= 0:
                         c.print(Panel('Digite um peso válido.',expand = False, border_style = 'red', title = '[b]ERRO[/b]', title_align = 'center'))
                         aguardar_volta()
+                        c.clear()
                         continue
                 except ValueError:
                         c.print(Panel('Digite apenas números', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
                         aguardar_volta()
+                        c.clear()
                         continue
                 break
             
@@ -1054,10 +1087,12 @@ def calcular_taxametabolicabasal():
                         if alturaex > 220 or alturaex <= 100:
                             c.print(Panel('Digite uma altura válida, em centímetros.', expand = False, border_style = 'red', title = '[b]ERRO[/b]', title_align = 'center'))
                             aguardar_volta()
+                            c.clear()
                             continue
                     except ValueError:
                         c.print(Panel('Digite apenas números', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
                         aguardar_volta()
+                        c.clear()
                         continue
                     break
                     
@@ -1069,10 +1104,12 @@ def calcular_taxametabolicabasal():
                         if idadeex > 100 or idadeex <= 0:
                             c.print(Panel('Digite uma idade válida.', expand = False, border_style = 'red', title = '[b]ERRO[/b]', title_align = 'center'))
                             aguardar_volta()
+                            c.clear()
                             continue
                     except ValueError:
                         c.print(Panel('Digite apenas números', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
                         aguardar_volta()
+                        c.clear()
                         continue
                     break
 
@@ -1104,10 +1141,12 @@ def calcular_taxametabolicabasal():
                         if sexo_opcao not in ['1', '2', '3', '4']:
                             c.print(Panel('Opção inválida! Escolha 1-4', expand = False, border_style = 'red', title = '[b]ERRO[/b]', title_align = 'center'))
                             aguardar_volta()
+                            c.clear()
                             continue
                     except ValueError:
                         c.print(Panel('Digite apenas números', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
                         aguardar_volta()
+                        c.clear()
                         continue
                     break
             
@@ -1123,10 +1162,12 @@ def calcular_taxametabolicabasal():
                             if resposta not in ['s','n']:
                                 c.print(Panel('Digite (s) ou (n).', expand = False, border_style = 'red', title = '[b]ERRO[/b]', title_align = 'center'))
                                 aguardar_volta()
+                                c.clear()
                                 continue 
                     except ValueError:
                         c.print(Panel('Digite apenas números', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
                         aguardar_volta()
+                        c.clear()
                         continue
                     break
             
@@ -1139,66 +1180,76 @@ def calcular_taxametabolicabasal():
                         if tempo_transicao <= 0:
                             c.print(Panel('Digite um valor válido.', expand = False, border_style = 'red', title = '[b]ERRO[/b]', title_align = 'center'))
                             aguardar_volta()
+                            c.clear()
                             continue
                 except ValueError:
                         c.print(Panel('Digite um número válido.', expand = False, border_style = 'red', title = '[b]ERRO[/b]', title_align = 'center'))
                         aguardar_volta()
+                        c.clear()
                         continue
                 
                 tmb_m = (10 * pesoex) + (6.25 * alturaex) - (5 * idadeex) + 5
                 tmb_f = (10 * pesoex) + (6.25 * alturaex) - (5 * idadeex) - 161
             
                 if sexo_opcao == '1':  
-
+                    c.clear()
                     TMB = tmb_m
                     c.print(Panel(f'Sua TMB é: {TMB:.2f}', expand = False, border_style = 'cyan'))
                     
                 elif sexo_opcao == '2':  
-
+                    c.clear()
                     TMB = tmb_f
                     c.print(Panel(f'Sua TMB é: {TMB:.2f}', expand = False, border_style = 'cyan'))
                     
                 elif sexo_opcao == '3':  
-
+                    
                     if em_transicao and tempo_transicao >= 12:
+                        c.clear()
                         TMB = tmb_m  
                         c.print(Panel(f'\nSua TMB é: {TMB:.2f}', expand = False, border_style = 'cyan'))
                         c.print(Panel('✅ Cálculo feito com base no seu sexo atual, conforme sua identidade de gênero.', expand = False, border_style = 'cyan', title = '[blue]INFO[/]', title_align = 'center'))
 
                     elif em_transicao:
+                        c.clear()
                         TMB = (tmb_m + tmb_f) / 2  
                         c.print(Panel(f'Sua TMB é: {TMB:.2f}', expand = False, border_style = 'cyan'))
                         c.print(Panel('Como sua transição é recente, usamos uma média para tornar o cálculo mais preciso.', expand = False, border_style = 'cyan', title = '[blue]INFO[/]', title_align = 'center'))
 
                     else:
+                        c.clear()
                         TMB = tmb_f  
                         c.print(Panel(f'Sua TMB é: {TMB:.2f}', expand = False, border_style = 'cyan'))
                         c.print(Panel('Como não há uso de hormônios, o cálculo foi feito com base no sexo biológico.', expand = False, border_style = 'cyan', title = '[blue]INFO[/]', title_align = 'center'))
                         
                 elif sexo_opcao == '4':  
-
+                    
                     if em_transicao and tempo_transicao >= 12:
+                        c.clear()
                         TMB = tmb_f  
                         c.print(Panel(f'Sua TMB é: {TMB:.2f}', expand = False, border_style = 'cyan'))
                         c.print(Panel('✅ Cálculo feito com base no seu sexo atual, conforme sua identidade de gênero.', expand = False, border_style = 'cyan', title = '[blue]INFO[/]', title_align = 'center'))
 
                     elif em_transicao:
+                        c.clear()
                         TMB = (tmb_m + tmb_f) / 2  
                         c.print(Panel(f'Sua TMB é: {TMB:.2f}', expand = False, border_style = 'cyan'))
                         c.print(Panel('Como sua transição é recente, usamos uma média para tornar o cálculo mais preciso.', expand = False, border_style = 'cyan', title = '[blue]INFO[/]', title_align = 'center'))
 
                     else:
+                        c.clear()
                         TMB = tmb_m  
                         c.print(Panel(f'Sua TMB é: {TMB:.2f}', expand = False, border_style = 'cyan'))
                         c.print(Panel('Como não há uso de hormônios, o cálculo foi feito com base no sexo biológico.', expand = False, border_style = 'cyan', title = '[blue]INFO[/]', title_align = 'center'))
                 
                 aguardar_volta()
-                return True
+                c.clear()
+                break
                     
         elif calculartmb_visualizartmb == '3':
             with c.status("[red]S[/red][magenta]a[/magenta][yellow]i[/yellow]"
                 "[green]n[/green][cyan]d[/cyan][blue]o[/blue]", spinner = 'hearts'):  
                 time.sleep(2)
+                c.clear()
             break
 
         else:
@@ -1213,7 +1264,7 @@ def registrar_calorias():
     usuário tem a opção de "finalizar dia",
     após isso, recebe um feedback e pode verificar o histórico de consumo de acordo com o dia.
     """
-    
+    c.clear()
     global usuarios, usuario_logado
 
     if usuario_logado is None:
@@ -1243,7 +1294,7 @@ def registrar_calorias():
         user['calorias_hoje'] = 0
 
     while True:
-
+        c.clear()
         try:
             c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
             print(' ')
@@ -1274,6 +1325,7 @@ def registrar_calorias():
             opcao = input('>>> ').strip()
 
             if opcao == '1':
+                c.clear()
                 c.print(Panel(f'Total de calorias hoje: {user["calorias_hoje"]}/{TMB:.0f}', expand = False, border_style = 'cyan'))
                 c.print(Panel('Quantas calorias você consumiu em sua última refeição?', expand = False, border_style = 'yellow'))
                 cal = input('>>> ')
@@ -1282,6 +1334,7 @@ def registrar_calorias():
                 if cal <= 0:
                     c.print(Panel('Ops, este não é um valor válido. Caso queira registrar suas calorias, digite um valor válido.', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
                     aguardar_volta()
+                    c.clear()
                     continue
 
                 user['calorias_hoje'] += cal  #aqui, as calorias são acumuladas.
@@ -1292,8 +1345,10 @@ def registrar_calorias():
                 pfeedbackcal = Panel(feedbackcal_text, expand = False, border_style = 'cyan', title = 'FEEDBACK', title_align = 'center')
                 c.print(pfeedbackcal)
                 aguardar_volta()
+                c.clear()
 
             elif opcao == '2':
+                    c.clear()
                     c.print(Panel('Deseja finalizar o seu dia ? Não poderá mais adicionar calorias ao dia de hoje. (s/n):', expand = False, border_style = 'yellow'))
                     es = input('>>> ').strip().lower()
 
@@ -1389,16 +1444,20 @@ def registrar_calorias():
                         else:
                             c.print(Panel('Você já finalizou o dia hoje!', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
                         aguardar_volta()
+                        c.clear()
 
                     elif es == 'n':
                         aguardar_volta()
+                        c.clear()
 
                     else:
                         c.print(Panel('Digite (s) ou (n).', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
                         aguardar_volta()
+                        c.clear()
                         continue
 
             elif opcao == '3':
+                c.clear()
                 c.print(Panel('📅 HISTÓRICO DE CONSUMO:', expand = False, border_style = 'cyan'))
 
                 if not user['historico_dias']:
@@ -1413,25 +1472,29 @@ def registrar_calorias():
                 with c.status("[red]S[/red][magenta]a[/magenta][yellow]i[/yellow]"
                     "[green]n[/green][cyan]d[/cyan][blue]o[/blue]", spinner = 'hearts'):  
                     time.sleep(2)
+                    c.clear()
                 break
 
             else:
                 c.print(Panel('Opção inválida!', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
                 aguardar_volta()
+                c.clear()
 
         except:
             c.print(Panel('Digite apenas números.', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
             aguardar_volta()
+            c.clear()
         
 def menu_logado():
     """
     Menu onde o usuário tem acesso as funcionalidades do programa,
     só é possível ter acesso a esse menu após o login.
     """
+    c.clear()
     global usuario_logado, usuarios 
 
     while True:
-        
+        c.clear()
         c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
         print(' ')
 
@@ -1521,6 +1584,7 @@ def menu_logado():
             with c.status("[red]S[/red][magenta]a[/magenta][yellow]i[/yellow]"
                 "[green]n[/green][cyan]d[/cyan][blue]o[/blue]", spinner = 'hearts'):  
                 time.sleep(2)
+                c.clear()
 
         elif opcao == '2':
             with c.status("[red]C[/red][magenta]a[/magenta][yellow]r[/yellow][green]r[/green]"
@@ -1572,6 +1636,7 @@ def menu_logado():
                 elif deslog == 'n':
                     c.print(Panel('Você permanece [green][u][b]logado.[/b][/u][/]', expand = False, border_style = 'cyan', style = 'cyan')) 
                     aguardar_volta()
+                    c.clear()
                     break
                 
                 else:
@@ -1584,9 +1649,12 @@ def menu_logado():
                 time.sleep(2)
             if deletar_usuario():
                 aguardar_volta()
+                c.clear()
                 return
         else:
             c.print(Panel('Opção inválida! Digite um número de 1 a 8.', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
+            aguardar_volta()
+            c.clear()
 
 if __name__ == "__main__":
     menu_principal() 
