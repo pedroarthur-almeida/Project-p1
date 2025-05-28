@@ -54,6 +54,7 @@ source venv/bin/activate
 
 # Screenshots do VitalTrack:
 - Menu logado
+
 ![Menu logado](imgs/menulogado.png)
 
 
