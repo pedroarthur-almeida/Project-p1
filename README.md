@@ -52,8 +52,8 @@ source venv/bin/activate
 - Offline: Dados salvos localmente em usuarios.json.
 - Feedback inteligente: Dicas personalizadas por objetivo.
 
-# Algumas imagens do programa:
-
+# Screenshots do VitalTrack:
+- Menu logado
 ![Menu logado](imgs/menulogado.png)
 
 
