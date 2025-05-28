@@ -61,6 +61,10 @@ source venv/bin/activate
 
 ![Menu inicial](imgs/menuinicial.png)
 
+- Interações
+
+![Interações](imgs/inclusao.png)
+
 
 
 
