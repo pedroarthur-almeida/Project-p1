@@ -1631,6 +1631,7 @@ def menu_logado():
                     usuario_logado = None
                     c.print(Panel('[b][u][red]Deslogado[/][/u][/b] com sucesso!', expand = False, border_style = 'cyan', style = 'cyan'))
                     aguardar_volta()
+                    c.clear()
                     return
                 
                 elif deslog == 'n':
