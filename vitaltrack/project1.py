@@ -3,7 +3,7 @@ usuario_logado = None
 from datetime import datetime 
 import json
 import time
-from rich.console import Console
+from rich.console import Console #utilizei a bilioteca rich para fazer toda a personalização do código, por isso funções e comandos ficaram diferentes do python base.
 from rich.panel import Panel
 from rich.text import Text
 import random
@@ -37,19 +37,19 @@ def cadastro_de_usuario():
     """
     c.clear()
     global usuarios,usuario_logado 
-    c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
+    c.rule('\n[blue][b][i]VitalTrack[/i][/][/]') #isso cria uma linha com o nome vital track no centro. tudo que esta dentro dos colchetes são destaques que eu decidi por, nesse exemplo, escolhi a cor, que ficasse em negrito e em itálico.
     print(' ')
-    conteudo = Text("Siga as instruções para um cadastro bem sucedido.", justify="center")
-    textcadastro = Panel(conteudo,title="[i][cyan]CADASTRO[/cyan][/i]",title_align="center",border_style="cyan",expand=True)
-    c.print(textcadastro)
+    conteudo = Text("Siga as instruções para um cadastro bem sucedido.", justify="center") #usei o text, também da biblioteca rich, para criar blocos de texto formatáveis, ou seja, que eu pudesse personalizar da forma que eu quisesse, algumas coisas no rich so funcionam se for nesse bloco.
+    textcadastro = Panel(conteudo,title="[i][cyan]CADASTRO[/cyan][/i]",title_align="center",border_style="cyan",expand=True) #aqui eu incluo o bloco text que criei num "panel", que é como um balão no rich. utilizo os comandos de escolher a cor do balão, o "expand" serve para nao permitir que ele cubra todo o espaço, e o alinhamento do titulo.
+    c.print(textcadastro) #aqui eu printo o panel que criei, juntamente com o text. resumo: crio um text, insiro em um panel/painel, e printo com o console do rich, que eu defini como "c" para facilitar.
 
     while True:
-        c.print(Panel('Digite o seu [green][b][u]email[/u][/b][/]: ', expand = False, border_style = 'yellow'))
+        c.print(Panel('Digite o seu [green][b][u]email[/u][/b][/]: ', expand = False, border_style = 'yellow')) #aqui eu criei um painel diretamente no print, pois é apenas uma frase, quando tem muito texto, eu crio um bloco de texto com o "text"
         email = input('>>> ').strip().lower()
         
         if email in usuarios:
-            erroremail_text = Text()
-            erroremail_text.append('Este email já foi cadastrado!')
+            erroremail_text = Text() #utilizo a dinamica do (text -- panel -- print) em basicamente todos os prints do programa. 
+            erroremail_text.append('Este email já foi cadastrado!') #o comando append adiciona texto ao bloco de texto que eu criei.
             erroremail_text.append('\nInsira um email ainda não cadastrado.')
             perroremail = Panel(erroremail_text, border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center")
             c.print(perroremail)
@@ -57,7 +57,7 @@ def cadastro_de_usuario():
             continue 
         
         elif '@' not in email or '.com' not in email:
-            erroremail_text2 = Text()
+            erroremail_text2 = Text() #novamente, (text-- panel -- print)
             erroremail_text2.append('O email precisa estar em um formato válido.')
             erroremail_text2.append('\nO email precisa ter ".com" e "@".')
             perroremail2 = Panel(erroremail_text2, border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center")
@@ -79,7 +79,7 @@ def cadastro_de_usuario():
     
     while True:
         c.print(Panel('Digite sua [green][u][b]senha[/u][/b][/](mínimo 6 caracteres): ', expand = False, border_style = 'yellow'))
-        senha = prompt('>>> ', is_password = True)
+        senha = prompt('>>> ', is_password = True) #utilizando o prompt toolkit para ocultar a senha em asteriscos (segurança + beleza)
 
         if len(senha) < 6:
             errorsenha_text = Text()
@@ -90,7 +90,7 @@ def cadastro_de_usuario():
             continue 
             
         c.print(Panel('Confirme sua [green][u][b]senha[/b][/u][/]: ', expand = False, border_style = 'yellow'))
-        confirmaçao_de_senha = prompt('>>> ', is_password = True)
+        confirmaçao_de_senha = prompt('>>> ', is_password = True) #novamente utilizando o prompt toolkit.
 
         if senha != confirmaçao_de_senha:
             errorsenha_text2 = Text()
@@ -102,15 +102,15 @@ def cadastro_de_usuario():
         else:
             break
     
-    c.print(Panel('Digite seu [green][u][b]nome[/b][/u][/]: (Será seu nome de usuário)', expand = False, border_style = 'yellow'))
+    c.print(Panel('Digite seu [green][u][b]nome[/b][/u][/]: (Será seu nome de usuário)', expand = False, border_style = 'yellow')) #todo input terá essa dinamica, faço um print utilizando o console o panel do rich, para personalizar e por em um balão, e o input fica logo abaixo.
     nome = input('>>> ').strip()
-    with c.status("[red]G[/red][magenta]u[/magenta][yellow]a[/yellow][green]r[/green]"
-        "[cyan]d[/cyan][blue]a[/blue][red]n[/red][magenta]d[/magenta][yellow]o[/yellow] "
+    with c.status("[red]G[/red][magenta]u[/magenta][yellow]a[/yellow][green]r[/green]" #isso é a telinha de carregamento, no rich, para colocar cores em letras ou palavras, precisa colocar o nome da cor no inicio e no fim, coloquei uma cor em cada letra.
+        "[cyan]d[/cyan][blue]a[/blue][red]n[/red][magenta]d[/magenta][yellow]o[/yellow] " 
         "[green]o[/green][cyan]s[/cyan] "
-        "[blue]d[/blue][red]a[/red][magenta]d[/magenta][yellow]o[/yellow][green]s[/green]", spinner = 'hearts'):  
+        "[blue]d[/blue][red]a[/red][magenta]d[/magenta][yellow]o[/yellow][green]s[/green]", spinner = 'hearts'):  #o spinner é um emoji animado/gif
         time.sleep(2)
     
-    usuarios[email] = {
+    usuarios[email] = { 
         'senha': senha,
         'nome': nome,
         'objetivo': None,
@@ -129,7 +129,7 @@ def cadastro_de_usuario():
     print('\nUsuário Cadastrado com sucesso! ✔')
 
     print('Seja bem vindo ao VITALTRACK! 😉')
-    salvar_dadosjson()
+    salvar_dadosjson() 
     return True
 
 def escolher_objetivo():
@@ -138,12 +138,12 @@ def escolher_objetivo():
     Usuário escolhe seu objetivo e fornece seus dados,
     armazena os dados do usuário em um outro dicionário "dados".
     """
-    c.clear()
+    c.clear() #utilizer o comando c.clear, que sem a abreviação que eu utilizei, é "console.clear()" para limpar o terminal em certos momentos, esse comando vem da biblioteca do rich.
     global usuario_logado, usuarios
 
     while True:
 
-        textoescolhaobj_text = Text()
+        textoescolhaobj_text = Text() #como eu falei antes, todos os prints terão a dinamica do (text -- panel -- print)
         textoescolhaobj_text.append('\n')
         textoescolhaobj_text.append('Qual é o seu objetivo? 🤔')
         textoescolhaobj_text.append('\n')
@@ -183,7 +183,7 @@ def escolher_objetivo():
             '1': 'GANHO DE MASSA',
             '2': 'PERDA DE PESO', 
             '3': 'MANUTENÇÃO DA SAÚDE' }
-        with c.status("[red]S[/red][magenta]a[/magenta][yellow]l[/yellow]"
+        with c.status("[red]S[/red][magenta]a[/magenta][yellow]l[/yellow]" #sempre que tiver time sleep e as cores separando as letrinhas, é a tela de carregamento
             "[green]v[/green][cyan]a[/cyan][blue]n[/blue]"
             "[red]d[/red][magenta]o[/magenta]", spinner = 'hearts'):  
             time.sleep(2)
@@ -1512,9 +1512,9 @@ def menu_logado():
         ]
 
         mensagem = random.choice(mensagens)
-        header = Panel(f"👤 Logado como: {nome}", width=80, title="Menu Principal", style="red")
-
-        parte1 = Text()
+        header = Panel(f"👤 Logado como: {nome}", width=80, title="Menu Principal", style="red") #aqui é como um cabeçalho, como todo o programa, foi feito usando rich.
+                                                                                                 #utilizei "width=80" para fixar a largura do painel, e ficar proporcional.
+        parte1 = Text() #aqui, como em todo o meu código, criei um bloco de código com text(), fui adicionando texto ao bloco com append, personalizando da maneira que eu quis, e no final, tambem fixo a largura do panel.
         parte1.append('\n')
         parte1.append('Escolha uma opção:')
         parte1.append('\n')
@@ -1522,7 +1522,7 @@ def menu_logado():
         parte1.append("[2] Calcular IMC\n", style="cyan")
         parte1.append("[3] Calcular TMB\n", style="cyan")
         parte1.append("[4] Registro de calorias", style="cyan")
-        painel1 = Panel(parte1, title="Vital", border_style="cyan", width=38)
+        painel1 = Panel(parte1, title="Vital", border_style="cyan", width=38) #aqui eu fixo a largura desse panel/painel. tudo isso para ficar proporcional e da maneira que eu queria.
 
         parte2 = Text()
         parte2.append('\n')
@@ -1532,15 +1532,15 @@ def menu_logado():
         parte2.append("[6] Atualizar objetivo/dados\n", style="cyan")
         parte2.append("[7] Deslogar\n", style="cyan")
         parte2.append("[8] Deletar conta", style="red")
-        painel2 = Panel(parte2, title="Track", border_style="cyan", width=38)
+        painel2 = Panel(parte2, title="Track", border_style="cyan", width=38) #mesma dinamica do text e panel, mesma dinamica da fixação da largura.
 
-        inspiracao = Panel(Text(mensagem, justify="center", style="magenta"), title="Seja bem vindo(a)!", border_style="magenta", width=80)
+        inspiracao = Panel(Text(mensagem, justify="center", style="magenta"), title="Seja bem vindo(a)!", border_style="magenta", width=80) #crio outro panel aqui e ja fixo a largura tambem.
 
-        footer = Panel(Text("Digite a opção desejada.", justify="center", style="yellow"), width=80, style="grey37")
+        footer = Panel(Text("Digite a opção desejada.", justify="center", style="yellow"), width=80, style="grey37") # a parte de baixo do menu logado.
 
         c.print(Align.center(header))
-        c.print(Align.center(Columns([painel1, painel2], expand=False)))
-        c.print(Align.center(inspiracao))
+        c.print(Align.center(Columns([painel1, painel2], expand=False))) #junto os dois paineis com as opções, utilizo columns, que também faz parte do rich, diferente de paineis comuns eles ficam enfileirados de maneira mais harmonica e proporcional.
+        c.print(Align.center(inspiracao))                                #o columns precisa que eu defina expand = false, pois se nao ele vai expandir o panel para todo o espaço do terminal, fixar a largura nao é o suficiente, ele tem um comportamento diferente de paineis comuns.
         c.print(Align.center(footer))
         
         opcao = input('>>> ').strip()
