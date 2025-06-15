@@ -2,7 +2,9 @@
 - Project for the first term of the Bachelor's Degree in Information Systems.
 
 # Description: 
-- VitalTrack is a system developed in Python that offers an interactive terminal interface focused on monitoring health and promoting healthy habits. The program has features such as calorie recording, calculation of Body Mass Index (BMI) and Basal Metabolic Rate (BMR). One of VitalTrack's main differentials is its inclusive nature: the system was designed to take into account information specific to trans people when calculating BMR, promoting fairer and more personalized monitoring. With this, the project seeks to unite technology, health and inclusion in an accessible and efficient tool.
+VitalTrack is an interactive terminal application built in Python to track health and promote wellness habits.
+- Core Features: Calorie logging, Body Mass Index (BMI) calculation, and Basal Metabolic Rate (BMR) estimation.
+- Inclusive by Design: Features a specialized BMR calculator that provides more accurate health monitoring for transgender users, ensuring fairer and more personalized results.
 
 # Technologies used:
 - Python 3.13.3
