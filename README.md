@@ -67,10 +67,6 @@ source venv/bin/activate
 
 ![Interações](imgs/inclusao.png)
 
-- Choice of objective
-
-![Escolha de objetivo](imgs/escolhadeobj.png)
-
 ---
 # 🚧 Active development
 - This project is under active development and subject to change.
