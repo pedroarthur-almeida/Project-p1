@@ -2,9 +2,11 @@ import json
 import time
 from utils import Utils
 from prompt_toolkit import prompt
+from rich.align import Align
 from rich.panel import Panel
 from rich.text import Text
 from rich.console import Console
+from rich.progress import Progress, SpinnerColumn, TextColumn
 c = Console()
 
 class Cadastro:
@@ -31,9 +33,14 @@ class Cadastro:
         Utils.limpar_tela_universal() 
         c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
         print(' ')
-        conteudo = Text("Siga as instruções para um cadastro bem sucedido.", justify="center")
-        textcadastro = Panel(conteudo,title="[i][cyan]CADASTRO[/cyan][/i]",title_align="center",border_style="cyan",expand=True)
-        c.print(textcadastro)
+        cadastro_texto_boas_vindas = Text()
+        cadastro_texto_boas_vindas.append('\n')
+        cadastro_texto_boas_vindas.append("✨ Crie sua conta no VitalTrack!\n", style="bold yellow")
+        cadastro_texto_boas_vindas.append("Preencha os dados abaixo para começar sua jornada conosco.", style="dim")
+        cadastro_texto_boas_vindas.append('\n')
+
+        cadastro_panel = Panel(cadastro_texto_boas_vindas,title="[bold blue]Cadastro de Usuário[/bold blue]",border_style="bold blue",expand=False)
+        c.print(Align.center(cadastro_panel))
 
         while True:
             c.print(Panel('Digite o seu [green][b][u]email[/u][/b][/]: ', expand = False, border_style = 'yellow'))
@@ -126,7 +133,8 @@ class Cadastro:
         Utils.limpar_tela_universal()
 
         while True:
-
+            c.rule('[i][blue]VitalTrack[/][/i]')
+            print(' ')
             textoescolhaobj_text = Text()
             textoescolhaobj_text.append('\n')
             textoescolhaobj_text.append('Qual é o seu objetivo? 🤔')
@@ -149,10 +157,16 @@ class Cadastro:
 
             painelescolhadeobj = Panel(textoescolhaobj_text, border_style="cyan", expand = False,title="[bold cyan]Escolha de objetivo[/bold cyan]",
                 title_align="center")
+            painelescolhadeobj_centralizado = Align.center(painelescolhadeobj)
+            c.print(painelescolhadeobj_centralizado)
 
-            c.print(painelescolhadeobj)
+            entradaescolhaobj = Text()
+            entradaescolhaobj.append('Digite sua opção: ', style = 'yellow')
 
-            c.print(Panel('Agora é com [u][green][b]você![/b][/][/u] 🕺 Escolha um objetivo (1-3): ', border_style = 'yellow', expand = False))
+            pentradaescolhaobj= Panel(entradaescolhaobj, expand = False, border_style = 'yellow')
+            pentradaescolhaobj_center = Align.center(pentradaescolhaobj)
+            c.print(pentradaescolhaobj_center)
+
             objetivo = input('>>> ').strip()
 
             if objetivo not in ['1', '2', '3']:
@@ -367,39 +381,61 @@ class Cadastro:
         Caso estejam corretos, libera o acesso ao menu logado.
         """
         Utils.limpar_tela_universal()
-        c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
-        print(' ') 
-        conteudo1 = Text('Seja bem-vindo(a) à etapa de login', justify='center')
-        textlogin = Panel(conteudo1, title="[i][cyan]LOGIN[/cyan][/i]", title_align="center", border_style="cyan", expand=True)
-        c.print(textlogin)
+        c.rule('[i][blue]VitalTrack[/][/i]')
+        print(' ')
+        
+        login_texto_boas_vindas = Text()
+        login_texto_boas_vindas.append('\n')
+        login_texto_boas_vindas.append("🔒 Seja bem-vindo(a) à etapa de login do VitalTrack!\n", style="bold yellow")
+        login_texto_boas_vindas.append("Por favor, insira seus dados de acesso abaixo.", style="dim")
+        login_texto_boas_vindas.append('\n')
+
+        login_panel = Panel(login_texto_boas_vindas, title="[bold blue]Acesso ao Sistema[/bold blue]",border_style="blue",expand=False)
+        c.print(Align.center(login_panel))
 
         while True:
-            c.print(Panel('Digite o seu [u][b][green]email[/][/b][/] cadastrado: ', expand=False, border_style='yellow'))
+            painel_email = Panel('📧 [bold yellow]Email cadastrado:[/bold yellow]', border_style='yellow', expand=False)
+            c.print(painel_email)
             email = input('>>> ').lower().strip()
 
             if email not in self.usuarios:
-                c.print(Panel('Email não cadastrado.', border_style="red", expand=False, title="[b]ERRO[/b]", title_align="center"))
+                painel_erro_email = Panel('❌ Email não cadastrado.',border_style='red',expand=False,title='[bold red]ERRO[/bold red]',title_align='center')
+                c.print(painel_erro_email)
                 Utils.aguardar_volta()
                 continue
             break
 
         while True:
-            c.print(Panel('Digite sua [u][b][green]senha:[/][/b][/] ', expand=False, border_style='yellow'))
+            painel_senha = Panel(
+                '🔑 [bold yellow]Senha:[/bold yellow]',border_style='yellow',expand=False)
+            c.print(painel_senha)
             senha = prompt('>>> ', is_password=True).strip()
 
             if self.usuarios[email]["senha"] != senha:
-                c.print(Panel('Senha incorreta.', border_style="red", expand=False, title="[b]ERRO[/b]", title_align="center"))
+                painel_erro_senha = Panel('❌ Senha incorreta.',border_style='red',expand=False,title='[bold red]ERRO[/bold red]',title_align='center')
+                c.print(painel_erro_senha)
                 Utils.aguardar_volta()
                 continue
 
-            else:
-                with c.status("[red]V[/red][magenta]a[/magenta][yellow]l[/yellow][green]i[/green]"
-                            "[cyan]d[/cyan][blue]a[/blue][red]n[/red][magenta]d[/magenta][yellow]o[/yellow]", spinner='hearts'):
-                    time.sleep(2)
-                print(' ')
-                c.print(Panel(f'Bem-vindo(a), {self.usuarios[email]["nome"]}!', expand=False, border_style='cyan', style='cyan'))
-                print(' ')
-                return email
+            with Progress(
+                SpinnerColumn(spinner_name='bouncingBall'),
+                TextColumn("[progress.description]{task.description}"),
+                transient=True,
+            ) as progress:
+                progress.add_task(description="[bold magenta]Validando credenciais...[/bold magenta]", total=None)
+                time.sleep(2)
+
+            print('\n')
+
+            painel_sucesso = Panel(
+                f'✅ Acesso liberado, [bold cyan]{self.usuarios[email]["nome"]}[/bold cyan]!\n\n🚀 [green]Você está pronto para usar o VitalTrack![/green]',border_style='cyan',expand=False)
+            c.print(painel_sucesso)
+
+            print('\n' + '-' * 60)
+            c.print('[i yellow]VitalTrack - Cuidando de você todos os dias 💙 | Versão 1.0[/i yellow]')
+            print('-' * 60 + '\n')
+
+            return email
 
     def atualizar_usuario(self,usuarios, usuario_logado): 
         """

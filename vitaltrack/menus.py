@@ -14,7 +14,7 @@ def menu_principal(usuarios, usuario_logado = None):
     while True:
         
         c.rule('[blue][i][b]Boas vindas ao VitalTrack![/b][/i][/]')
-
+        print(' ')
         textomenuprincipal_text = Text()
 
         textomenuprincipal_text.append('\n')
@@ -32,10 +32,16 @@ def menu_principal(usuarios, usuario_logado = None):
 
         panel = Panel(textomenuprincipal_text, border_style="cyan", expand = False,title="[bold cyan]Menu Inicial[/bold cyan]",
     title_align="center")
+        panel_centralizado = Align.center(panel)
+        c.print(panel_centralizado)
 
-        c.print(panel)
+        entradamenu_principal = Text()
+        entradamenu_principal.append('Digite sua opção: ', style = 'yellow')
 
-        c.print(Panel('Digite [green][u][b]sua[/b][/u][/] opção: ', expand = False, border_style = 'yellow'))
+        pentradamenu_principal = Panel(entradamenu_principal, expand = False, border_style = 'yellow')
+        pentradamenu_principal_center = Align.center(pentradamenu_principal)
+        c.print(pentradamenu_principal_center)
+
         opçao1 = input('>>> ')
 
         if opçao1 == '1':
@@ -54,7 +60,7 @@ def menu_principal(usuarios, usuario_logado = None):
             if usuario_logado:  
                 with c.status("[red]C[/red][magenta]a[/magenta][yellow]r[/yellow][green]r[/green]"
                 "[cyan]e[/cyan][blue]g[/blue][red]a[/red][magenta]n[/magenta][yellow]d[/yellow][green]o[/green]", spinner='hearts'):  
-                    time.sleep(2)
+                    time.sleep(3)
                 menu_logado(cadastro, usuario_logado)  
                 
         elif opçao1 == '3':
@@ -72,8 +78,6 @@ def menu_principal(usuarios, usuario_logado = None):
             c.print(perrormenuprincipal)
             Utils.aguardar_volta()
     return usuarios, usuario_logado
-
-
 
 def menu_logado(cadastro, usuario_logado):
     """
