@@ -18,8 +18,8 @@ def menu_principal(usuarios, usuario_logado = None):
         textomenuprincipal_text = Text()
 
         textomenuprincipal_text.append('\n')
-        textomenuprincipal_text.append('Seja bem vindo(a) ao menu inicial!\n', style = 'blue')
-        textomenuprincipal_text.append('\nEscolha uma opção dentre as disponíveis.\n')
+        textomenuprincipal_text.append('Seja bem vindo(a) ao menu inicial!\n', style = 'bold yellow')
+        textomenuprincipal_text.append('\nEscolha uma opção dentre as disponíveis.\n', style = 'dim')
 
         textomenuprincipal_text.append('\n1 ', style = 'red')
         textomenuprincipal_text.append('Cadastro\n')
@@ -30,7 +30,7 @@ def menu_principal(usuarios, usuario_logado = None):
         textomenuprincipal_text.append('3 ', style = 'red')
         textomenuprincipal_text.append('Sair\n')
 
-        panel = Panel(textomenuprincipal_text, border_style="cyan", expand = False,title="[bold cyan]Menu Inicial[/bold cyan]",
+        panel = Panel(textomenuprincipal_text, border_style="bold blue", expand = False,title="[bold blue]Menu Inicial[/bold blue]",
     title_align="center")
         panel_centralizado = Align.center(panel)
         c.print(panel_centralizado)
@@ -144,10 +144,10 @@ def menu_logado(cadastro, usuario_logado):
             print(' ')
             verpefil_text = Text()
             verpefil_text.append('\n')
-            verpefil_text.append('SEU PERFIL', style = 'blue')
+            verpefil_text.append('Dados:')
             verpefil_text.append('\n')
-            verpefil_text.append(f'\nNome: {cadastro.usuarios[usuario_logado]["nome"]}')
-            verpefil_text.append(f'\nEmail: {usuario_logado}')
+            verpefil_text.append(f'\n👤 Nome: {cadastro.usuarios[usuario_logado]["nome"]}',style='bold white')
+            verpefil_text.append(f'\n📧 Email: {usuario_logado}',style='bold white')
 
             objetivos = {
                 '1': 'GANHO DE MASSA',
@@ -157,12 +157,12 @@ def menu_logado(cadastro, usuario_logado):
             if cadastro.usuarios[usuario_logado]["dados"]:
                 dados = cadastro.usuarios[usuario_logado]["dados"]
                 objetivo_id = cadastro.usuarios[usuario_logado]["objetivo"] 
-                verpefil_text.append(f'\nObjetivo: {objetivos.get(objetivo_id, "Não definido")}')
-                verpefil_text.append(f'\nIdade: {dados["idade"]} anos')
-                verpefil_text.append(f'\nPeso: {dados["peso"]} kg')
-                verpefil_text.append(f'\nAltura: {dados["altura"]} m')
+                verpefil_text.append(f'\n🎯 Objetivo: {objetivos.get(objetivo_id, "Não definido")}',style='bold white')
+                verpefil_text.append(f'\n🎂 Idade: {dados["idade"]} anos',style='bold white')
+                verpefil_text.append(f'\n💪 Peso: {dados["peso"]} kg',style='bold white')
+                verpefil_text.append(f'\n📏 Altura: {dados["altura"]} m',style='bold white')
                 
-                pverperfil = Panel(verpefil_text, border_style="cyan", expand = False,title="[bold cyan]Seu perfil[/bold cyan]",
+                pverperfil = Panel(verpefil_text, border_style="bold blue", expand = False,title="📝 Perfil",
     title_align="center")
                 
                 sexo_escolha = dados.get('sexo_escolha', None)
@@ -175,8 +175,9 @@ def menu_logado(cadastro, usuario_logado):
 
                 else:
                     sexo_exibicao = 'Não informado'
-            verpefil_text.append(f'\nSexo: {sexo_exibicao}')        
-            c.print(pverperfil)    
+            verpefil_text.append(f'\n⚪ Sexo: {sexo_exibicao}',style='bold white')  
+            pverperfil_center = Align.center(pverperfil)      
+            c.print(pverperfil_center)    
             Utils.aguardar_volta()
             with c.status("[red]S[/red][magenta]a[/magenta][yellow]i[/yellow]"
                 "[green]n[/green][cyan]d[/cyan][blue]o[/blue]", spinner = 'hearts'):  
@@ -220,19 +221,32 @@ def menu_logado(cadastro, usuario_logado):
                 time.sleep(2)
 
             while True:
-
-                c.print(Panel('Deseja mesmo deslogar? (s/n)', expand = False, border_style = 'yellow'))
+                c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
+                print(' ')
+                c.print(Panel('[bold yellow]Deseja mesmo deslogar? (s/n)[/bold yellow]', expand = False, border_style = 'bold yellow'))
                 deslog = input('>>> ').strip()
 
                 if deslog == 's':
                     usuario_logado = None
-                    c.print(Panel('[b][u][red]Deslogado[/][/u][/b] com sucesso!', expand = False, border_style = 'cyan', style = 'cyan'))
+                    deslogado_text = Text()
+                    deslogado_text.append('Deslogado com sucesso!', style = 'bold white')
+                    pdeslogado_text = Panel(deslogado_text, expand = False, border_style = 'bold blue')
+                    pdeslogado_text_center = Align.center(pdeslogado_text)
+                    c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
+                    print(' ')
+                    c.print(pdeslogado_text_center)
                     Utils.aguardar_volta()
                     Utils.limpar_tela_universal()
                     return None
                 
                 elif deslog == 'n':
-                    c.print(Panel('Você permanece [green][u][b]logado.[/b][/u][/]', expand = False, border_style = 'cyan', style = 'cyan')) 
+                    permanecelogado_text = Text()
+                    permanecelogado_text.append('Você permanece logado.', style = 'bold white')
+                    painelpermanecelogado_text = Panel(permanecelogado_text, expand = False, border_style = 'bold blue')
+                    painelpermanecelogado_text_center = Align.center(painelpermanecelogado_text)
+                    c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
+                    print(' ')
+                    c.print(painelpermanecelogado_text_center) 
                     Utils.aguardar_volta()
                     Utils.limpar_tela_universal()
                     break
@@ -245,7 +259,7 @@ def menu_logado(cadastro, usuario_logado):
             with c.status("[red]C[/red][magenta]a[/magenta][yellow]r[/yellow][green]r[/green]"
                 "[cyan]e[/cyan][blue]g[/blue][red]a[/red][magenta]n[/magenta][yellow]d[/yellow][green]o[/green]", spinner = 'hearts'):  
                 time.sleep(2)
-            usuarios, usuario_logado = cadastro.deletar_usuario(usuario_logado, usuarios)
+            usuarios, usuario_logado = cadastro.deletar_usuario(usuario_logado, cadastro.usuarios)
             if usuario_logado is None:
                 Utils.aguardar_volta()
                 Utils.limpar_tela_universal()
