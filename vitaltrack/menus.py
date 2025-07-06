@@ -89,7 +89,7 @@ def menu_logado(cadastro, usuario_logado):
         c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
         print(' ')
 
-        nome = cadastro.usuarios[usuario_logado]["nome"]
+        nome = cadastro.usuarios[usuario_logado].nome
 
         mensagens = [
         "💧 Não esqueça de se hidratar!",
@@ -146,7 +146,7 @@ def menu_logado(cadastro, usuario_logado):
             verpefil_text.append('\n')
             verpefil_text.append('Dados:')
             verpefil_text.append('\n')
-            verpefil_text.append(f'\n👤 Nome: {cadastro.usuarios[usuario_logado]["nome"]}',style='bold white')
+            verpefil_text.append(f'\n👤 Nome: {cadastro.usuarios[usuario_logado].nome}',style='bold white')
             verpefil_text.append(f'\n📧 Email: {usuario_logado}',style='bold white')
 
             objetivos = {
@@ -154,9 +154,9 @@ def menu_logado(cadastro, usuario_logado):
                 '2': 'PERDA DE PESO',
                 '3': 'MANUTENÇÃO DA SAÚDE'
                                         }
-            if cadastro.usuarios[usuario_logado]["dados"]:
-                dados = cadastro.usuarios[usuario_logado]["dados"]
-                objetivo_id = cadastro.usuarios[usuario_logado]["objetivo"] 
+            if cadastro.usuarios[usuario_logado].dados:
+                dados = cadastro.usuarios[usuario_logado].dados
+                objetivo_id = cadastro.usuarios[usuario_logado].objetivo 
                 verpefil_text.append(f'\n🎯 Objetivo: {objetivos.get(objetivo_id, "Não definido")}',style='bold white')
                 verpefil_text.append(f'\n🎂 Idade: {dados["idade"]} anos',style='bold white')
                 verpefil_text.append(f'\n💪 Peso: {dados["peso"]} kg',style='bold white')
@@ -213,7 +213,8 @@ def menu_logado(cadastro, usuario_logado):
                  "[cyan]e[/cyan][blue]g[/blue][red]a[/red][magenta]n[/magenta][yellow]d[/yellow][green]o[/green]", spinner = 'hearts'):  
                 time.sleep(2)
             print('\nAtualizando dados...')
-            usuarios, usuario_logado = cadastro.atualizar_dados(usuarios, usuario_logado)
+            usuarios, usuario_logado = cadastro.atualizar_dados(usuario_logado)
+            cadastro.usuarios = usuarios
 
         elif opcao == '7':
             with c.status("[red]C[/red][magenta]a[/magenta][yellow]r[/yellow][green]r[/green]"

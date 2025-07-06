@@ -1,4 +1,3 @@
-import json
 import time
 from utils import Utils
 from prompt_toolkit import prompt
@@ -7,24 +6,14 @@ from rich.panel import Panel
 from rich.text import Text
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn
+from manage_json import GerenciarJson
+from user import Usuario
 c = Console()
 
 class Cadastro:
     def __init__(self):
-        self.usuarios = self.carregar_dadosjson()
-
-    def salvar_dadosjson(self):
-        """Salva os dados em um arquivo .json"""
-        with open('usuarios.json', 'w') as arquivo:
-            json.dump(self.usuarios, arquivo, indent=4)
-
-    def carregar_dadosjson(self):
-        """Carrega os dados salvos no arquivo .json"""
-        try:
-            with open('usuarios.json', 'r') as arquivo:
-                return json.load(arquivo)
-        except FileNotFoundError:
-            return {}
+        self.gerenciador = GerenciarJson()
+        self.usuarios = self.gerenciador.carregar_dadosjson()
         
     def cadastro_de_usuario(self,usuarios): 
         """Cadastra o usuário e salva seus dados em um dicionário,
@@ -108,20 +97,22 @@ class Cadastro:
             "[blue]d[/blue][red]a[/red][magenta]d[/magenta][yellow]o[/yellow][green]s[/green]", spinner = 'hearts'):  
             time.sleep(2)
         
-        self.usuarios[email] = {
-            'senha': senha,
-            'nome': nome,
-            'objetivo': None,
-            'dados': None,
-            'calorias_hoje': 0,          
-            'historico_dias': {} 
-        }
+        novo_usuario = Usuario(
+            email=email,
+            senha=senha,
+            nome=nome,
+            objetivo=None,
+            dados=None,
+            calorias_hoje=0,
+            historico_dias={}
+        )
+        self.usuarios[email] = novo_usuario 
 
         c.rule('[i][blue]VitalTrack[/][/i]')
         print(' ')
         c.print(Panel('Agora vamos definir o [green][u]seu[/u][/] objetivo! 👇', expand = False, border_style = 'cyan'))
         self.escolher_objetivo(email, usuarios)
-        Cadastro.salvar_dadosjson(self)
+        self.gerenciador.salvar_dadosjson(self.usuarios)
         return email
         
     def escolher_objetivo(self,email_do_usuario, dicionario_usuarios):
@@ -449,7 +440,8 @@ class Cadastro:
             c.print(painel_senha)
             senha = prompt('>>> ', is_password=True).strip()
 
-            if self.usuarios[email]["senha"] != senha:
+            usuario = self.usuarios[email]
+            if usuario.senha != senha:
                 painel_erro_senha = Panel('❌ Senha incorreta.',border_style='red',expand=False,title='[bold red]ERRO[/bold red]',title_align='center')
                 c.print(painel_erro_senha)
                 Utils.aguardar_volta()
@@ -466,7 +458,7 @@ class Cadastro:
             print('\n')
 
             painel_sucesso = Panel(
-                f'✅ Acesso liberado, [bold blue]{self.usuarios[email]["nome"]}[/bold blue]!\n\n🚀 [green]Você está pronto para usar o VitalTrack![/green]',border_style='bold blue',expand=False, style = 'bold white')
+                f'✅ Acesso liberado, [bold blue]{usuario.nome}[/bold blue]!\n\n🚀 [green]Você está pronto para usar o VitalTrack![/green]',border_style='bold blue',expand=False, style = 'bold white')
             painel_sucesso_center = Align.center(painel_sucesso)
             c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
             print(' ')
@@ -495,7 +487,7 @@ class Cadastro:
             atualizarperfil_text.append('\n')
 
             atualizarperfil_text.append('\n1. ', style = 'red')
-            atualizarperfil_text.append(f'Alterar nome. (nome atual:{usuarios[usuario_logado]["nome"]})',style = 'bold white')
+            atualizarperfil_text.append(f'Alterar nome. (nome atual:{usuarios[usuario_logado].nome})',style = 'bold white')
 
             atualizarperfil_text.append('\n2. ', style = 'red')
             atualizarperfil_text.append('Alterar senha.',style = 'bold white')
@@ -518,12 +510,14 @@ class Cadastro:
             c.print(popcaoatualizarperfil_text_center)
             opçao3 = input('>>> ').strip()
 
+            usuario = self.usuarios[usuario_logado] 
+
             if opçao3 == '1':
-                c.print(Panel(f'[bold yellow]Digite o novo nome (atual: {usuarios[usuario_logado]["nome"]}):[/bold yellow]',expand = False, border_style = 'bold yellow'))
+                c.print(Panel(f'[bold yellow]Digite o novo nome (atual: {usuarios[usuario_logado].nome}):[/bold yellow]',expand = False, border_style = 'bold yellow'))
                 novo_nome = input('>>> ').strip()
                 if novo_nome:
-                    usuarios[usuario_logado]["nome"] = novo_nome
-                    Cadastro.salvar_dadosjson(self)
+                    usuario.nome = novo_nome
+                    self.gerenciador.salvar_dadosjson(self.usuarios)
                     mudancanome_text = Text()
                     mudancanome_text.append('Nome atualizado com sucesso!',style = 'bold white')
                     pmudancanome_text = Panel(mudancanome_text, expand = False, border_style = 'bold blue')
@@ -536,11 +530,11 @@ class Cadastro:
                 c.print(Panel('[bold yellow]Digite uma nova senha (mínimo 6 caracteres):[/bold yellow]', expand = False, border_style = 'bold yellow'))
                 nova_senha = input('>>> ')
                 if len(nova_senha) >=6:
-                    usuarios[usuario_logado]["senha"] = nova_senha
-                    Cadastro.salvar_dadosjson(self)
+                    usuario.senha = nova_senha
+                    self.gerenciador.salvar_dadosjson(self.usuarios)
                     mudancasenha_text = Text()
                     mudancasenha_text.append('Senha atualizada com sucesso!',style = 'bold white')
-                    pmudancasenha_text = Panel(pmudancasenha_text, expand = False, border_style = 'bold blue')
+                    pmudancasenha_text = Panel(mudancasenha_text, expand = False, border_style = 'bold blue')
                     pmudancasenha_text_center = Align.center(pmudancasenha_text)
                     c.print(pmudancasenha_text_center)
                     Utils.aguardar_volta()
@@ -574,10 +568,11 @@ class Cadastro:
 
                 else:
                     
-                    usuarios[novo_email] = usuarios[usuario_logado]
-                    del usuarios[usuario_logado]
+                    usuario.email = novo_email
+                    usuarios[novo_email] = usuario
+                    del self.usuarios[usuario_logado]
                     usuario_logado = novo_email
-                    Cadastro.salvar_dadosjson(self)
+                    self.gerenciador.salvar_dadosjson(self.usuarios)
                     mudancaemail_text = Text()
                     mudancaemail_text.append('Email atualizado com sucesso!', style = 'bold white')
                     pmudancaemail_text = Panel(mudancaemail_text, expand = False, border_style = 'bold blue')
@@ -601,7 +596,7 @@ class Cadastro:
                 Utils.limpar_tela_universal()
         return usuarios, usuario_logado
 
-    def atualizar_dados(self,usuarios, usuario_logado):
+    def atualizar_dados(self, usuario_logado):
         """
         Atualiza os dados físicos do usuário,
         usuário decide o que deseja atualizar.
@@ -611,14 +606,14 @@ class Cadastro:
         if usuario_logado is None:
             c.print(Panel('Faça login primeiro!', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
             Utils.aguardar_volta()
-            return usuarios, usuario_logado
+            return self.usuarios, usuario_logado
         
-        user = usuarios[usuario_logado]
+        user = self.usuarios[usuario_logado]
         
-        if not user.get('dados'):
+        if not user.dados:
             c.print(Panel('Complete seus dados primeiro!', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
             self.escolher_objetivo()
-            return usuarios, usuario_logado
+            return self.usuarios, usuario_logado
         
         objetivos = {
                 '1': 'GANHO DE MASSA',
@@ -628,8 +623,8 @@ class Cadastro:
         while True:
 
             try:
-                dados = user['dados']
-                objetivo_atual = user['objetivo']
+                dados = user.dados
+                objetivo_atual = user.objetivo
                 c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
                 print(' ')
                 atualizarusuario_text = Text()
@@ -668,7 +663,7 @@ class Cadastro:
                     nova_idade = int(input('>>> '))
                     if 0 < nova_idade <= 100:
                         dados['idade'] = nova_idade
-                        Cadastro.salvar_dadosjson(self)
+                        self.gerenciador.salvar_dadosjson({email: u.to_dict() for email, u in self.usuarios.items()})
                         mudancaidada_text = Text()
                         mudancaidada_text.append('Idade atualizada com sucesso!', style = 'bold white')
                         pmudancaidade_text = Panel(mudancaidada_text, expand = False, border_style = 'bold blue')
@@ -687,7 +682,7 @@ class Cadastro:
                     novo_peso = float(input('>>> '))
                     if 0 < novo_peso <= 350:
                         dados['peso'] = novo_peso
-                        Cadastro.salvar_dadosjson(self)
+                        self.gerenciador.salvar_dadosjson({email: u.to_dict() for email, u in self.usuarios.items()})
                         mudancapeso_text = Text()
                         mudancapeso_text.append('Peso atualizado com sucesso!',style = 'bold white')
                         pmudancapeso_text = Panel(mudancapeso_text, expand = False, border_style = 'bold blue')
@@ -706,7 +701,7 @@ class Cadastro:
                     nova_altura = float(input('>>> '))
                     if 0 < nova_altura <= 2.5:
                         dados['altura'] = nova_altura
-                        Cadastro.salvar_dadosjson(self)
+                        self.gerenciador.salvar_dadosjson({email: u.to_dict() for email, u in self.usuarios.items()})
                         mudancaaltura_text = Text()
                         mudancaaltura_text.append('Altura atualizada com sucesso!', style = 'bold white')
                         pmudancaaltura_text = Panel(mudancaaltura_text, expand = False, border_style = 'bold blue')
@@ -746,8 +741,8 @@ class Cadastro:
                     c.print(pnovaescolhaobj_text_center)
                     novo_objetivo = input('>>> ').strip()
                     if novo_objetivo in ['1', '2', '3']:
-                        user['objetivo'] = novo_objetivo
-                        Cadastro.salvar_dadosjson(self)
+                        user.objetivo = novo_objetivo
+                        self.gerenciador.salvar_dadosjson({email: u.to_dict() for email, u in self.usuarios.items()})
                         escolhanovoobj_text = Text()
                         escolhanovoobj_text.append(f'Objetivo atualizado para: {objetivos[novo_objetivo]}', style = 'bold white')
                         pescolhanovoobj_text = Panel(escolhanovoobj_text, expand = False, border_style = 'bold blue')
@@ -777,7 +772,7 @@ class Cadastro:
                 c.print(Panel('Valor inválido! Digite números válidos.', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
                 Utils.aguardar_volta()
                 Utils.limpar_tela_universal()
-        return usuarios, usuario_logado
+        return self.usuarios, usuario_logado
 
     def deletar_usuario(self,usuario_logado, usuarios):
         """
@@ -796,7 +791,7 @@ class Cadastro:
 
             if confirmaçao == 's':
                 del usuarios[usuario_logado]
-                Cadastro.salvar_dadosjson(self)
+                self.gerenciador.salvar_dadosjson(self.usuarios)
                 usuario_logado = None
                 contadeletada_text = Text()
                 contadeletada_text.append('Conta deletada com sucesso. Até logo...', style = 'bold white')
