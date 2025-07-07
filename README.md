@@ -69,7 +69,7 @@ source venv/bin/activate
 
 ---
 # 🚧 Active development
-- This project is under active development and subject to change.
+- This project is under active development and subject to change...
 ---
 
 
