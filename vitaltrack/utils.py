@@ -14,3 +14,5 @@ class Utils:
     def aguardar_volta():
         """Pausa a execução do programa até que o usuário tecle "enter".""" 
         input('\nPressione a tecla "enter" para continuar...')
+
+    

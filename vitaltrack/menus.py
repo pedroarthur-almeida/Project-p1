@@ -3,6 +3,10 @@ from rich.columns import Columns
 import random
 from calc_user import *
 
+
+class Menus:
+    pass
+
 def menu_principal(usuarios, usuario_logado = None):
     """
     Menu inicial,
@@ -48,9 +52,9 @@ def menu_principal(usuarios, usuario_logado = None):
             with c.status("[red]C[/red][magenta]a[/magenta][yellow]r[/yellow][green]r[/green]"
     "[cyan]e[/cyan][blue]g[/blue][red]a[/red][magenta]n[/magenta][yellow]d[/yellow][green]o[/green]", spinner = 'hearts'):  
                     time.sleep(2)
-            usuario_logado = cadastro.cadastro_de_usuario(usuarios)
+            usuario_logado = cadastro.cadastro_de_usuario()
             if usuario_logado:
-                menu_logado(cadastro, usuario_logado)
+                menu_logado(cadastro, usuario_logado, usuarios)
                      
         elif opçao1 == '2':
             with c.status("[red]C[/red][magenta]a[/magenta][yellow]r[/yellow][green]r[/green]"
@@ -61,7 +65,7 @@ def menu_principal(usuarios, usuario_logado = None):
                 with c.status("[red]C[/red][magenta]a[/magenta][yellow]r[/yellow][green]r[/green]"
                 "[cyan]e[/cyan][blue]g[/blue][red]a[/red][magenta]n[/magenta][yellow]d[/yellow][green]o[/green]", spinner='hearts'):  
                     time.sleep(3)
-                menu_logado(cadastro, usuario_logado)  
+                menu_logado(cadastro, usuario_logado, usuarios)  
                 
         elif opçao1 == '3':
             with c.status("[red]S[/red][magenta]a[/magenta][yellow]i[/yellow]"
@@ -79,7 +83,7 @@ def menu_principal(usuarios, usuario_logado = None):
             Utils.aguardar_volta()
     return usuarios, usuario_logado
 
-def menu_logado(cadastro, usuario_logado):
+def menu_logado(cadastro, usuario_logado, usuarios):
     """
     Menu onde o usuário tem acesso as funcionalidades do programa,
     só é possível ter acesso a esse menu após o login.
@@ -90,6 +94,7 @@ def menu_logado(cadastro, usuario_logado):
         print(' ')
 
         nome = cadastro.usuarios[usuario_logado].nome
+        saude = SaudeCorporal(usuarios, usuario_logado, cadastro)
 
         mensagens = [
         "💧 Não esqueça de se hidratar!",
@@ -188,19 +193,19 @@ def menu_logado(cadastro, usuario_logado):
             with c.status("[red]C[/red][magenta]a[/magenta][yellow]r[/yellow][green]r[/green]"
                 "[cyan]e[/cyan][blue]g[/blue][red]a[/red][magenta]n[/magenta][yellow]d[/yellow][green]o[/green]", spinner = 'hearts'):  
                 time.sleep(2)
-            calcular_imc(cadastro, usuario_logado)
+            saude.calcular_imc(cadastro, usuario_logado)
 
         elif opcao == '3':
             with c.status("[red]C[/red][magenta]a[/magenta][yellow]r[/yellow][green]r[/green]"
                 "[cyan]e[/cyan][blue]g[/blue][red]a[/red][magenta]n[/magenta][yellow]d[/yellow][green]o[/green]", spinner = 'hearts'):  
                 time.sleep(2)
-            calcular_taxametabolicabasal(cadastro.usuarios, usuario_logado)
+            saude.calcular_taxametabolicabasal(cadastro.usuarios, usuario_logado)
 
         elif opcao == '4':
             with c.status("[red]C[/red][magenta]a[/magenta][yellow]r[/yellow][green]r[/green]"
                 "[cyan]e[/cyan][blue]g[/blue][red]a[/red][magenta]n[/magenta][yellow]d[/yellow][green]o[/green]", spinner = 'hearts'):  
                 time.sleep(2)
-            usuarios, usuario_logado = registrar_calorias(cadastro.usuarios, usuario_logado)
+            usuarios, usuario_logado = saude.registrar_calorias(cadastro.usuarios, usuario_logado)
 
         elif opcao == '5':
             with c.status("[red]C[/red][magenta]a[/magenta][yellow]r[/yellow][green]r[/green]"

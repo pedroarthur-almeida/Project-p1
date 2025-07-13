@@ -10,12 +10,12 @@ from manage_json import GerenciarJson
 from user import Usuario
 c = Console()
 
-class Cadastro:
+class GerenciarUsuario:
     def __init__(self):
         self.gerenciador = GerenciarJson()
         self.usuarios = self.gerenciador.carregar_dadosjson()
         
-    def cadastro_de_usuario(self,usuarios): 
+    def cadastro_de_usuario(self): 
         """Cadastra o usuário e salva seus dados em um dicionário,
         em que a chave é o email.
         """
@@ -111,11 +111,11 @@ class Cadastro:
         c.rule('[i][blue]VitalTrack[/][/i]')
         print(' ')
         c.print(Panel('Agora vamos definir o [green][u]seu[/u][/] objetivo! 👇', expand = False, border_style = 'cyan'))
-        self.escolher_objetivo(email, usuarios)
+        self.escolher_objetivo(email)
         self.gerenciador.salvar_dadosjson(self.usuarios)
         return email
         
-    def escolher_objetivo(self,email_do_usuario, dicionario_usuarios):
+    def escolher_objetivo(self,email_do_usuario):
         """
         Escolha de objetivo (parte do cadastro),
         Usuário escolhe seu objetivo e fornece seus dados,
@@ -389,8 +389,8 @@ class Cadastro:
                                 'sexo_escolha': sexo_escolha
                             }
                             
-                            self.usuarios[email_do_usuario]['dados'] = dados
-                            self.usuarios[email_do_usuario]['objetivo'] = objetivo
+                            self.usuarios[email_do_usuario].dados = dados
+                            self.usuarios[email_do_usuario].objetivo = objetivo
                             time.sleep(0.05)
                             return True
                             
