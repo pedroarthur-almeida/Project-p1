@@ -6,14 +6,15 @@ from rich.panel import Panel
 from rich.text import Text
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn
-from manage_json import GerenciarJson
-from user import Usuario
+from gerenciar_json import GerenciarJson
+from usuario import Usuario
 c = Console()
 
 class GerenciarUsuario:
     def __init__(self):
         self.gerenciador = GerenciarJson()
         self.usuarios = self.gerenciador.carregar_dadosjson()
+        self.usuario_logado = None
         
     def cadastro_de_usuario(self): 
         """Cadastra o usuário e salva seus dados em um dicionário,
@@ -32,70 +33,49 @@ class GerenciarUsuario:
         c.print(Align.center(cadastro_panel))
 
         while True:
-            c.print(Panel('📧 [bold yellow]Digite o seu email:[/bold yellow] ', expand = False, border_style = 'yellow'))
-            email = input('>>> ').strip().lower()
+            c.print(Utils.mensagem_centralizada("📧 Digite o seu email:"))
+            email = Utils.entrada_centralizada('💬 : ').strip().lower()
 
             if email in self.usuarios:
-                erroremail_text = Text()
-                erroremail_text.append('Este email já foi cadastrado!')
-                erroremail_text.append('\nInsira um email ainda não cadastrado.')
-                perroremail = Panel(erroremail_text, border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center")
-                c.print(perroremail)
+                Utils.mensagem_erro_centralizada("Este email já foi cadastrado!\nInsira um email ainda não cadastrado.")
                 Utils.aguardar_volta()
                 continue 
 
             elif '@' not in email or '.com' not in email:
-                erroremail_text2 = Text()
-                erroremail_text2.append('O email precisa estar em um formato válido.')
-                erroremail_text2.append('\nO email precisa ter ".com" e "@".')
-                perroremail2 = Panel(erroremail_text2, border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center")
-                c.print(perroremail2)
+                Utils.mensagem_erro_centralizada('O email precisa estar em um formato válido.\nO email precisa ter ".com" e "@".')
                 Utils.aguardar_volta()
                 continue 
 
             dominios_validos = ['gmail.com', 'outlook.com', 'hotmail.com', 'yahoo.com', 'icloud.com'] #criando essa lista pra salvar os dominios validos.
             
             if not any(email.endswith(dominio) for dominio in dominios_validos): #o comando endswith vai verficiar se o email termina com o domínio de forma correta, para evitar falsos positivos e emails no formato errado, ex: arthur@xcsgmail.com
-                erroremail_text3 = Text()
-                erroremail_text3.append('Domínio inválido! Use: Gmail, Outlook, Hotmail, Yahoo ou iCloud.')
-                perroremail3 = Panel(erroremail_text3, border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center")
-                c.print(perroremail3)
+                Utils.mensagem_erro_centralizada("Domínio inválido! Use: Gmail, Outlook, Hotmail, Yahoo ou iCloud.")
                 Utils.aguardar_volta()
                 continue
             break
         
         while True:
-            c.print(Panel('🔑 [bold yellow]Digite sua senha(mínimo 6 caracteres):[/bold yellow] ', expand = False, border_style = 'yellow'))
-            senha = prompt('>>> ', is_password = True)
+            c.print(Utils.mensagem_centralizada("🔑 Digite sua senha(mínimo 6 caracteres):"))
+            senha = Utils.entrada_centralizada('💬 : ', is_password = True)
 
             if len(senha) < 6:
-                errorsenha_text = Text()
-                errorsenha_text.append('Senha muito curta, a sua senha precisa ter, no mínimo, 6 caracteres.')
-                perrorsenha = Panel(errorsenha_text, border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center")
-                c.print(perrorsenha)
+                Utils.mensagem_erro_centralizada("Senha muito curta, a sua senha precisa ter, no mínimo, 6 caracteres.")
                 Utils.aguardar_volta()
                 continue 
                 
-            c.print(Panel('[bold yellow]Confirme sua senha:[/bold yellow] ', expand = False, border_style = 'yellow'))
-            confirmaçao_de_senha = prompt('>>> ', is_password = True)
+            c.print(Utils.mensagem_centralizada("Confirme sua senha:"))
+            confirmaçao_de_senha = Utils.entrada_centralizada('💬 : ', is_password = True)
 
             if senha != confirmaçao_de_senha:
-                errorsenha_text2 = Text()
-                errorsenha_text2.append('As senhas não coinscidem.')
-                perrorsenha2 = Panel(errorsenha_text2, border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center")
-                c.print(perrorsenha2)
+                Utils.mensagem_erro_centralizada("As senhas não coinscidem.")
                 Utils.aguardar_volta()
                 continue 
             else:
                 break
         
-        c.print(Panel('[bold yellow]Digite seu nome: (Será seu nome de usuário)[/bold yellow]', expand = False, border_style = 'yellow'))
-        nome = input('>>> ').strip()
-        with c.status("[red]G[/red][magenta]u[/magenta][yellow]a[/yellow][green]r[/green]"
-            "[cyan]d[/cyan][blue]a[/blue][red]n[/red][magenta]d[/magenta][yellow]o[/yellow] "
-            "[green]o[/green][cyan]s[/cyan] "
-            "[blue]d[/blue][red]a[/red][magenta]d[/magenta][yellow]o[/yellow][green]s[/green]", spinner = 'hearts'):  
-            time.sleep(2)
+        c.print(Utils.mensagem_centralizada("Digite seu nome: (Será seu nome de usuário):"))
+        nome = Utils.entrada_centralizada('💬 : ').strip()
+        Utils.spinner_centralizado("Guardando seus dados...", tempo = 2)
         
         novo_usuario = Usuario(
             email=email,
@@ -146,7 +126,7 @@ class GerenciarUsuario:
             textoescolhaobj_text.append('3. ', style = 'red')
             textoescolhaobj_text.append('Manutenção da saúde (Para quem quer manter o equilíbrio, hábitos saudáveis e o bem-estar geral.)❤\n')
 
-            painelescolhadeobj = Panel(textoescolhaobj_text, border_style="cyan", expand = False,title="[bold cyan]Escolha de objetivo[/bold cyan]",
+            painelescolhadeobj = Panel(textoescolhaobj_text, border_style="bold blue", expand = False,title="Escolha de objetivo",
                 title_align="center")
             painelescolhadeobj_centralizado = Align.center(painelescolhadeobj)
             c.print(painelescolhadeobj_centralizado)
@@ -158,13 +138,10 @@ class GerenciarUsuario:
             pentradaescolhaobj_center = Align.center(pentradaescolhaobj)
             c.print(pentradaescolhaobj_center)
 
-            objetivo = input('>>> ').strip()
+            objetivo = Utils.entrada_centralizada('💬 : ').strip()
 
             if objetivo not in ['1', '2', '3']:
-                errorescolhaobj_text = Text()
-                errorescolhaobj_text.append('Opção inválida! Escolha 1, 2 ou 3.')
-                perrorescolhaobjt = Panel(errorescolhaobj_text, border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center")
-                c.print(perrorescolhaobjt)
+                Utils.mensagem_erro_centralizada("Opção inválida! Escolha 1, 2 ou 3.")
                 Utils.aguardar_volta()
                 continue 
 
@@ -172,15 +149,12 @@ class GerenciarUsuario:
                 '1': 'GANHO DE MASSA',
                 '2': 'PERDA DE PESO', 
                 '3': 'MANUTENÇÃO DA SAÚDE' }
-            with c.status("[red]S[/red][magenta]a[/magenta][yellow]l[/yellow]"
-                "[green]v[/green][cyan]a[/cyan][blue]n[/blue]"
-                "[red]d[/red][magenta]o[/magenta]", spinner = 'hearts'):  
-                time.sleep(2)
+            Utils.spinner_centralizado("Salvando...", tempo = 2)
             c.rule('[b][i][blue]VitalTrack[/][/i][/b]')
             print(' ')
             escolhaobj2_text = Text()
             escolhaobj2_text.append(f'Você escolheu: {objetivos[objetivo]}')
-            pescolhaobj2_text = Panel(escolhaobj2_text, border_style = 'cyan', expand = False)
+            pescolhaobj2_text = Panel(escolhaobj2_text, border_style = 'bold blue', expand = False)
             pescolhaobj2_center = Align.center(pescolhaobj2_text)
             c.print(pescolhaobj2_center)
             
@@ -189,7 +163,7 @@ class GerenciarUsuario:
                 textoescolhaobj_text2.append('Boa! Você deseja aumentar sua massa corporal, tô contigo nessa! 😎 💪')
                 textoescolhaobj_text2.append('\nUma dica: é importante que você consuma uma quantidade de calorias maior que a sua TMB.')
                 textoescolhaobj_text2.append('\nNão sabe o que é TMB? não se preocupe! mais na frente eu te explico. 😉')
-                textoescolha2 = Panel(textoescolhaobj_text2, border_style="cyan", expand = False,title="[bold cyan]Feedback[/bold cyan]",
+                textoescolha2 = Panel(textoescolhaobj_text2, border_style="bold blue", expand = False,title="Feedback",
                     title_align="center")
                 textoescolha2_center = Align.center(textoescolha2)
                 c.print(textoescolha2_center)
@@ -200,7 +174,7 @@ class GerenciarUsuario:
                 textoescolhaobj_text3.append('\nCom foco e disciplina, qualquer objetivo pode se concretizar, vai dar tudo certo!')
                 textoescolhaobj_text3.append('\nDica: é importante que você consuma uma quantidade de calorias inferior a sua TMB.')
                 textoescolhaobj_text3.append('\nNão sabe o que é TMB? não se preocupe! mais na frente eu te explico. 😉')
-                textoescolha3 = Panel(textoescolhaobj_text3, border_style="cyan", expand = False,title="[bold cyan]Feedback[/bold cyan]",
+                textoescolha3 = Panel(textoescolhaobj_text3, border_style="bold blue", expand = False,title="Feedback",
                     title_align="center")
                 textoescolha3_center = Align.center(textoescolha3)
                 c.print(textoescolha3_center)
@@ -211,7 +185,7 @@ class GerenciarUsuario:
                 textoescolhaobj_text4.append('\nÉ extremamente importante acompanhar a própria saúde, isso vale para pessoas de qualquer faixa etária. 🧒👨👴')
                 textoescolhaobj_text4.append('\nDica: mantenha seu consumo de calorias em um valor próximo a sua TMB.')
                 textoescolhaobj_text4.append('\nNão sabe o que é TMB? não se preocupe! mais na frente eu te explico. 😉')
-                textoescolha4 = Panel(textoescolhaobj_text4, border_style="cyan", expand = False,title="[bold cyan]Feedback[/bold cyan]",
+                textoescolha4 = Panel(textoescolhaobj_text4, border_style="bold blue", expand = False,title="Feedback",
                     title_align="center")
                 textoescolha4_center = Align.center(textoescolha4)
                 c.print(textoescolha4_center)
@@ -221,7 +195,7 @@ class GerenciarUsuario:
             print(' ')
             contescolhaobj_text = Text()
             contescolhaobj_text.append('Beleza! Agora vamos coletar algumas informações sobre você.')
-            pcontescolhaobj = Panel(contescolhaobj_text, border_style = 'cyan', expand = False)
+            pcontescolhaobj = Panel(contescolhaobj_text, border_style = 'bold blue', expand = False)
             pcontescolhaobj_center = Align.center(pcontescolhaobj)
             c.print(pcontescolhaobj_center)
 
@@ -231,7 +205,7 @@ class GerenciarUsuario:
                         contescolhaobj2_text = Text()
                         contescolhaobj2_text.append('Para que os cálculos de saúde e metabolismo sejam mais precisos, gostaríamos de saber sua identidade de gênero.')
                         contescolhaobj2_text.append('Essa informação nos ajuda a oferecer resultados mais adequados para você.')
-                        pcontescolhaobj2 = Panel(contescolhaobj2_text, border_style = 'cyan', expand = False)
+                        pcontescolhaobj2 = Panel(contescolhaobj2_text, border_style = 'bold blue', expand = False)
                         pcontescolhaobj2_center = Align.center(pcontescolhaobj2)
                         c.print(pcontescolhaobj2_center)
                         
@@ -252,7 +226,7 @@ class GerenciarUsuario:
                         textoidentidade_text.append('4. ', style = 'red')
                         textoidentidade_text.append('Mulher Trans ')
 
-                        painelidentidade = Panel(textoidentidade_text, border_style="cyan", expand = False,title="[bold cyan]Sua identidade[/bold cyan]",title_align="center")
+                        painelidentidade = Panel(textoidentidade_text, border_style="bold blue", expand = False,title="Sua identidade",title_align="center")
                         painelidentidade_center = Align.center(painelidentidade)
                         c.print(painelidentidade_center)
 
@@ -262,13 +236,10 @@ class GerenciarUsuario:
                         popcaoidentidade_center = Align.center(popcaoidentidade)
                         c.print(popcaoidentidade_center)
                         
-                        sexo_escolha = input('>>> ').strip()
+                        sexo_escolha = Utils.entrada_centralizada('💬 : ').strip()
 
                         if sexo_escolha not in ['1','2','3','4']:
-                            erroridentidade_text = Text()
-                            erroridentidade_text.append('Escolha uma opção disponível (1-4).')
-                            perroridentidade = Panel(erroridentidade_text, border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center")
-                            c.print(perroridentidade)
+                            Utils.mensagem_erro_centralizada("Escolha uma opção disponível (1-4).")
                             Utils.aguardar_volta()
                             continue
 
@@ -293,7 +264,7 @@ class GerenciarUsuario:
                                 textoterapiahormonal.append('\n')
                                 textoterapiahormonal.append('Para adaptar melhor os cálculos às mudanças metabólicas:')
                                 textoterapiahormonal.append('\n')
-                                ptextoterapiahormonal = Panel(textoterapiahormonal, border_style="cyan", expand = False,title="[bold cyan]Sua identidade[/bold cyan]",title_align="center")
+                                ptextoterapiahormonal = Panel(textoterapiahormonal, border_style="bold blue", expand = False,title="Sua identidade",title_align="center")
                                 ptextoterapiahormonal_center = Align.center(ptextoterapiahormonal)
                                 c.print(ptextoterapiahormonal_center)
 
@@ -303,13 +274,10 @@ class GerenciarUsuario:
                                 painelperguntaterapia_text_center = Align.center(painelperguntaterapia_text)
                                 c.print(painelperguntaterapia_text_center)
                                 
-                                resposta = input('>>> ').lower().strip()
+                                resposta = Utils.entrada_centralizada('💬 : ').lower().strip()
 
                                 if resposta not in ['s','n']:
-                                    errorterapiahormonal_text = Text()
-                                    errorterapiahormonal_text.append('Digite (s) ou (n).')
-                                    perrorterapiahormonal = Panel(errorterapiahormonal_text, border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center")
-                                    c.print(perrorterapiahormonal)
+                                    Utils.mensagem_erro_centralizada("Digite (s) ou (n).")
                                     Utils.aguardar_volta()
                                     continue 
                                 em_transicao = resposta == 's'
@@ -318,63 +286,62 @@ class GerenciarUsuario:
                             if em_transicao:
                                 while True:
                                     try:
-                                        c.print(Panel('[bold yellow]Há quanto tempo (em meses) você faz uso de hormônios?[bold yellow]', expand = False, border_style = 'bold yellow'))
-                                        tempo_transicao = int(input('>>> '))
+                                        uso_hormonios_text = Text()
+                                        uso_hormonios_text.append("Há quanto tempo (em meses) você faz uso de hormônios?", style = "bold yellow")
+                                        puso_hormonios_text = Panel(uso_hormonios_text, expand = False, border_style = "bold yellow")
+                                        puso_hormonios_text_center = Align.center(puso_hormonios_text)
+                                        c.print(puso_hormonios_text_center)
+                                        
+                                        tempo_transicao = int(Utils.entrada_centralizada('💬 : '))
                                         
                                         if tempo_transicao <= 0:
-                                            c.print(Panel('Digite um valor válido.', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
+                                            Utils.mensagem_erro_centralizada("Digite um valor válido.")
                                             Utils.aguardar_volta()
                                             continue
                                         break
                                     except ValueError:
-                                        c.print(Panel('Digite somente números.', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
+                                        Utils.mensagem_erro_centralizada("Digite somente números.")
                                         Utils.aguardar_volta()
                                         continue
 
                     except ValueError:
                         c.print(Panel('Valores inválidos! Digite números válidos.', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))        
-                    with c.status("[red]O[/red][magenta]r[/magenta][yellow]g[/yellow][green]a[/green]"
-                                "[cyan]n[/cyan][blue]i[/blue][red]z[/red][magenta]a[/magenta][yellow]n[/yellow]"
-                                "[green]d[/green][cyan]o[/cyan] "
-                                "[blue]s[/blue][red]u[/red][magenta]a[/magenta][yellow]s[/yellow] "
-                                "[green]i[/green][cyan]n[/cyan][blue]f[/blue][red]o[/red][magenta]r[/magenta]"
-                                "[yellow]m[/yellow][green]a[/green][cyan]ç[/cyan][blue]õ[/blue][red]e[/red][magenta]s[/magenta]", spinner = 'hearts'):  
-                                time.sleep(2)
+                    Utils.spinner_centralizado("Organizando suas informações...", tempo = 2)
                     while True:
                         try:
                             
                             c.rule('[b][i][blue]VitalTrack[/][/i][/b]')
                             print(' ')
                             maisdados_text = Text()
-                            maisdados_text.append('Preciso de mais alguns de seus dados.', style = 'cyan')
-                            pmaisdados = Panel(maisdados_text, expand = False, border_style = 'cyan')
+                            maisdados_text.append('Preciso de mais alguns de seus dados.')
+                            pmaisdados = Panel(maisdados_text, expand = False, border_style = 'bold blue')
                             pmaisdados_center = Align.center(pmaisdados)
                             c.print(pmaisdados_center)
                             
-                            c.print(Panel('[bold yellow]Digite sua idade:[/bold yellow] ', expand = False, border_style = 'bold yellow'))
-                            idade = int(input('>>> ').strip())
-                            c.print(Panel('[bold yellow]Digite o seu peso em quilogramas:[/bold yellow] ', expand = False, border_style = 'bold yellow'))
-                            peso = float(input('>>> ').strip())
-                            c.print(Panel('[bold yellow]Digite sua altura em metros:[/bold yellow] ', expand = False, border_style = 'bold yellow'))
-                            altura = float(input('>>> ').strip())
-                            with c.status("[red]V[/red][magenta]a[/magenta][yellow]l[/yellow][green]i[/green]"
-                                "[cyan]d[/cyan][blue]a[/blue][red]n[/red][magenta]d[/magenta][yellow]o[/yellow] "
-                                "[green]s[/green][cyan]e[/cyan][blue]u[/blue][red]s[/red] "
-                                "[magenta]d[/magenta][yellow]a[/yellow][green]d[/green][cyan]o[/cyan][blue]s[/blue]", spinner = 'hearts'):  
-                                time.sleep(2)
+                            c.print(Utils.mensagem_centralizada("Digite sua idade:"))
+                            idade = int(Utils.entrada_centralizada('💬 : ').strip())
+                            c.print(Utils.mensagem_centralizada("Digite o seu peso em quilogramas:"))
+                            peso = float(Utils.entrada_centralizada('💬 : ').strip())
+                            c.print(Utils.mensagem_centralizada("Digite sua altura em metros:"))
+                            altura = float(Utils.entrada_centralizada('💬 : ').strip())
+                            Utils.spinner_centralizado("Validando seus dados...", tempo = 2)
+                            c.rule('[b][i][blue]VitalTrack[/][/i][/b]')
                             print(' ')
-                            c.print(Panel('[green]Usuário cadastrado com sucesso![/]', expand = False, border_style = 'green'))
+                            cadastro_sucesso_text = Text()
+                            cadastro_sucesso_text.append("✅ Usuário cadastrado com sucesso!")
+                            pcadastro_sucesso_text = Panel(cadastro_sucesso_text, expand = False, border_style = "bold green")
+                            pcadastro_sucesso_text_center = Align.center(pcadastro_sucesso_text)
+                            c.print(pcadastro_sucesso_text_center)
+                            
                             print(' ')
-                            with c.status("[red]C[/red][magenta]a[/magenta][yellow]r[/yellow][green]r[/green]"
-                                "[cyan]e[/cyan][blue]g[/blue][red]a[/red][magenta]n[/magenta][yellow]d[/yellow][green]o[/green]", spinner = 'hearts'):  
-                                time.sleep(2)
+                            Utils.spinner_centralizado("Carregando...", tempo = 2)
 
                             if idade <= 0 or peso <= 0 or altura <= 0:
-                                c.print(Panel('Valores inválidos! Digite números positivos.', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
+                                Utils.mensagem_erro_centralizada("Valores inválidos! Digite números positivos.")
                                 Utils.aguardar_volta()
                                 continue
                             if idade > 100 or peso > 350 or altura > 2.5:
-                                c.print(Panel('Valores fora do intervalo estimado.', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
+                                Utils.mensagem_erro_centralizada("Valores fora do intervalo estimado.")
                                 Utils.aguardar_volta()
                                 continue
 
@@ -395,12 +362,12 @@ class GerenciarUsuario:
                             return True
                             
                         except ValueError:
-                            c.print(Panel('Valores inválidos! Digite dados válidos para cada solicitação.', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
+                            Utils.mensagem_erro_centralizada("Valores inválidos! Digite dados válidos para cada solicitação.")
                             Utils.aguardar_volta()
                             continue
 
             except ValueError:
-                c.print(Panel('Valores inválidos! Digite números válidos.', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
+                Utils.mensagem_erro_centralizada("Valores inválidos! Digite números válidos.")
                 Utils.aguardar_volta()
 
     def fazer_login(self): 
@@ -423,37 +390,28 @@ class GerenciarUsuario:
         c.print(Align.center(login_panel))
 
         while True:
-            painel_email = Panel('📧 [bold yellow]Email cadastrado:[/bold yellow]', border_style='yellow', expand=False)
-            c.print(painel_email)
-            email = input('>>> ').lower().strip()
+            
+            c.print(Utils.mensagem_centralizada("📧 Email cadastrado:"))
+            email = Utils.entrada_centralizada('💬 : ').lower().strip()
 
             if email not in self.usuarios:
-                painel_erro_email = Panel('❌ Email não cadastrado.',border_style='red',expand=False,title='[bold red]ERRO[/bold red]',title_align='center')
-                c.print(painel_erro_email)
+                Utils.mensagem_erro_centralizada("❌ Email não cadastrado.")
                 Utils.aguardar_volta()
                 continue
             break
 
         while True:
-            painel_senha = Panel(
-                '🔑 [bold yellow]Senha:[/bold yellow]',border_style='yellow',expand=False)
-            c.print(painel_senha)
-            senha = prompt('>>> ', is_password=True).strip()
+            
+            c.print(Utils.mensagem_centralizada("🔑 Senha:"))
+            senha = Utils.entrada_centralizada('💬 : ', is_password=True).strip()
 
             usuario = self.usuarios[email]
             if usuario.senha != senha:
-                painel_erro_senha = Panel('❌ Senha incorreta.',border_style='red',expand=False,title='[bold red]ERRO[/bold red]',title_align='center')
-                c.print(painel_erro_senha)
+                Utils.mensagem_erro_centralizada("❌ Senha incorreta.")
                 Utils.aguardar_volta()
                 continue
 
-            with Progress(
-                SpinnerColumn(spinner_name='bouncingBall'),
-                TextColumn("[progress.description]{task.description}"),
-                transient=True,
-            ) as progress:
-                progress.add_task(description="[bold magenta]Validando credenciais...[/bold magenta]", total=None)
-                time.sleep(2)
+            Utils.spinner_centralizado("Validando credenciais...", tempo = 2)
 
             print('\n')
 
@@ -466,7 +424,7 @@ class GerenciarUsuario:
 
             return email
 
-    def atualizar_usuario(self,usuarios, usuario_logado): 
+    def atualizar_usuario(self,usuarios): 
         """
         Atualiza os dados do usuário,
         o usuário escolhe o que deseja atualizar,
@@ -474,26 +432,34 @@ class GerenciarUsuario:
         os novos dados são salvos após mudanças.
         """
         Utils.limpar_tela_universal()
-        if usuario_logado is None: 
-            c.print(Panel('Faça login primeiro!',expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
+        if self.usuario_logado is None: 
+            Utils.mensagem_erro_centralizada("Faça login primeiro!")
             return
         
         while True:
             c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
             print(' ')
+
+            login_texto_atualizarusuario_text = Text()
+            login_texto_atualizarusuario_text.append('\n')
+            login_texto_atualizarusuario_text.append("Seja bem-vindo(a) ao menu de atualização de perfil!\n", style="bold yellow")
+            login_texto_atualizarusuario_text.append("Por gentileza, escolha o que deseja atualizar.", style="dim")
+            login_texto_atualizarusuario_text.append('\n')
+
+            login_panel = Panel(login_texto_atualizarusuario_text, title="[bold blue]Atualizar Perfil",border_style="blue",expand=False)
+            c.print(Align.center(login_panel))
+
+
             atualizarperfil_text = Text()
-            atualizarperfil_text.append('\n')
-            atualizarperfil_text.append('👤 Atualizar perfil', style = 'bold blue')
-            atualizarperfil_text.append('\n')
 
             atualizarperfil_text.append('\n1. ', style = 'red')
-            atualizarperfil_text.append(f'Alterar nome. (nome atual:{usuarios[usuario_logado].nome})',style = 'bold white')
+            atualizarperfil_text.append(f'Alterar nome. (nome atual:{usuarios[self.usuario_logado].nome})',style = 'bold white')
 
             atualizarperfil_text.append('\n2. ', style = 'red')
             atualizarperfil_text.append('Alterar senha.',style = 'bold white')
 
             atualizarperfil_text.append('\n3. ', style = 'red')
-            atualizarperfil_text.append(f'Alterar email. (email atual:{usuario_logado})',style = 'bold white')
+            atualizarperfil_text.append(f'Alterar email. (email atual:{self.usuario_logado})',style = 'bold white')
 
             atualizarperfil_text.append('\n4. ', style = 'red')
             atualizarperfil_text.append('Voltar',style = 'bold white')
@@ -508,18 +474,22 @@ class GerenciarUsuario:
             popcaoatualizarperfil_text = Panel(opcaoatualizarperfil_text, expand = False, border_style = 'bold yellow')
             popcaoatualizarperfil_text_center = Align.center(popcaoatualizarperfil_text)
             c.print(popcaoatualizarperfil_text_center)
-            opçao3 = input('>>> ').strip()
+            opçao3 = input('💬 : ').strip()
 
-            usuario = self.usuarios[usuario_logado] 
+            usuario = self.usuarios[self.usuario_logado] 
 
             if opçao3 == '1':
-                c.print(Panel(f'[bold yellow]Digite o novo nome (atual: {usuarios[usuario_logado].nome}):[/bold yellow]',expand = False, border_style = 'bold yellow'))
-                novo_nome = input('>>> ').strip()
+                c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
+                c.print(" ")
+                c.print(Utils.mensagem_centralizada(f'Digite o novo nome (atual: {usuarios[self.usuario_logado].nome}):'))
+                novo_nome = Utils.entrada_centralizada('💬 : ').strip()
                 if novo_nome:
                     usuario.nome = novo_nome
                     self.gerenciador.salvar_dadosjson(self.usuarios)
+                    c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
+                    c.print(" ")
                     mudancanome_text = Text()
-                    mudancanome_text.append('Nome atualizado com sucesso!',style = 'bold white')
+                    mudancanome_text.append('✅ Nome atualizado com sucesso!',style = 'bold white')
                     pmudancanome_text = Panel(mudancanome_text, expand = False, border_style = 'bold blue')
                     pmudancanome_text_center = Align.center(pmudancanome_text)
                     c.print(pmudancanome_text_center)
@@ -527,13 +497,17 @@ class GerenciarUsuario:
                     Utils.limpar_tela_universal()
 
             elif opçao3 == '2':
-                c.print(Panel('[bold yellow]Digite uma nova senha (mínimo 6 caracteres):[/bold yellow]', expand = False, border_style = 'bold yellow'))
-                nova_senha = input('>>> ')
+                c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
+                c.print(" ")
+                c.print(Utils.mensagem_centralizada("Digite uma nova senha (mínimo 6 caracteres):"))
+                nova_senha = Utils.entrada_centralizada('💬 : ')
                 if len(nova_senha) >=6:
                     usuario.senha = nova_senha
                     self.gerenciador.salvar_dadosjson(self.usuarios)
+                    c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
+                    c.print(" ")
                     mudancasenha_text = Text()
-                    mudancasenha_text.append('Senha atualizada com sucesso!',style = 'bold white')
+                    mudancasenha_text.append('✅ Senha atualizada com sucesso!',style = 'bold white')
                     pmudancasenha_text = Panel(mudancasenha_text, expand = False, border_style = 'bold blue')
                     pmudancasenha_text_center = Align.center(pmudancasenha_text)
                     c.print(pmudancasenha_text_center)
@@ -541,28 +515,30 @@ class GerenciarUsuario:
                     Utils.limpar_tela_universal()
 
                 else:
-                    c.print(Panel('Senha muito curta.', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
+                    Utils.mensagem_erro_centralizada("Senha muito curta.")
                     Utils.aguardar_volta()
                     Utils.limpar_tela_universal() 
 
             elif opçao3 == '3':
-                c.print(Panel(f'[bold yellow]Digite seu novo email (atual: {usuario_logado}):[/bold yellow]', expand = False, border_style = 'bold yellow'))
-                novo_email = input('>>> ').strip().lower()  
+                c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
+                c.print(" ")
+                c.print(Utils.mensagem_centralizada(f'Digite seu novo email (atual: {self.usuario_logado}):'))
+                novo_email = Utils.entrada_centralizada('💬 : ').strip().lower()  
                 if not novo_email:
                     continue
 
-                if novo_email == usuario_logado:
-                    c.print(Panel('O novo email é igual ao atual.', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
+                if novo_email == self.usuario_logado:
+                    Utils.mensagem_erro_centralizada("O novo email é igual ao atual.")
                     Utils.aguardar_volta()
                     Utils.limpar_tela_universal()   
 
                 elif '@' not in novo_email or '.com' not in novo_email:
-                    c.print(Panel("Formato inválido (use '@' e '.com').", expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
+                    Utils.mensagem_erro_centralizada("Formato inválido (use '@' e '.com').")
                     Utils.aguardar_volta()
                     Utils.limpar_tela_universal()
 
                 elif novo_email in usuarios:
-                    c.print(Panel('Email já cadastrado.', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center')) 
+                    Utils.mensagem_erro_centralizada("Email já cadastrado.")
                     Utils.aguardar_volta()
                     Utils.limpar_tela_universal()
 
@@ -570,11 +546,13 @@ class GerenciarUsuario:
                     
                     usuario.email = novo_email
                     usuarios[novo_email] = usuario
-                    del self.usuarios[usuario_logado]
-                    usuario_logado = novo_email
+                    del self.usuarios[self.usuario_logado]
+                    self.usuario_logado = novo_email
                     self.gerenciador.salvar_dadosjson(self.usuarios)
+                    c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
+                    c.print(" ")
                     mudancaemail_text = Text()
-                    mudancaemail_text.append('Email atualizado com sucesso!', style = 'bold white')
+                    mudancaemail_text.append('✅ Email atualizado com sucesso!', style = 'bold white')
                     pmudancaemail_text = Panel(mudancaemail_text, expand = False, border_style = 'bold blue')
                     pmudancaemail_text_center = Align.center(pmudancaemail_text)
                     c.print(pmudancaemail_text_center)
@@ -582,38 +560,34 @@ class GerenciarUsuario:
                     Utils.limpar_tela_universal() 
 
             elif opçao3 == '4':
-                with c.status("[red]G[/red][magenta]u[/magenta][yellow]a[/yellow][green]r[/green]"
-                    "[cyan]d[/cyan][blue]a[/blue][red]n[/red][magenta]d[/magenta][yellow]o[/yellow] "
-                    "[green]o[/green][cyan]s[/cyan] "
-                    "[blue]d[/blue][red]a[/red][magenta]d[/magenta][yellow]o[/yellow][green]s[/green]", spinner = 'hearts'):  
-                    time.sleep(2)
-                    Utils.limpar_tela_universal()
+                Utils.spinner_centralizado("Voltando...", tempo = 2)
+                Utils.limpar_tela_universal()
                 break
 
             else:
-                c.print(Panel('Opção inválida. Digite uma opção disponível (1-4)', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
+                Utils.mensagem_erro_centralizada("Opção inválida. Digite uma opção disponível (1-4)")
                 Utils.aguardar_volta()
                 Utils.limpar_tela_universal()
-        return usuarios, usuario_logado
+        return usuarios, self.usuario_logado
 
-    def atualizar_dados(self, usuario_logado):
+    def atualizar_dados(self):
         """
         Atualiza os dados físicos do usuário,
         usuário decide o que deseja atualizar.
         """
         Utils.limpar_tela_universal()
 
-        if usuario_logado is None:
-            c.print(Panel('Faça login primeiro!', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
+        if self.usuario_logado is None:
+            Utils.mensagem_erro_centralizada("Faça login primeiro!")
             Utils.aguardar_volta()
-            return self.usuarios, usuario_logado
+            return self.usuarios, self.usuario_logado
         
-        user = self.usuarios[usuario_logado]
+        user = self.usuarios[self.usuario_logado]
         
         if not user.dados:
-            c.print(Panel('Complete seus dados primeiro!', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
+            Utils.mensagem_erro_centralizada("Complete seus dados primeiro!")
             self.escolher_objetivo()
-            return self.usuarios, usuario_logado
+            return self.usuarios, self.usuario_logado
         
         objetivos = {
                 '1': 'GANHO DE MASSA',
@@ -627,11 +601,17 @@ class GerenciarUsuario:
                 objetivo_atual = user.objetivo
                 c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
                 print(' ')
-                atualizarusuario_text = Text()
-                atualizarusuario_text.append('\n')
-                atualizarusuario_text.append('Atualizar dados pessoais', style = 'bold blue')
-                atualizarusuario_text.append('\n')
 
+                login_texto_atualizardados_text = Text()
+                login_texto_atualizardados_text.append('\n')
+                login_texto_atualizardados_text.append("Seja bem-vindo(a) ao menu de atualização de dados!\n", style="bold yellow")
+                login_texto_atualizardados_text.append("Por gentileza, escolha o que deseja atualizar.", style="dim")
+                login_texto_atualizardados_text.append('\n')
+
+                login_panel = Panel(login_texto_atualizardados_text, title="[bold blue]Atualizar Dados",border_style="blue",expand=False)
+                c.print(Align.center(login_panel))
+
+                atualizarusuario_text = Text()
                 atualizarusuario_text.append('\n1. ', style = 'red')
                 atualizarusuario_text.append(f'Idade: {dados["idade"]} anos', style = 'bold white')
 
@@ -646,8 +626,9 @@ class GerenciarUsuario:
 
                 atualizarusuario_text.append('\n5. ', style = 'red')
                 atualizarusuario_text.append('Voltar', style = 'bold white')
+                atualizarusuario_text.append('\n')
 
-                patualizarusuario = Panel(atualizarusuario_text, expand = False, border_style = 'cyan', title = '🔹', title_align = 'center')
+                patualizarusuario = Panel(atualizarusuario_text, expand = False, border_style = 'bold blue', title = '🔹', title_align = 'center')
                 patualizarusuario_center = Align.center(patualizarusuario)
                 c.print(patualizarusuario_center)
                 
@@ -656,16 +637,20 @@ class GerenciarUsuario:
                 popcaoatualizardados_text = Panel(opcaoatualizardados_text, expand = False, border_style = 'bold yellow')
                 popcaoatualizardados_text_center = Align.center(popcaoatualizardados_text)
                 c.print(popcaoatualizardados_text_center)
-                campo = input('>>> ').strip()
+                campo = input('💬 : ').strip()
                 
                 if campo == '1':
-                    c.print(Panel('[bold yellow]Nova idade:[/bold yellow]', expand = False, border_style = 'yellow'))
-                    nova_idade = int(input('>>> '))
+                    c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
+                    print(' ')
+                    c.print(Utils.mensagem_centralizada("Nova idade:"))
+                    nova_idade = int(Utils.entrada_centralizada('💬 : '))
                     if 0 < nova_idade <= 100:
                         dados['idade'] = nova_idade
                         self.gerenciador.salvar_dadosjson({email: u.to_dict() for email, u in self.usuarios.items()})
+                        c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
+                        print(' ')
                         mudancaidada_text = Text()
-                        mudancaidada_text.append('Idade atualizada com sucesso!', style = 'bold white')
+                        mudancaidada_text.append('✅ Idade atualizada com sucesso!', style = 'bold white')
                         pmudancaidade_text = Panel(mudancaidada_text, expand = False, border_style = 'bold blue')
                         pmudancaidade_text_center = Align.center(pmudancaidade_text)
                         c.print(pmudancaidade_text_center)
@@ -673,18 +658,22 @@ class GerenciarUsuario:
                         Utils.limpar_tela_universal()
 
                     else:
-                        c.print(Panel('Idade deve ser entre 1 e 100 anos', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
+                        Utils.mensagem_erro_centralizada("Idade deve ser entre 1 e 100 anos")
                         Utils.aguardar_volta()
                         Utils.limpar_tela_universal()
                     
                 elif campo == '2':
-                    c.print(Panel('[bold yellow]Novo peso, em quilogramas:[/bold yellow]', expand = False, border_style = 'yellow'))
-                    novo_peso = float(input('>>> '))
+                    c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
+                    print(' ')
+                    c.print(Utils.mensagem_centralizada("Novo peso, em quilogramas:"))
+                    novo_peso = float(Utils.entrada_centralizada('💬 : '))
                     if 0 < novo_peso <= 350:
                         dados['peso'] = novo_peso
                         self.gerenciador.salvar_dadosjson({email: u.to_dict() for email, u in self.usuarios.items()})
+                        c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
+                        print(' ')
                         mudancapeso_text = Text()
-                        mudancapeso_text.append('Peso atualizado com sucesso!',style = 'bold white')
+                        mudancapeso_text.append('✅ Peso atualizado com sucesso!',style = 'bold white')
                         pmudancapeso_text = Panel(mudancapeso_text, expand = False, border_style = 'bold blue')
                         pmudancapeso_text_center = Align.center(pmudancapeso_text)
                         c.print(pmudancapeso_text_center)
@@ -692,18 +681,22 @@ class GerenciarUsuario:
                         Utils.limpar_tela_universal()
 
                     else:
-                        c.print(Panel('Peso deve ser entre 0.1 e 350 kg', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
+                        Utils.mensagem_erro_centralizada("Peso deve ser entre 0.1 e 350 kg")
                         Utils.aguardar_volta()
                         Utils.limpar_tela_universal()
                     
                 elif campo == '3':
-                    c.print(Panel('[bold yellow]Nova altura, em metros:[/bold yellow]', expand = False, border_style = 'yellow'))
-                    nova_altura = float(input('>>> '))
+                    c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
+                    print(' ')
+                    c.print(Utils.mensagem_centralizada("Nova altura, em metros:"))
+                    nova_altura = float(Utils.entrada_centralizada('💬 : '))
                     if 0 < nova_altura <= 2.5:
                         dados['altura'] = nova_altura
                         self.gerenciador.salvar_dadosjson({email: u.to_dict() for email, u in self.usuarios.items()})
+                        c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
+                        print(' ')
                         mudancaaltura_text = Text()
-                        mudancaaltura_text.append('Altura atualizada com sucesso!', style = 'bold white')
+                        mudancaaltura_text.append('✅ Altura atualizada com sucesso!', style = 'bold white')
                         pmudancaaltura_text = Panel(mudancaaltura_text, expand = False, border_style = 'bold blue')
                         pmudancaaltura_text_center = Align.center(pmudancaaltura_text)
                         c.print(pmudancaaltura_text_center)
@@ -711,11 +704,13 @@ class GerenciarUsuario:
                         Utils.limpar_tela_universal()
 
                     else:
-                        c.print(Panel('Altura deve ser entre 0.1 e 2.5 metros', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
+                        Utils.mensagem_erro_centralizada("Altura deve ser entre 0.1 e 2.5 metros")
                         Utils.aguardar_volta()
                         Utils.limpar_tela_universal()
                     
                 elif campo == '4':
+                    c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
+                    print(' ')
                     mudandoobj_text = Text()
                     mudandoobj_text.append('\n')
                     mudandoobj_text.append('Objetivos disponíveis:')
@@ -739,12 +734,14 @@ class GerenciarUsuario:
                     pnovaescolhaobj_text = Panel(novaescolhaobj_text, expand = False, border_style = 'bold yellow')
                     pnovaescolhaobj_text_center = Align.center(pnovaescolhaobj_text)
                     c.print(pnovaescolhaobj_text_center)
-                    novo_objetivo = input('>>> ').strip()
+                    novo_objetivo = Utils.entrada_centralizada('💬 : ').strip()
                     if novo_objetivo in ['1', '2', '3']:
                         user.objetivo = novo_objetivo
                         self.gerenciador.salvar_dadosjson({email: u.to_dict() for email, u in self.usuarios.items()})
+                        c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
+                        print(' ')
                         escolhanovoobj_text = Text()
-                        escolhanovoobj_text.append(f'Objetivo atualizado para: {objetivos[novo_objetivo]}', style = 'bold white')
+                        escolhanovoobj_text.append(f'✅ Objetivo atualizado para: {objetivos[novo_objetivo]}', style = 'bold white')
                         pescolhanovoobj_text = Panel(escolhanovoobj_text, expand = False, border_style = 'bold blue')
                         pescolhanovoobj_text_center = Align.center(pescolhanovoobj_text)
                         c.print(pescolhanovoobj_text_center)
@@ -752,70 +749,86 @@ class GerenciarUsuario:
                         Utils.limpar_tela_universal()
 
                     else:
-                        c.print(Panel('Opção inválida!', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
+                        Utils.mensagem_erro_centralizada("Opção inválida!")
                     Utils.aguardar_volta()
                     Utils.limpar_tela_universal()
                     
                 elif campo == '5':
-                    with c.status("[red]S[/red][magenta]a[/magenta][yellow]i[/yellow]"
-                        "[green]n[/green][cyan]d[/cyan][blue]o[/blue]", spinner = 'hearts'):  
-                        time.sleep(2)
-                        Utils.limpar_tela_universal()
+                    Utils.spinner_centralizado("Voltando...", tempo = 2)
+                    Utils.limpar_tela_universal()
                     break
                     
                 else:
-                    c.print(Panel('Opção inválida! digite uma opção disponível.', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
+                    Utils.mensagem_centralizada("Opção inválida! digite uma opção disponível.")
                     Utils.aguardar_volta()
                     Utils.limpar_tela_universal()
                     
             except ValueError:
-                c.print(Panel('Valor inválido! Digite números válidos.', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
+                Utils.mensagem_centralizada("Valor inválido! Digite números válidos.")
                 Utils.aguardar_volta()
                 Utils.limpar_tela_universal()
-        return self.usuarios, usuario_logado
+        return self.usuarios, self.usuario_logado
 
-    def deletar_usuario(self,usuario_logado, usuarios):
+    def deletar_usuario(self):
         """
         Deleta o usuário cadastrado,
         apaga todos os dados inseridos e salvos.
         """
 
-        if usuario_logado is None:
-            c.print(Panel('Faça login primeiro.', expand = False, border_style = 'ERRO', title = 'ERRO', title_align = 'center'))
+        if self.usuario_logado is None:
+            Utils.mensagem_erro_centralizada("Faça login primeiro.")
             return
         
         while True:
+            Utils.limpar_tela_universal()
+            c.rule('[i][blue]VitalTrack[/][/i]')
+            print(" ")
 
-            c.print(Panel('Tem certeza que deseja deletar sua conta? 😕 (s/n):', expand = False, border_style = 'bold yellow',style = 'bold yellow'))
-            confirmaçao = input('>>> ').lower()
+            deletarconta_text = Text()
+            deletarconta_text.append('\n')
+            deletarconta_text.append("Seção de Exclusão de Conta – Cuidado! Esta ação é permanente.\n", style="bold yellow")
+            deletarconta_text.append("Esta ação não pode ser desfeita. Confirme se deseja deletar sua conta.", style="dim")
+            deletarconta_text.append('\n')
+
+            deletarconta_panel = Panel(deletarconta_text,border_style="blue",expand=False)
+            c.print(Align.center(deletarconta_panel))
+
+
+            deletarconta_text = Text()
+            deletarconta_text.append("Tem certeza que deseja deletar sua conta? 😕 (s/n):")
+            pdeletarconta_text = Panel(deletarconta_text, expand = False, border_style = "bold yellow", style = "bold yellow")
+            pdeletarconta_text_center = Align.center(pdeletarconta_text)
+            c.print(pdeletarconta_text_center)
+        
+            confirmaçao = input('💬 : ').lower()
 
             if confirmaçao == 's':
-                del usuarios[usuario_logado]
+                del self.usuarios[self.usuario_logado]
                 self.gerenciador.salvar_dadosjson(self.usuarios)
-                usuario_logado = None
+                self.usuario_logado = None
                 contadeletada_text = Text()
-                contadeletada_text.append('Conta deletada com sucesso. Até logo...', style = 'bold white')
-                pcontadeletadaa_text = Panel(contadeletada_text, expand = False, border_style = 'bold blue')
+                contadeletada_text.append('✅ Conta deletada com sucesso. Até logo...')
+                pcontadeletadaa_text = Panel(contadeletada_text, expand = False, border_style = 'cyan')
                 pcontadeletadaa_text_center = Align.center(pcontadeletadaa_text)
                 c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
                 print(' ')
                 c.print(pcontadeletadaa_text_center)
-                return usuarios, usuario_logado
+                return True
             
             elif confirmaçao == 'n':
                 naodeletada_text = Text()
-                naodeletada_text.append('Que bom! Creio que ainda podemos te auxiliar em muitas coisas. 😉✨', style = 'bold white')
-                pnaodeletada_text = Panel(naodeletada_text, expand = False, border_style = 'bold blue')
+                naodeletada_text.append('Que bom! Creio que ainda podemos te auxiliar em muitas coisas. 😉✨')
+                pnaodeletada_text = Panel(naodeletada_text, expand = False, border_style = 'cyan')
                 pnaodeletada_text_center = Align.center(pnaodeletada_text)
                 c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
                 print(' ')
                 c.print(pnaodeletada_text_center)
                 Utils.aguardar_volta()
                 Utils.limpar_tela_universal()
-                return usuarios, usuario_logado
+                return False
 
             else:
-                c.print(Panel('Digite "s" ou "n".', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
+                Utils.mensagem_erro_centralizada('Digite "s" ou "n".')
                 Utils.aguardar_volta()
                 Utils.limpar_tela_universal()
-            return usuarios, usuario_logado
+            

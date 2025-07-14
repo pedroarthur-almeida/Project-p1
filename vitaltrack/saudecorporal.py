@@ -2,7 +2,7 @@ from utils import Utils
 from rich.panel import Panel
 from rich.console import Console 
 from rich.text import Text 
-from user_management import GerenciarUsuario
+from gerenciar_usuario import GerenciarUsuario
 import time
 from datetime import datetime
 from rich.align import Align 
@@ -26,13 +26,13 @@ class SaudeCorporal:
         Utils.limpar_tela_universal()
 
         if usuario_logado is None:
-            c.print(Panel('Faça login primeiro!', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
+            Utils.mensagem_erro_centralizada("Faça login primeiro!")
             Utils.aguardar_volta()
             return usuarios, usuario_logado
         
         user = cadastro.usuarios[usuario_logado]
         if not user.dados:
-            c.print(Panel('Complete seus dados primeiro!', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
+            Utils.mensagem_erro_centralizada("Complete seus dados primeiro!")
             usuarios = cadastro.escolher_objetivo(usuarios, usuario_logado) 
             return usuarios, usuario_logado
         
@@ -51,11 +51,18 @@ class SaudeCorporal:
             p_imctext = Panel(imc_text, title="[bold blue]IMC[/bold blue]",title_align="center",border_style="blue",expand=False)
             p_imctext_center = Align.center(p_imctext)
             c.print(p_imctext_center)
-            c.print(Panel('Deseja calcular o seu IMC (1), calcular outro qualquer (2), ou voltar (3)?', expand = False, border_style = 'bold yellow', style = 'bold yellow'))
-            calcularimc_visualizarimc = input('>>> ')
+
+
+            perguntaimc_text = Text()
+            perguntaimc_text.append("Deseja calcular o seu IMC (1), calcular outro qualquer (2), ou voltar (3)?", style = "bold yellow")
+            painelperguntaimc_text = Panel(perguntaimc_text, expand = False, border_style = "bold yellow")
+            painelperguntaimc_text_center = Align.center(painelperguntaimc_text)
+            c.print(painelperguntaimc_text_center)
+            
+            calcularimc_visualizarimc = Utils.entrada_centralizada('>>> ')
 
             if calcularimc_visualizarimc not in ['1','2','3']:
-                c.print(Panel('Digite "1", "2" ou "3".', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
+                Utils.mensagem_erro_centralizada('Digite "1", "2" ou "3".')
                 Utils.aguardar_volta()
                 continue
 
@@ -74,10 +81,7 @@ class SaudeCorporal:
                 calcularimc1_text.append(f'\nStatus: {status}', style = 'dim')
                 pcalcularimc1 = Panel(calcularimc1_text, expand = False, border_style = 'cyan')
                 pcacularimc1_center = Align.center(pcalcularimc1)
-                with c.status("[red]C[/red][magenta]a[/magenta][yellow]l[/yellow][green]c[/green]"
-                    "[cyan]u[/cyan][blue]l[/blue][red]a[/red][magenta]n[/magenta]"
-                    "[yellow]d[/yellow][green]o[/green]", spinner="hearts"):
-                    time.sleep(2)
+                Utils.spinner_centralizado("Calculando...", tempo = 2)
                 c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
                 print(' ')
                 c.print(pcacularimc1_center)
@@ -119,14 +123,19 @@ class SaudeCorporal:
                         try:
                             c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
                             print(' ')
-                            c.print(Panel('Digite o seu peso em kg:', expand = False, border_style = 'bold yellow', style = 'bold yellow'))
-                            pesoimc = float(input('>>> '))
+                            digitepeso_text = Text()
+                            digitepeso_text.append("Digite o seu peso em kg:", style = "bold yellow")
+                            pdigitepeso_text = Panel(digitepeso_text, expand = False, border_style = "bold yellow")
+                            pdigitepeso_text_center = Align.center(pdigitepeso_text)
+                            c.print(pdigitepeso_text_center)
+                            
+                            pesoimc = float(Utils.entrada_centralizada('>>> '))
                             if pesoimc > 350 or pesoimc <= 0:
-                                c.print(Panel('Digite um peso válido.', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
+                                Utils.mensagem_erro_centralizada("Digite um peso válido.")
                                 Utils.aguardar_volta()
                                 continue
                         except ValueError:
-                            c.print(Panel('Digite apenas números', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
+                            Utils.mensagem_erro_centralizada("Digite apenas números")
                             Utils.aguardar_volta()
                             continue
                         break
@@ -134,22 +143,24 @@ class SaudeCorporal:
                 while True:
                         
                         try:
-                            c.print(Panel('Digite a sua altura em m:', expand = False, border_style = 'bold yellow', style = 'bold yellow'))
-                            alturaimc = float(input('>>> '))
+                            digitealtura_text = Text()
+                            digitealtura_text.append("Digite a sua altura em m:", style = "bold yellow")
+                            pdigitealtura_text = Panel(digitealtura_text, expand = False, border_style = "bold yellow")
+                            pdigitealtura_text_center = Align.center(pdigitealtura_text)
+                            c.print(pdigitealtura_text_center)
+                            
+                            alturaimc = float(Utils.entrada_centralizada('>>> '))
                             if alturaimc > 2.2 or alturaimc <= 0:
-                                c.print(Panel('Digite uma altura válida', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
+                                Utils.mensagem_erro_centralizada("Digite uma altura válida")
                                 Utils.aguardar_volta()
                                 continue
                         except ValueError:
-                            c.print(Panel('Digite apenas números', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
+                            Utils.mensagem_erro_centralizada("Digite apenas números")
                             Utils.aguardar_volta()
                             continue
                         
                         imc = (pesoimc/alturaimc**2)
-                        with c.status("[red]C[/red][magenta]a[/magenta][yellow]l[/yellow][green]c[/green]"
-                            "[cyan]u[/cyan][blue]l[/blue][red]a[/red][magenta]n[/magenta]"
-                            "[yellow]d[/yellow][green]o[/green]", spinner="hearts"):
-                            time.sleep(2)
+                        Utils.spinner_centralizado("Calculando...", tempo = 2)
                         c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
                         print(' ')
                         resultimc_text = Text()
@@ -175,10 +186,8 @@ class SaudeCorporal:
                         break
                     
             elif calcularimc_visualizarimc == '3':
-                with c.status("[red]S[/red][magenta]a[/magenta][yellow]i[/yellow]"
-                    "[green]n[/green][cyan]d[/cyan][blue]o[/blue]", spinner = 'hearts'):  
-                    time.sleep(2)
-                    Utils.limpar_tela_universal()
+                Utils.spinner_centralizado("Voltando...", tempo = 2)
+                Utils.limpar_tela_universal()
                 break
         return usuarios, usuario_logado
             
@@ -190,14 +199,14 @@ class SaudeCorporal:
         Utils.limpar_tela_universal()
 
         if usuario_logado is None:
-            c.print(Panel('Faça login primeiro!', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
+            Utils.mensagem_erro_centralizada("Faça login primeiro!")
             Utils.aguardar_volta()  
             return usuarios, usuario_logado
 
         user = usuarios[usuario_logado]
 
         if not user.dados:
-            c.print(Panel('Complete seus dados primeiro!', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
+            Utils.mensagem_erro_centralizada("Complete seus dados primeiro!")
             usuarios = cadastro.escolher_objetivo(usuarios, usuario_logado)
             return usuarios, usuario_logado
 
@@ -213,16 +222,14 @@ class SaudeCorporal:
             p_tmbtext = Panel(tmb_text, title="TMB",title_align="center",border_style="bold blue",expand=False)
             p_tmbtext_center = Align.center(p_tmbtext)
             c.print(p_tmbtext_center)    
+ 
 
-            c.print(Panel('Deseja calcular sua taxa metabólica basal (1), calcular outra qualquer (2), ou voltar (3)?', expand = False, border_style = 'bold yellow', style = 'bold yellow'))
-            calculartmb_visualizartmb = input('>>> ').strip()
+            c.print(Utils.mensagem_centralizada("Deseja calcular sua taxa metabólica basal (1), calcular outra qualquer (2), ou voltar (3)?"))
+            calculartmb_visualizartmb = Utils.entrada_centralizada('>>> ').strip()
 
             if calculartmb_visualizartmb == '1':
 
-                with c.status("[red]C[/red][magenta]a[/magenta][yellow]l[/yellow][green]c[/green]"
-                    "[cyan]u[/cyan][blue]l[/blue][red]a[/red][magenta]n[/magenta]"
-                    "[yellow]d[/yellow][green]o[/green]", spinner="hearts"):
-                    time.sleep(2)
+                Utils.spinner_centralizado("Calculando...", tempo = 2)
 
                 dados = user.dados
                 altura = dados['altura']
@@ -331,14 +338,14 @@ class SaudeCorporal:
                     c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
                     print(' ')
                     try:
-                        c.print(Panel('[bold yellow]Digite o peso em quilogramas:[/bold yellow]', expand = False, border_style = 'bold yellow'))
-                        pesoex = float(input('>>> '))
+                        c.print(Utils.mensagem_centralizada("Digite o peso em quilogramas:"))
+                        pesoex = float(Utils.entrada_centralizada('>>> '))
                         if pesoex > 350 or pesoex <= 0:
-                            c.print(Panel('Digite um peso válido.',expand = False, border_style = 'red', title = '[b]ERRO[/b]', title_align = 'center'))
+                            Utils.mensagem_erro_centralizada("Digite um peso válido.")
                             Utils.aguardar_volta()
                             continue
                     except ValueError:
-                            c.print(Panel('Digite apenas números', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
+                            Utils.mensagem_erro_centralizada("Digite apenas números.")
                             Utils.aguardar_volta()
                             continue
                     break
@@ -346,14 +353,14 @@ class SaudeCorporal:
                 while True:
                         
                         try:
-                            c.print(Panel('[bold yellow]Digite a altura em centímetros:[/bold yellow]', expand = False, border_style = 'bold yellow'))
-                            alturaex = float(input('>>> '))
+                            c.print(Utils.mensagem_centralizada("Digite a altura em centímetros:"))
+                            alturaex = float(Utils.entrada_centralizada('>>> '))
                             if alturaex > 220 or alturaex <= 100:
-                                c.print(Panel('Digite uma altura válida, em centímetros.', expand = False, border_style = 'red', title = '[b]ERRO[/b]', title_align = 'center'))
+                                Utils.mensagem_erro_centralizada("Digite uma altura válida, em centímetros.")
                                 Utils.aguardar_volta()
                                 continue
                         except ValueError:
-                            c.print(Panel('Digite apenas números', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
+                            Utils.mensagem_erro_centralizada("Digite apenas números.")
                             Utils.aguardar_volta()
                             continue
                         break
@@ -361,14 +368,14 @@ class SaudeCorporal:
                 while True:
 
                         try:            
-                            c.print(Panel('[bold yellow]Digite a idade:[/bold yellow]', expand = False, border_style = 'bold yellow'))
-                            idadeex = int(input('>>> '))
+                            c.print(Utils.mensagem_centralizada("Digite a idade:"))
+                            idadeex = int(Utils.entrada_centralizada('>>> '))
                             if idadeex > 100 or idadeex <= 0:
-                                c.print(Panel('Digite uma idade válida.', expand = False, border_style = 'red', title = '[b]ERRO[/b]', title_align = 'center'))
+                                Utils.mensagem_erro_centralizada("Digite uma idade válida.")
                                 Utils.aguardar_volta()
                                 continue
                         except ValueError:
-                            c.print(Panel('Digite apenas números', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
+                            Utils.mensagem_erro_centralizada("Digite apenas números.")
                             Utils.aguardar_volta()
                             continue
                         break
@@ -405,14 +412,14 @@ class SaudeCorporal:
                             popcaotextoidentidade = Panel(opcaotextoidentidade, expand = False, border_style = 'bold yellow')
                             popcaotextoidentidade_center = Align.center(popcaotextoidentidade)
                             c.print(popcaotextoidentidade_center)
-                            sexo_opcao = input('>>> ').strip()
+                            sexo_opcao = Utils.entrada_centralizada('>>> ').strip()
                 
                             if sexo_opcao not in ['1', '2', '3', '4']:
-                                c.print(Panel('Opção inválida! Escolha 1-4', expand = False, border_style = 'red', title = '[b]ERRO[/b]', title_align = 'center'))
+                                Utils.mensagem_erro_centralizada("Opção inválida! Escolha 1-4")
                                 Utils.aguardar_volta()
                                 continue
                         except ValueError:
-                            c.print(Panel('Digite apenas números', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
+                            Utils.mensagem_erro_centralizada("Digite apenas números.")
                             Utils.aguardar_volta()
                             continue
                         break
@@ -424,14 +431,14 @@ class SaudeCorporal:
                             tempo_transicao = 0
                             
                             if sexo_opcao in ['3', '4']:
-                                c.print(Panel('[bold yellow]Você já fez uso de terapia hormonal? (s/n):[/bold yellow]', expand = False, border_style = 'bold yellow'))
-                                resposta = input('>>> ').lower().strip()
+                                c.print(Utils.mensagem_centralizada("Você já fez uso de terapia hormonal? (s/n):"))
+                                resposta = Utils.entrada_centralizada('>>> ').lower().strip()
                                 if resposta not in ['s','n']:
-                                    c.print(Panel('Digite (s) ou (n).', expand = False, border_style = 'red', title = '[b]ERRO[/b]', title_align = 'center'))
+                                    Utils.mensagem_erro_centralizada("Digite (s) ou (n).")
                                     Utils.aguardar_volta()
                                     continue 
                         except ValueError:
-                            c.print(Panel('Digite apenas números', border_style = "red", expand = False, title = "[b]ERRO[/b]", title_align="center"))
+                            Utils.mensagem_erro_centralizada("Digite apenas números.")
                             Utils.aguardar_volta()
                             continue
                         break
@@ -440,14 +447,14 @@ class SaudeCorporal:
                     try:
                         em_transicao = resposta == 's'    
                         if em_transicao:
-                            c.print(Panel('[bold yellow]Há quantos meses você faz uso?[/bold yellow]', expand = False, border_style = 'bold yellow'))
-                            tempo_transicao = int(input('>>> '))
+                            c.print(Utils.mensagem_centralizada("Há quantos meses você faz uso?"))
+                            tempo_transicao = int(Utils.entrada_centralizada('>>> '))
                             if tempo_transicao <= 0:
-                                c.print(Panel('Digite um valor válido.', expand = False, border_style = 'red', title = '[b]ERRO[/b]', title_align = 'center'))
+                                Utils.mensagem_erro_centralizada("Digite um valor válido.")
                                 Utils.aguardar_volta()
                                 continue
                     except ValueError:
-                            c.print(Panel('Digite um número válido.', expand = False, border_style = 'red', title = '[b]ERRO[/b]', title_align = 'center'))
+                            Utils.mensagem_erro_centralizada("Digite um número válido.")
                             Utils.aguardar_volta()
                             continue
                     
@@ -548,14 +555,12 @@ class SaudeCorporal:
                     break
                         
             elif calculartmb_visualizartmb == '3':
-                with c.status("[red]S[/red][magenta]a[/magenta][yellow]i[/yellow]"
-                    "[green]n[/green][cyan]d[/cyan][blue]o[/blue]", spinner = 'hearts'):  
-                    time.sleep(2)
-                    Utils.limpar_tela_universal()
+                Utils.spinner_centralizado("Voltando...", tempo = 2)
+                Utils.limpar_tela_universal()
                 break
 
             else:
-                c.print(Panel('Opção inválida! Digite 1, 2 ou 3.', expand = False, border_style = 'red', title = '[b]ERRO[/b]', title_align = 'center'))
+                Utils.mensagem_erro_centralizada("Opção inválida! Digite 1, 2 ou 3.")
                 Utils.aguardar_volta()
                 continue
         return usuarios, usuario_logado
@@ -570,14 +575,14 @@ class SaudeCorporal:
         Utils.limpar_tela_universal()
 
         if usuario_logado is None:
-            c.print(Panel('Faça login primeiro!', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
+            Utils.mensagem_erro_centralizada("Faça login primeiro!")
             Utils.aguardar_volta()  
             return usuarios, usuario_logado
         
         user = usuarios[usuario_logado]
 
         if not hasattr(user, 'TMB') or not isinstance(user.TMB, (int, float)):
-            c.print(Panel('Você precisa calcular sua taxa metabólica basal primeiro!', expand = False, border_style = 'red', title = '❗AVISO❗', title_align = 'center'))
+            Utils.mensagem_erro_centralizada("Você precisa calcular sua taxa metabólica basal primeiro!")
             Utils.aguardar_volta()
             if not self.calcular_taxametabolicabasal(usuarios, usuario_logado):  
                 return usuarios, usuario_logado
@@ -602,6 +607,17 @@ class SaudeCorporal:
                 print(' ')
                 registrodecal_text = Text()
                 registrodecal_text.append('\n')
+
+                login_texto_atualizardados_text = Text()
+                login_texto_atualizardados_text.append('\n')
+                login_texto_atualizardados_text.append("Seja bem-vindo(a) ao menu Registro de Calorias!\n", style="bold yellow")
+                login_texto_atualizardados_text.append("Acompanhe sua alimentação registrando suas calorias.", style="dim")
+                login_texto_atualizardados_text.append('\n')
+
+                login_panel = Panel(login_texto_atualizardados_text,border_style="blue",expand=False)
+                c.print(Align.center(login_panel))
+
+
                 registrodecal_text.append('Registro de calorias\n', style = 'bold blue')
                 
                 registrodecal_text.append(f'Data: {data_atual}', style = 'dim')
@@ -629,7 +645,7 @@ class SaudeCorporal:
                 painelopcaoregistrocal_text = Panel(opcaoregistrocal_text, expand = False, border_style = 'bold yellow')
                 painelopcaoregistrocal_text_center = Align.center(painelopcaoregistrocal_text)
                 c.print(painelopcaoregistrocal_text_center)
-                opcao = input('>>> ').strip()
+                opcao = Utils.entrada_centralizada('>>> ').strip()
 
                 if opcao == '1':
                     c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
@@ -640,12 +656,12 @@ class SaudeCorporal:
                     painelperguntaadicaocalorias_text_center = Align.center(painelperguntaadicaocalorias_text)
                     c.print(painelperguntaadicaocalorias_text_center)
 
-                    c.print(Panel('[bold yellow]Quantas calorias você consumiu em sua última refeição?[/bold yellow]', expand = False, border_style = 'bold yellow'))
-                    cal = input('>>> ')
+                    c.print(Utils.mensagem_centralizada("Quantas calorias você consumiu em sua última refeição?"))
+                    cal = Utils.entrada_centralizada('>>> ')
                     cal = int(cal)
 
                     if cal <= 0:
-                        c.print(Panel('Ops, este não é um valor válido. Caso queira registrar suas calorias, digite um valor válido.', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
+                        Utils.mensagem_erro_centralizada("Ops, este não é um valor válido. Caso queira registrar suas calorias, digite um valor válido.")
                         Utils.aguardar_volta()
                         continue
 
@@ -663,14 +679,16 @@ class SaudeCorporal:
                 elif opcao == '2':
                         c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
                         print(' ')
-                        c.print(Panel('[bold yellow]Deseja finalizar o seu dia ? Não poderá mais adicionar calorias ao dia de hoje. (s/n):[/bold yellow]', expand = False, border_style = 'bold yellow'))
-                        es = input('>>> ').strip().lower()
+                        c.print(Utils.mensagem_centralizada("Deseja finalizar o seu dia ? Não poderá mais adicionar calorias ao dia de hoje. (s/n):"))
+                        es = Utils.entrada_centralizada('>>> ').strip().lower()
 
                         if es == 's':
                             if data_atual not in user.historico_dias:
                                 user.historico_dias[data_atual] = user.calorias_hoje
                                 cadastro.gerenciador.salvar_dadosjson(usuarios)
-                                c.print(Panel(f'Dia finalizado com sucesso! Total salvo: {user.calorias_hoje} calorias', expand = False, border_style = 'cyan'))
+                                c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
+                                print(' ')
+                                c.print(Utils.mensagem_centralizada(f'Dia finalizado com sucesso! Total salvo: {user.calorias_hoje} calorias'))
                                 user.calorias_hoje = 0  #zerando a contagem para o próximo dia
                                 
                                 diferenca = user.historico_dias[data_atual] - TMB  # Usamos o valor salvo no histórico
@@ -708,7 +726,7 @@ class SaudeCorporal:
                                         analiseobj1_text.append('\n💪 Alimente-se bem: priorize proteínas (frango, ovos, peixe), carboidratos complexos (arroz, batata-doce) e gorduras boas (azeite, castanhas)')
                                         analiseobj1_text.append('\n🛌 Descanse de verdade: dormir 7–9 horas por noite e ter dias de descanso são tão importantes quanto o treino e alimentação.')
                                         analiseobj1_text.append('\n')
-                                        panaliseobj1 = Panel(analiseobj1_text, expand = False, border_style = 'bold blue', title = '🤓', title_align = 'center')
+                                        panaliseobj1 = Panel(analiseobj1_text, expand = False, border_style = 'bold blue', title = '🔹', title_align = 'center')
                                         panaliseobj1_center = Align.center(panaliseobj1)
                                         c.print(panaliseobj1_center)
                                         
@@ -720,7 +738,7 @@ class SaudeCorporal:
                                         analiseobj12_text.append('\nAtenção! Para ganhar massa, você precisa consumir mais que sua TMB.')
                                         analiseobj12_text.append('\n📅 Seja consistente: resultados vêm com treino e alimentação regulares, mantenha a disciplina.')
                                         analiseobj12_text.append('\n')
-                                        panaliseobj12 = Panel(analiseobj12_text, expand = False, border_style = 'bold blue', title = '🤓', title_align = 'center')
+                                        panaliseobj12 = Panel(analiseobj12_text, expand = False, border_style = 'bold blue', title = '🔹', title_align = 'center')
                                         panaliseobj12_center = Align.center(panaliseobj12)
                                         c.print(panaliseobj12_center)
                                                 
@@ -734,7 +752,7 @@ class SaudeCorporal:
                                         analiseobj2_text.append('\n🥗 Prefira alimentos naturais: invista em frutas, verduras, proteínas magras e evite ultraprocessados.')
                                         analiseobj2_text.append('\n🚶 Mexa-se regularmente: além da dieta, exercícios ajudam a acelerar o metabolismo e manter a massa magra.')
                                         analiseobj2_text.append('\n')
-                                        panaliseobj2 = Panel(analiseobj2_text, expand = False, border_style = 'bold blue', title = '🤓', title_align = 'center')
+                                        panaliseobj2 = Panel(analiseobj2_text, expand = False, border_style = 'bold blue', title = '🔹', title_align = 'center')
                                         panaliseobj2_center = Align.center(panaliseobj2)
                                         c.print(panaliseobj2_center)
 
@@ -747,7 +765,7 @@ class SaudeCorporal:
                                         analiseobj22_text.append('\n🧐 Reavalie a alimentação: às vezes, pequenas “fugas” na dieta ou subestimativa das calorias podem impedir o progresso.')
                                         analiseobj22_text.append('\n⏳ Tenha paciência: perda de peso nem sempre é linear, o corpo pode demorar para responder — persistência é chave.')
                                         analiseobj22_text.append('\n')
-                                        panaliseobj22 = Panel(analiseobj22_text, expand = False, border_style = 'bold blue', title = '🤓', title_align = 'center')
+                                        panaliseobj22 = Panel(analiseobj22_text, expand = False, border_style = 'bold blue', title = '🔹', title_align = 'center')
                                         panaliseobj22_center = Align.center(panaliseobj22)
                                         c.print(panaliseobj22_center)
 
@@ -760,7 +778,7 @@ class SaudeCorporal:
                                         analiseobj3_text.append('\nExcelente! Você está mantendo um bom equilíbrio. ✍')
                                         analiseobj3_text.append('\n🔄 Mantenha a rotina saudável: hábitos consistentes geram resultados duradouros, então não deixe a disciplina cair.')
                                         analiseobj3_text.append('\n')
-                                        panaliseobj3 = Panel(analiseobj3_text, expand = False, border_style = 'bold blue', title = '🤓', title_align = 'center')
+                                        panaliseobj3 = Panel(analiseobj3_text, expand = False, border_style = 'bold blue', title = '🔹', title_align = 'center')
                                         panaliseobj3_center = Align.center(panaliseobj3)
                                         c.print(panaliseobj3_center)
 
@@ -773,12 +791,12 @@ class SaudeCorporal:
                                         analiseobj32_text.append('\n📅 Faça exames periódicos: prevenção é sempre o melhor remédio, mantenha suas consultas em dia.')
                                         analiseobj32_text.append('\n🚭 Evite hábitos nocivos: reduza ou elimine álcool, cigarro e outras substâncias que prejudicam a saúde.')
                                         analiseobj32_text.append('\n')
-                                        panaliseobj32 = Panel(analiseobj32_text, expand = False, border_style = 'bold blue', title = '🤓', title_align = 'center')
+                                        panaliseobj32 = Panel(analiseobj32_text, expand = False, border_style = 'bold blue', title = '🔹', title_align = 'center')
                                         panaliseobj32_center = Align.center(panaliseobj32)
                                         c.print(panaliseobj32_center)
 
                             else:
-                                c.print(Panel('Você já finalizou o dia hoje!', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
+                                Utils.mensagem_erro_centralizada("Você já finalizou o dia hoje!")
                             Utils.aguardar_volta()
                             Utils.limpar_tela_universal()
 
@@ -787,7 +805,7 @@ class SaudeCorporal:
                             Utils.limpar_tela_universal()
 
                         else:
-                            c.print(Panel('Digite (s) ou (n).', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
+                            Utils.mensagem_erro_centralizada("Digite (s) ou (n).")
                             Utils.aguardar_volta()
                             continue
 
@@ -800,31 +818,29 @@ class SaudeCorporal:
                     historico_text.append('\n')
 
                     if not user.historico_dias:
-                        c.print(Panel('Nenhum registro encontrado.', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
+                        Utils.mensagem_erro_centralizada("Nenhum registro encontrado.")
 
                     else:
                         for data, total in user.historico_dias.items():
                             historico_text.append(f'{data}: {total} calorias', style = 'dim')
                             historico_text.append('\n')
                             painelhistorico_text = Panel(historico_text, expand = False, border_style = 'bold blue')
-                            painelhistorico_text_center = Align.center(painelhistorico_text)
-                            c.print(painelhistorico_text_center)
+                        painelhistorico_text_center = Align.center(painelhistorico_text)
+                        c.print(painelhistorico_text_center)
 
                     Utils.aguardar_volta()
                 elif opcao == '4':
-                    with c.status("[red]S[/red][magenta]a[/magenta][yellow]i[/yellow]"
-                        "[green]n[/green][cyan]d[/cyan][blue]o[/blue]", spinner = 'hearts'):  
-                        time.sleep(2)
-                        Utils.limpar_tela_universal()
+                    Utils.spinner_centralizado("Voltando...", tempo = 2)
+                    Utils.limpar_tela_universal()
                     break
 
                 else:
-                    c.print(Panel('Opção inválida!', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
+                    Utils.mensagem_erro_centralizada("Opção inválida!")
                     Utils.aguardar_volta()
                     Utils.limpar_tela_universal()
 
             except Exception as e:
-                c.print(Panel(f'Ocorreu um erro: {e}', expand = False, border_style = 'red', title = 'ERRO', title_align = 'center'))
+                Utils.mensagem_erro_centralizada(f"Ocorreu um erro: {e}")
                 Utils.aguardar_volta()
                 Utils.limpar_tela_universal()
 

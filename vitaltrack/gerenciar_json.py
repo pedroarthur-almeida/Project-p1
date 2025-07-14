@@ -1,5 +1,5 @@
 import json
-from user import Usuario
+from usuario import Usuario
 
 class GerenciarJson:
     def salvar_dadosjson(self, dados):

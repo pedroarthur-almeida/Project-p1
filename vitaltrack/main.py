@@ -1,8 +1,7 @@
-usuario_logado = None 
-from user_management import *
+from gerenciar_usuario import *
 from menus import *
+m = Menus(cadastro)
           
 if __name__ == "__main__":
     cadastro = GerenciarUsuario()  
-    usuario_logado = None
-    menu_principal(cadastro, usuario_logado)
+    m.exibir_menu_inicial(cadastro)
