@@ -18,9 +18,13 @@ class Usuario:
             objetivo=dados_usuario.get("objetivo"),
             dados=dados_usuario.get("dados"),
             calorias_hoje=dados_usuario.get("calorias_hoje", 0),
-            historico_dias=dados_usuario.get("historico_dias", {})
+            historico_dias=dados_usuario.get("historico_dias", {}) 
         )
         obj.TMB = dados_usuario.get("TMB")
+        obj.agua_hoje = dados_usuario.get("agua_hoje", 0)
+        obj.meta_agua = dados_usuario.get("meta_agua", 0)
+        obj.historico_agua = dados_usuario.get("historico_agua", {})
+        obj.quiz_progresso = dados_usuario.get("quiz_progresso", {})
         return obj
     
     def to_dict(self):
@@ -33,4 +37,8 @@ class Usuario:
             "calorias_hoje": self.calorias_hoje,
             "historico_dias": self.historico_dias,
             "TMB": self.TMB,
+            "agua_hoje": self.agua_hoje,
+            "meta_agua": self.meta_agua,
+            "historico_agua": self.historico_agua,
+            "quiz_progresso": getattr(self, "quiz_progresso", {})
         }

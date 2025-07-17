@@ -1,11 +1,9 @@
 import time
 from utils import Utils
-from prompt_toolkit import prompt
 from rich.align import Align
 from rich.panel import Panel
 from rich.text import Text
 from rich.console import Console
-from rich.progress import Progress, SpinnerColumn, TextColumn
 from gerenciar_json import GerenciarJson
 from usuario import Usuario
 c = Console()

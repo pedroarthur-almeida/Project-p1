@@ -59,7 +59,7 @@ class SaudeCorporal:
             painelperguntaimc_text_center = Align.center(painelperguntaimc_text)
             c.print(painelperguntaimc_text_center)
             
-            calcularimc_visualizarimc = Utils.entrada_centralizada('>>> ')
+            calcularimc_visualizarimc = Utils.entrada_centralizada('💬 : ')
 
             if calcularimc_visualizarimc not in ['1','2','3']:
                 Utils.mensagem_erro_centralizada('Digite "1", "2" ou "3".')
@@ -129,7 +129,7 @@ class SaudeCorporal:
                             pdigitepeso_text_center = Align.center(pdigitepeso_text)
                             c.print(pdigitepeso_text_center)
                             
-                            pesoimc = float(Utils.entrada_centralizada('>>> '))
+                            pesoimc = float(Utils.entrada_centralizada('💬 : '))
                             if pesoimc > 350 or pesoimc <= 0:
                                 Utils.mensagem_erro_centralizada("Digite um peso válido.")
                                 Utils.aguardar_volta()
@@ -149,7 +149,7 @@ class SaudeCorporal:
                             pdigitealtura_text_center = Align.center(pdigitealtura_text)
                             c.print(pdigitealtura_text_center)
                             
-                            alturaimc = float(Utils.entrada_centralizada('>>> '))
+                            alturaimc = float(Utils.entrada_centralizada('💬 : '))
                             if alturaimc > 2.2 or alturaimc <= 0:
                                 Utils.mensagem_erro_centralizada("Digite uma altura válida")
                                 Utils.aguardar_volta()
@@ -225,7 +225,7 @@ class SaudeCorporal:
  
 
             c.print(Utils.mensagem_centralizada("Deseja calcular sua taxa metabólica basal (1), calcular outra qualquer (2), ou voltar (3)?"))
-            calculartmb_visualizartmb = Utils.entrada_centralizada('>>> ').strip()
+            calculartmb_visualizartmb = Utils.entrada_centralizada('💬 : ').strip()
 
             if calculartmb_visualizartmb == '1':
 
@@ -339,7 +339,7 @@ class SaudeCorporal:
                     print(' ')
                     try:
                         c.print(Utils.mensagem_centralizada("Digite o peso em quilogramas:"))
-                        pesoex = float(Utils.entrada_centralizada('>>> '))
+                        pesoex = float(Utils.entrada_centralizada('💬 : '))
                         if pesoex > 350 or pesoex <= 0:
                             Utils.mensagem_erro_centralizada("Digite um peso válido.")
                             Utils.aguardar_volta()
@@ -354,7 +354,7 @@ class SaudeCorporal:
                         
                         try:
                             c.print(Utils.mensagem_centralizada("Digite a altura em centímetros:"))
-                            alturaex = float(Utils.entrada_centralizada('>>> '))
+                            alturaex = float(Utils.entrada_centralizada('💬 : '))
                             if alturaex > 220 or alturaex <= 100:
                                 Utils.mensagem_erro_centralizada("Digite uma altura válida, em centímetros.")
                                 Utils.aguardar_volta()
@@ -369,7 +369,7 @@ class SaudeCorporal:
 
                         try:            
                             c.print(Utils.mensagem_centralizada("Digite a idade:"))
-                            idadeex = int(Utils.entrada_centralizada('>>> '))
+                            idadeex = int(Utils.entrada_centralizada('💬 : '))
                             if idadeex > 100 or idadeex <= 0:
                                 Utils.mensagem_erro_centralizada("Digite uma idade válida.")
                                 Utils.aguardar_volta()
@@ -412,7 +412,7 @@ class SaudeCorporal:
                             popcaotextoidentidade = Panel(opcaotextoidentidade, expand = False, border_style = 'bold yellow')
                             popcaotextoidentidade_center = Align.center(popcaotextoidentidade)
                             c.print(popcaotextoidentidade_center)
-                            sexo_opcao = Utils.entrada_centralizada('>>> ').strip()
+                            sexo_opcao = Utils.entrada_centralizada('💬 : ').strip()
                 
                             if sexo_opcao not in ['1', '2', '3', '4']:
                                 Utils.mensagem_erro_centralizada("Opção inválida! Escolha 1-4")
@@ -432,7 +432,7 @@ class SaudeCorporal:
                             
                             if sexo_opcao in ['3', '4']:
                                 c.print(Utils.mensagem_centralizada("Você já fez uso de terapia hormonal? (s/n):"))
-                                resposta = Utils.entrada_centralizada('>>> ').lower().strip()
+                                resposta = Utils.entrada_centralizada('💬 : ').lower().strip()
                                 if resposta not in ['s','n']:
                                     Utils.mensagem_erro_centralizada("Digite (s) ou (n).")
                                     Utils.aguardar_volta()
@@ -448,7 +448,7 @@ class SaudeCorporal:
                         em_transicao = resposta == 's'    
                         if em_transicao:
                             c.print(Utils.mensagem_centralizada("Há quantos meses você faz uso?"))
-                            tempo_transicao = int(Utils.entrada_centralizada('>>> '))
+                            tempo_transicao = int(Utils.entrada_centralizada('💬 : '))
                             if tempo_transicao <= 0:
                                 Utils.mensagem_erro_centralizada("Digite um valor válido.")
                                 Utils.aguardar_volta()
@@ -645,7 +645,7 @@ class SaudeCorporal:
                 painelopcaoregistrocal_text = Panel(opcaoregistrocal_text, expand = False, border_style = 'bold yellow')
                 painelopcaoregistrocal_text_center = Align.center(painelopcaoregistrocal_text)
                 c.print(painelopcaoregistrocal_text_center)
-                opcao = Utils.entrada_centralizada('>>> ').strip()
+                opcao = Utils.entrada_centralizada('💬 : ').strip()
 
                 if opcao == '1':
                     c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
@@ -657,7 +657,7 @@ class SaudeCorporal:
                     c.print(painelperguntaadicaocalorias_text_center)
 
                     c.print(Utils.mensagem_centralizada("Quantas calorias você consumiu em sua última refeição?"))
-                    cal = Utils.entrada_centralizada('>>> ')
+                    cal = Utils.entrada_centralizada('💬 : ')
                     cal = int(cal)
 
                     if cal <= 0:
@@ -680,7 +680,7 @@ class SaudeCorporal:
                         c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
                         print(' ')
                         c.print(Utils.mensagem_centralizada("Deseja finalizar o seu dia ? Não poderá mais adicionar calorias ao dia de hoje. (s/n):"))
-                        es = Utils.entrada_centralizada('>>> ').strip().lower()
+                        es = Utils.entrada_centralizada('💬 : ').strip().lower()
 
                         if es == 's':
                             if data_atual not in user.historico_dias:
@@ -845,3 +845,203 @@ class SaudeCorporal:
                 Utils.limpar_tela_universal()
 
         return usuarios, usuario_logado
+    
+
+    def registrar_agua(self, usuarios, usuario_logado):
+        """
+        Registra o consumo de água pelo usuário durante o dia,
+        o usuário digita quantos ml bebeu, e a função salva ao lado de sua meta,
+        o usuário tem a opção de "finalizar dia",
+        após isso, recebe um feedback e pode verificar o histórico de consumo de acordo com o dia.
+        """
+        Utils.limpar_tela_universal()
+
+        if usuario_logado is None:
+            Utils.mensagem_erro_centralizada("Faça login primeiro!")
+            Utils.aguardar_volta()  
+            return usuarios, usuario_logado
+        
+        user = usuarios[usuario_logado]
+
+        if not hasattr(user, 'historico_agua') or not user.historico_agua:
+            user.historico_agua = {}
+
+        data_atual = datetime.now().strftime('%d/%m/%Y') 
+
+        if not hasattr(user, 'agua_hoje'):
+            user.agua_hoje = 0
+
+        while True:
+            Utils.limpar_tela_universal()
+            try:
+                c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
+                print(' ')
+                agua_text = Text()
+                agua_text.append('\n')
+
+                header_text = Text()
+                header_text.append('\n')
+                header_text.append("Seja bem-vindo(a) ao menu Registro de Água!\n", style="bold cyan")
+                header_text.append("Hidrate-se bem acompanhando seu consumo diário.", style="dim")
+                header_text.append('\n')
+
+                header_panel = Panel(header_text, border_style="cyan", expand=False)
+                c.print(Align.center(header_panel))
+
+                agua_text.append('Registro de água\n', style = 'bold cyan')
+                agua_text.append(f'Data: {data_atual}', style = 'dim')
+                agua_text.append('\n')
+
+                agua_text.append('\n1. ', style = 'red')
+                agua_text.append('Adicionar água consumida\n', style = 'bold white')
+
+                agua_text.append('2. ', style = 'red')
+                agua_text.append('Finalizar o dia\n', style = 'bold white')
+
+                agua_text.append('3. ', style = 'red')
+                agua_text.append('Ver histórico\n', style = 'bold white')
+
+                agua_text.append('4. ', style = 'red')
+                agua_text.append('Definir meta de água\n', style = 'bold white')
+
+                agua_text.append('5. ', style = 'red')
+                agua_text.append('Voltar', style = 'bold white')
+                agua_text.append('\n')
+
+                painelagua = Panel(agua_text, border_style="bold cyan", expand=False, title="[bold cyan]💧[/bold cyan]", title_align="center")
+                c.print(Align.center(painelagua))
+
+                opcaotxt = Text()
+                opcaotxt.append('Digite uma opção (1-5):', style='bold cyan')
+                painelopcao = Panel(opcaotxt, expand=False, border_style='bold cyan')
+                c.print(Align.center(painelopcao))
+                opcao = Utils.entrada_centralizada('💬 : ').strip()
+
+                if opcao == '1':
+                    if not hasattr(user, 'meta_agua') or user.meta_agua <= 0:
+                        Utils.mensagem_erro_centralizada("Defina sua meta de água primeiro!")
+                        Utils.aguardar_volta()
+                        continue
+
+                    c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
+                    print(' ')
+                    agua_input_text = Text()
+                    agua_input_text.append(f'Total de água hoje: {user.agua_hoje}/{user.meta_agua:.0f} ml')
+                    c.print(Align.center(Panel(agua_input_text, expand=False, border_style='bold cyan')))
+
+                    c.print(Utils.mensagem_centralizada("Quantos ml você bebeu agora?"))
+                    agua = Utils.entrada_centralizada('💬 : ')
+                    agua = int(agua)
+
+                    if agua <= 0:
+                        Utils.mensagem_erro_centralizada("Digite um valor válido em mililitros.")
+                        Utils.aguardar_volta()
+                        continue
+
+                    user.agua_hoje += agua
+                    cadastro.gerenciador.salvar_dadosjson(usuarios)
+
+                    feedbackagua = Text()
+                    feedbackagua.append(f'Você bebeu {agua} ml de água.', style='bold white')
+                    feedbackagua.append(f'\nTotal hoje: {user.agua_hoje}/{user.meta_agua:.0f} ml', style='bold white')
+                    c.print(Align.center(Panel(feedbackagua, expand=False, border_style='bold cyan', title='FEEDBACK', title_align='center')))
+                    Utils.aguardar_volta()
+                    Utils.limpar_tela_universal()
+
+                elif opcao == '2':
+                    if not hasattr(user, 'meta_agua') or user.meta_agua <= 0:
+                        Utils.mensagem_erro_centralizada("Defina sua meta de água antes de finalizar o dia!")
+                        Utils.aguardar_volta()
+                        continue
+
+                    c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
+                    print(' ')
+                    c.print(Utils.mensagem_centralizada("Deseja finalizar o seu dia? (s/n):"))
+                    es = Utils.entrada_centralizada('💬 : ').strip().lower()
+
+                    if es == 's':
+                        if data_atual not in user.historico_agua:
+                            user.historico_agua[data_atual] = user.agua_hoje
+                            cadastro.gerenciador.salvar_dadosjson(usuarios)
+                            user.agua_hoje = 0
+
+                            c.print(Utils.mensagem_centralizada(f'Dia finalizado! Total salvo: {user.historico_agua[data_atual]} ml'))
+
+                            diferenca = user.historico_agua[data_atual] - user.meta_agua
+
+                            feedback_final = Text()
+                            if diferenca >= 0:
+                                feedback_final.append(f'✅ Você atingiu sua meta de hidratação! Ótimo trabalho. 💧', style='bold cyan')
+                            else:
+                                feedback_final.append(f'⚠️ Você bebeu {abs(diferenca)} ml a menos que sua meta.', style='bold yellow')
+                                feedback_final.append('\n📌 Tente distribuir melhor sua ingestão ao longo do dia.')
+
+                            c.print(Align.center(Panel(feedback_final, expand=False, border_style='bold cyan')))
+
+                        else:
+                            Utils.mensagem_erro_centralizada("Você já finalizou o dia hoje!")
+
+                        Utils.aguardar_volta()
+                        Utils.limpar_tela_universal()
+
+                    elif es == 'n':
+                        Utils.aguardar_volta()
+                        Utils.limpar_tela_universal()
+                    else:
+                        Utils.mensagem_erro_centralizada("Digite (s) ou (n).")
+                        Utils.aguardar_volta()
+                        continue
+
+                elif opcao == '3':
+                    c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
+                    print(' ')
+                    historico_text = Text()
+                    historico_text.append('\n')
+                    historico_text.append('📅 HISTÓRICO DE HIDRATAÇÃO:\n', style='bold white')
+                    historico_text.append('\n')
+
+                    if not user.historico_agua:
+                        Utils.mensagem_erro_centralizada("Nenhum registro encontrado.")
+                    else:
+                        for data, total in user.historico_agua.items():
+                            historico_text.append(f'{data}: {total} ml', style='dim')
+                            historico_text.append('\n')
+
+                        c.print(Align.center(Panel(historico_text, expand=False, border_style='bold cyan')))
+
+                    Utils.aguardar_volta()
+
+                elif opcao == '4':
+                    c.rule('\n[blue][b][i]VitalTrack[/i][/][/]')
+                    print(' ')
+                    c.print(Utils.mensagem_centralizada("Digite sua meta diária de água (em ml):"))
+                    meta = Utils.entrada_centralizada('💬 : ').strip()
+                    try:
+                        meta = int(meta)
+                        if meta <= 0:
+                            raise ValueError
+                        user.meta_agua = meta
+                        cadastro.gerenciador.salvar_dadosjson(usuarios)
+                        c.print(Align.center(Panel(Text(f'Meta de água definida: {meta} ml', style='bold cyan'), expand=False, border_style='bold cyan')))
+                    except:
+                        Utils.mensagem_erro_centralizada("Valor inválido. Digite um número positivo.")
+                    Utils.aguardar_volta()
+                    Utils.limpar_tela_universal()
+
+                elif opcao == '5':
+                    Utils.spinner_centralizado("Voltando...", tempo=2)
+                    Utils.limpar_tela_universal()
+                    break
+                else:
+                    Utils.mensagem_erro_centralizada("Opção inválida!")
+                    Utils.aguardar_volta()
+                    Utils.limpar_tela_universal()
+
+            except Exception as e:
+                Utils.mensagem_erro_centralizada(f"Ocorreu um erro: {e}")
+                Utils.aguardar_volta()
+                Utils.limpar_tela_universal()
+
+        return usuarios, usuario_logado
+
+

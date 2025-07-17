@@ -2,7 +2,8 @@ from rich.align import Align
 from rich.columns import Columns
 import random
 from saudecorporal import *
-
+from quiz import Quiz
+from perguntas_quiz import perguntas_completas
 
 class Menus:
     def __init__(self, cadastro):
@@ -206,8 +207,9 @@ class Menus:
                 usuarios = saude.registrar_calorias(self.cadastro.usuarios, usuario_logado)
             
             elif opcao == '5':
-                pass
-
+                Utils.spinner_centralizado("Carregando...", tempo = 2)
+                usuarios = saude.registrar_agua(self.cadastro.usuarios, usuario_logado)
+                
             elif opcao == '6':
                 Utils.spinner_centralizado("Carregando...", tempo = 2)
                 usuarios = self.cadastro.atualizar_usuario(self.cadastro.usuarios)
@@ -276,7 +278,9 @@ class Menus:
                         Utils.aguardar_volta()
 
             elif opcao == '9':
-                pass
+                Utils.spinner_centralizado("Carregando...", tempo = 2)
+                quiz = Quiz()
+                quiz.exibir_menu(self.cadastro.usuarios, self.cadastro.usuario_logado)
                     
             elif opcao == '10':
                 Utils.spinner_centralizado("Carregando...", tempo = 2)
