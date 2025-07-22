@@ -1,5 +1,6 @@
 class Usuario:
-    def __init__(self, email, senha, nome, objetivo = None, dados = None, calorias_hoje = 0, historico_dias = None):
+    def __init__(self, email, senha, nome, objetivo = None, dados = None, calorias_hoje = 0, historico_dias = None,agua_hoje=0,
+        meta_agua=0, historico_agua=None, quiz_progresso=None):
         self.email = email
         self.senha = senha
         self.nome = nome
@@ -8,7 +9,11 @@ class Usuario:
         self.calorias_hoje = calorias_hoje
         self.historico_dias = historico_dias
         self.TMB = None
-        
+        self.agua_hoje = agua_hoje
+        self.meta_agua = meta_agua
+        self.historico_agua = historico_agua or {}
+        self.quiz_progresso = quiz_progresso or {}
+
     @classmethod
     def from_dict(cls, dados_usuario):
         obj = cls(
