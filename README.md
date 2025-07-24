@@ -65,9 +65,9 @@ source venv/bin/activate
 
 ![Menu inicial](imgs/menuinicial.png)
 
-- Interactions
+- Login 
 
-![Interações](imgs/inclusao.png)
+![Interações](imgs/login.png)
 
 ---
 # 🚧 Active development
