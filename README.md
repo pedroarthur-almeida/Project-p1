@@ -21,8 +21,10 @@ VitalTrack is an interactive terminal application built in Python to track healt
 - ✅ User registration/login, with full CRUD, error flows and validations.
 - 📊 BMI and BMR calculation (with support for trans people) and feedback on the user's goal.
 - 🔥 Daily calorie log, also integrated into the goals system.
+- 💧 Water intake tracking, encouraging proper hydration with daily logs and progress monitoring.
 - 📅 Calorie consumption history for the day.
 - 💡 Personalized feedback (mass gain, weight loss or maintenance).
+- 🧠 Educational quiz, with weekly questions and instant feedback to promote healthy habits.
 
 # Installation
 1. Clone the repository:
