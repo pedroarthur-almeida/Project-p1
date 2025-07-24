@@ -3,7 +3,7 @@
 
 # Description: 
 VitalTrack is an interactive terminal application built in Python to track health and promote wellness habits.
-- Core Features: Calorie logging, Body Mass Index (BMI) calculation, and Basal Metabolic Rate (BMR) estimation.
+- Core Features: Calorie logging, Body Mass Index (BMI) calculation, Basal Metabolic Rate (BMR) estimation, water intake tracking, and a weekly educational quiz.
 - Inclusive by Design: Features a specialized BMR calculator that provides more accurate health monitoring for transgender users, ensuring fairer and more personalized results.
 
 # Technologies used:
